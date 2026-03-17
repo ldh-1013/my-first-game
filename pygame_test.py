@@ -2,89 +2,77 @@ import pygame
 import random
 import math
 
+
 pygame.init()
 
 WIDTH, HEIGHT = 900, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Fancy Particle Playground")
+pygame.display.set_caption("Optimized Neon Particles")
 
 clock = pygame.time.Clock()
-
 particles = []
+
+
+overlay = pygame.Surface((WIDTH, HEIGHT))
+overlay.set_alpha(40) 
+overlay.fill((0, 0, 0))
 
 class Particle:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-
         angle = random.uniform(0, math.pi * 2)
-        speed = random.uniform(1, 6)
-
+        speed = random.uniform(2, 7)
         self.vx = math.cos(angle) * speed
         self.vy = math.sin(angle) * speed
-
-        self.life = random.randint(40, 80)
-        self.size = random.randint(3, 7)
-
-        self.color = (
-            random.randint(150,255),
-            random.randint(100,255),
-            random.randint(150,255)
-        )
+        self.life = random.randint(30, 60)
+        self.max_life = self.life
+        self.size = random.randint(3, 6)
+        self.color = random.choice([(255, 50, 50), (50, 255, 50), (50, 100, 255), (255, 255, 100)])
 
     def update(self):
+        self.vx *= 0.96 
+        self.vy *= 0.96
         self.x += self.vx
         self.y += self.vy
-
-        self.vy += 0.08
+        self.vy += 0.15 
         self.life -= 1
 
     def draw(self, surf):
-        if self.life > 0:
-            pygame.draw.circle(
-                surf,
-                self.color,
-                (int(self.x), int(self.y)),
-                self.size
-            )
-
-    def alive(self):
-        return self.life > 0
-
-
-def draw_background(surface, t):
-    for y in range(HEIGHT):
-        c = int(40 + 30 * math.sin(y * 0.01 + t))
-        color = (10, c, 50 + c//2)
-        pygame.draw.line(surface, color, (0, y), (WIDTH, y))
-
+        
+        ratio = self.life / self.max_life
+        current_size = max(1, int(self.size * ratio))
+        
+        faded_color = [max(0, int(c * ratio)) for c in self.color]
+        pygame.draw.circle(surf, faded_color, (int(self.x), int(self.y)), current_size)
 
 running = True
-time = 0
-
 while running:
-
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    mouse = pygame.mouse.get_pos()
-    buttons = pygame.mouse.get_pressed()
+    
+    screen.blit(overlay, (0, 0))
 
-    if buttons[0]:
-        for _ in range(8):
-            particles.append(Particle(mouse[0], mouse[1]))
+   
+    mouse_pos = pygame.mouse.get_pos()
+    if pygame.mouse.get_pressed()[0]:
+        
+        if len(particles) < 1000:
+            for _ in range(5):
+                particles.append(Particle(*mouse_pos))
 
-    time += 0.03
-
-    draw_background(screen, time)
-
-    for p in particles:
+    
+    for p in particles[:]: 
         p.update()
-        p.draw(screen)
+        if p.life <= 0:
+            particles.remove(p)
+        else:
+            p.draw(screen)
 
-    particles = [p for p in particles if p.alive()]
-
+    
     pygame.display.flip()
     clock.tick(60)
 
