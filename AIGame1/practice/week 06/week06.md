@@ -1,7 +1,7 @@
 # 6주차 실습 기록
 
 ## 사용한 에셋
-- 이미지: Snake.png / 
+- 이미지: Snake.png / https://itch.io/
 - 사운드: boom.wab , bgm.mp3 / https://freesound.org
 ## 사용한 AI 프롬프트 (요약)
 1. step 1,2에 있는 AI활용 과제의 프롬포트를 사용하여 코드를 작동시켜봤다.
