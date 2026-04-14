@@ -2,6 +2,8 @@ import pygame
 import math
 import random
 import os
+import base64
+import io
 
 # 1. 초기 설정
 pygame.init()
@@ -42,6 +44,25 @@ try:
     pygame.mixer.music.play(-1)
 except:
     pass
+
+# --- [스프라이트 시트 로드] ---
+SHEET_B64 = "iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAMAAADVRocKAAAABGdBTUEAALGPC/xhBQAAADNQTFRFAAAAxKju/96M7JoeYWu6nfjkiG2vo4bOY7ime9jExHxx36mI882s/7hMd4/bRzJL////Ur3JYAAAAAF0Uk5TAEDm2GYAAAQxSURBVGje7VmJcuMgDE1r11dio///2iIEWBIihh4zu52w6XhWhveEDhD4dnu1V/vDDULDx2/iR5YfgSvgnW/46GOwe2s9E35i6Jy4JRZ6EvzqG1J0EjjLGlLPqP6Hb3EWXV4T/U9HMmLSf0GCZW0kABOJxIWpUbR4bN/8o4mAAwmk6EppiZIArvEZjkQK3hQEofeyEsG6OKcDIEaKsAQHkgRe6H2Jr04CxwkWOUI2ptIJ5IBDeUeG3ykOEyDVkQdOL4DID2Bix4EyFEQCNPUHFyNBsuiyZAIoTA1sygmITTmm0/KB5lBi0kP4H7KlC6eFKScgWDjSsgbideXiHHAREiKBk/nhpE0jkJgyEqxJLk1dOjP5hghY/2yK8FPMlvzGQUWwBIIQXZ7L/dZO8af311vHDti1X9oJ3jqkqXPObrlSVJmBZRvcetZSuVJUGdiQFgLfbZ6p+zTpzC+Z4xg/BHu3EczYEH7KY0p8tZD/BAFK31A+sxdfJXibPcpcEvgXhK8JPPM0d/ggATltou3xeNwtE725eerZkTMQCCffg3zbVACjUm5qC1TqLoDODep+3+6+bfhC4iuFniQg4ZdAAd9z4psNuNxUqMgdQWADIW8g3jSxOTOROyota0BeGPzDNa0pVBRqPCRqQFYi1xVKawILxudAkAoQp8ulqkIs3AvLaaDaMv5sZj6fgvOnqQFIv7hdKEQE19EFX92g6tH1rSOmisYUXd8jqK9qKbq8/1910av9E7Um/Ad3OTYO8NMZfGfKFU3FYbK3VoYGTWPZ5eS20lb+ltWA8SIu/G5qq+yugEpN2dbYTlADsjQNMx4G+iucYEZFDcjWNMj39/d935UToF4Y2UC2pijeiWDXA8R1SAuQpSkRUHPlZZ5dGNWBCk0DjhcC/oqS2BF5UYxbU65oSvr4NgxCoyCfpgF7lyPsKUtNmXjYywEonyLBsOsZGECZmDR9Unhxgjhk1z4wgE5b7Eof25dJ7G3t9r10cgFExNFv9TpNwszzkAgspF3njTMP3PXCy+frYHjzD1zOdAH1X870AdUuZ75QjddueeS16SVDLxAd0cIBxKlzxvP9rBUongFdPqO1EPQAxYNMvMjYrm3UCxRMeeR2baNuICk/qp8PhJN7gEgOx/F44OPJnTabQh9Q7I/ysz/oWz4Rjx1AUR4Pye64vkTsA8ry2KI84h/K1tANVDMp3VH5/x3p5Si+mTQDFUFxkKLhhiQQgAvGeIyjJKg5WcvJFmTRYNP0uYUIjjCDRxdBBmK3keMYxPiCL2TYORE4pwkkEKkqgCAZ+0jdUU6apokJAuZkBZQznAG505sGAaUBN1ERphaBH34CsXAxLrWj708nN83gDC43jiLgdUYlE51hemgfEMpYfvFTpQuYHxZoycyRMvp/lqoMPzEAsK/N9Q91tOiXBJ/+SvnF/olvSAAAAABJRU5ErkJggg=="
+try:
+    try:
+        player_sheet = pygame.image.load("./assets/images/animal.png").convert_alpha()
+    except:
+        sheet_bytes = base64.b64decode(SHEET_B64)
+        player_sheet = pygame.image.load(io.BytesIO(sheet_bytes)).convert_alpha()
+        
+    player_frames = []
+    for i in range(16):
+        row, col = divmod(i, 4)
+        rect = pygame.Rect(col * 24, row * 24, 24, 24)
+        player_frames.append(player_sheet.subsurface(rect))
+        
+    red_food_frames = [player_frames[i] for i in [0, 1, 2]]
+except Exception as e:
+    red_food_frames = None
 
 # Scene 상태 정의
 TITLE, GAME, SUCCESS, FAILURE = 0, 1, 2, 3
@@ -152,24 +173,51 @@ class Food:
     def __init__(self, color, value):
         self.color, self.value = color, value
         self.active = (value != 30)
-        self.timer = 0
-        self.max_timer = 300
+        self.max_timer = 300  # 보라 아이템과 벌레(RED) 공통 300 프레임
+        self.timer = self.max_timer
+        
+        # 애니메이션 속성
+        self.frame_index = 0
+        self.anim_timer = pygame.time.get_ticks()
+        self.anim_delay = 150 # ms
+        
         self.respawn()
+        
     def respawn(self):
         self.x, self.y = random.randint(50, WIDTH - 50), random.randint(50, HEIGHT - 50)
-        if self.value == 30: self.timer = self.max_timer
+        if self.value == 30 or self.color == RED: 
+            self.timer = self.max_timer
+            
+    def update(self):
+        # 벌레(RED)일 경우 타이머 감소 및 랜던 스폰 처리
+        if self.color == RED:
+            self.timer -= 1
+            if self.timer <= 0:
+                self.respawn()
+        
     def draw(self, surface, offset=(0, 0)):
         if self.active:
-            r = 7 if self.value == 30 else 8
-            pygame.draw.circle(surface, self.color, (self.x + offset[0], self.y + offset[1]), r)
-            pygame.draw.circle(surface, WHITE, (self.x + offset[0], self.y + offset[1]), r, 1) 
+            if self.color == RED and red_food_frames:
+                now = pygame.time.get_ticks()
+                if now - self.anim_timer >= self.anim_delay:
+                    self.frame_index = (self.frame_index + 1) % len(red_food_frames)
+                    self.anim_timer = now
+                
+                img = red_food_frames[self.frame_index]
+                img_w, img_h = img.get_size()
+                surface.blit(img, (self.x - img_w//2 + offset[0], self.y - img_h//2 + offset[1]))
             
-            if self.value == 30 and self.timer > 0:
-                bar_width = 30
-                bar_height = 4
-                pygame.draw.rect(surface, (50, 50, 50), (self.x - bar_width//2 + offset[0], self.y - 15 + offset[1], bar_width, bar_height))
-                current_bar_w = (self.timer / self.max_timer) * bar_width
-                pygame.draw.rect(surface, PURPLE_ITEM, (self.x - bar_width//2 + offset[0], self.y - 15 + offset[1], current_bar_w, bar_height))
+            else:
+                r = 7 if self.value == 30 else 8
+                pygame.draw.circle(surface, self.color, (self.x + offset[0], self.y + offset[1]), r)
+                pygame.draw.circle(surface, WHITE, (self.x + offset[0], self.y + offset[1]), r, 1) 
+                
+                if self.value == 30 and self.timer > 0:
+                    bar_width = 30
+                    bar_height = 4
+                    pygame.draw.rect(surface, (50, 50, 50), (self.x - bar_width//2 + offset[0], self.y - 15 + offset[1], bar_width, bar_height))
+                    current_bar_w = (self.timer / self.max_timer) * bar_width
+                    pygame.draw.rect(surface, PURPLE_ITEM, (self.x - bar_width//2 + offset[0], self.y - 15 + offset[1], current_bar_w, bar_height))
 
 def draw_exit(surface, frame_count, offset=(0, 0)):
     cx, cy = WIDTH // 2 + offset[0], HEIGHT // 2 + offset[1]
@@ -212,7 +260,7 @@ while running:
         screen.blit(title_txt, (WIDTH//2 - title_txt.get_width()//2, HEIGHT//2 - 180))
         controls = [
             "A, D - 방향 전환  /  Space - 유령 모드", 
-            "빨간 먹이를 피하세요! (Score -20 & 길이 대폭 증가)", 
+            "벌레(동물)를 피하세요! (Score -20 & 길이 대폭 증가)", 
             "게임 오버 기준 점수: -40 미만", 
             "R - Restart  /  Esc - Quit"
         ]
@@ -225,6 +273,29 @@ while running:
     elif scene in [GAME, FAILURE, SUCCESS]:
         if scene == GAME:
             snake.update()
+            
+            # --- 벌레(RED) 동적 생성 및 타이머 업데이트 로직 ---
+            expected_bugs = 1
+            if score >= 500: expected_bugs = 5
+            elif score >= 400: expected_bugs = 4
+            elif score >= 300: expected_bugs = 3
+            elif score >= 200: expected_bugs = 2
+            
+            red_foods = [f for f in foods if f.color == RED]
+            # 벌레가 부족하면 추가
+            while len(red_foods) < expected_bugs:
+                new_bug = Food(RED, -20)
+                foods.append(new_bug)
+                red_foods.append(new_bug)
+            # 벌레가 많으면 제거 (점수 하락 시 대비)
+            while len(red_foods) > expected_bugs:
+                bug_to_remove = red_foods.pop()
+                foods.remove(bug_to_remove)
+                
+            # 먹이 상태 업데이트 (벌레 타이머 감소용)
+            for f in foods:
+                f.update()
+            # --------------------------------------------------
             
             if snake.yoyo_timer >= snake.yoyo_max:
                 score -= 20; snake.length += 50; snake.yoyo_timer = 0
@@ -301,7 +372,6 @@ while running:
             msg = big_font.render(txt, True, (0, 100, 0) if scene == SUCCESS else RED)
             screen.blit(msg, (WIDTH//2 - msg.get_width()//2 + render_offset[0], HEIGHT//2 - 80 + render_offset[1]))
             if scene == FAILURE:
-                # 텍스트 수정: Limit 문구 제거
                 score_txt = font.render(f"Final Score: {score}", True, WHITE)
                 screen.blit(score_txt, (WIDTH//2 - score_txt.get_width()//2, HEIGHT//2))
             screen.blit(font.render("[ R - Play Again ]", True, WHITE), (WIDTH//2 - 100, HEIGHT//2 + 80))
