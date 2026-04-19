@@ -1,11 +1,10 @@
-
-
 import pygame
 import math
 import random
 import os
 import base64
 import io
+
 
 # 1. 초기 설정
 pygame.init()
@@ -21,8 +20,8 @@ WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
 ORANGE_ITEM = (255, 165, 0)
 BLUE_GHOST = (160, 210, 255)
-PASTEL_PURPLE_HEAD = (200, 160, 255)
-PASTEL_PURPLE_TAIL = (235, 220, 255)
+PASTEL_PURPLE_HEAD = (190, 90, 40)   # 테라코타 (사막 바위)
+PASTEL_PURPLE_TAIL = (225, 180, 95)  # 모래금 (건조한 사막 모래)
 EYE_COLOR = (0, 0, 0)
 RED = (255, 80, 80)
 EXIT_COLOR = (100, 255, 100)
@@ -53,11 +52,31 @@ try:
     minus_eat_sound = pygame.mixer.Sound("./assets/sounds/minus eat.mp3")
     die_sound = pygame.mixer.Sound("./assets/sounds/die.mp3")
     complete_sound = pygame.mixer.Sound("./assets/sounds/Completed.wav")
+    choice_sound = pygame.mixer.Sound("./assets/sounds/choice.wav")
+    lulu_sound = pygame.mixer.Sound("./assets/sounds/lulu.wav")
+    warning_sound = pygame.mixer.Sound("./assets/sounds/warning.mp3")
+    portal_open_sound = pygame.mixer.Sound("./assets/sounds/potalopen.wav")
+    portal_sealed_sound = pygame.mixer.Sound("./assets/sounds/potalsealed.wav")
+    ghost_sound = pygame.mixer.Sound("./assets/sounds/Ghost.mp3")
+    star_sound = pygame.mixer.Sound("./assets/sounds/Star.mp3")
+    star_on_sound = pygame.mixer.Sound("./assets/sounds/Star_on.wav")
+    combo_sounds = []
+    for i in range(1, 8):
+        combo_sounds.append(pygame.mixer.Sound(f"./assets/sounds/combo/combo{i}.mp3"))
 except:
     eat_sound = None
     minus_eat_sound = None
     die_sound = None
     complete_sound = None
+    choice_sound = None
+    lulu_sound = None
+    warning_sound = None
+    portal_open_sound = None
+    portal_sealed_sound = None
+    ghost_sound = None
+    star_sound = None
+    star_on_sound = None
+    combo_sounds = []
 
 try:
     pygame.mixer.music.load("./assets/sounds/bgm.wav")
@@ -97,7 +116,7 @@ except:
     sand_variants = [sand1]
 
 # --- [스프라이트 시트 로드 (Base64)] ---
-SHEET_B64 = "iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAMAAADVRocKAAAABGdBTUEAALGPC/xhBQAAADNQTFRFAAAAxKju/96M7JoeYWu6nfjkiG2vo4bOY7ime9jExHxx36mI882s/7hMd4/bRzJL////Ur3JYAAAAAF0Uk5TAEDm2GYAAAQxSURBVGje7VmJcuMgDE1r11dio///2iIEWBIihh4zu52w6XhWhveEDhD4dnu1V/vDDULDx2/iR5YfgSvgnW/46GOwe2s9E35i6JRZ6EvzqG1J0EjjLGlLPqP6Hb3EWXV4T/U9HMmLSf0GCZW0kABOJxIWpUbR4bN/8o4mAAwmk6EppiZIArvEZjkQK3hQEofeyEsG6OKcDIEaKsAQHkgRe6H2Jr04CxwkWOUI2ptIJ5IBDeUeG3ykOEyDVkQdOL4DID2Bix4EyFEQCNPUHFyNBsuiyZAIoTA1sygmITTmm0/KB5lBi0kP4H7KlC6eFKScgWDjSsgbideXiHHAREiKBk/nhpE0jkJgyEqxJLk1dOjP5hghY/2yK8FPMlvzGQUWwBIIQXZ7L/dZO8af311vHDti1X9oJ3jqkqXPObrlSVJmBZRvcetZSuVJUGdiQFgLfbZ6p+zTpzC+Z4xg/BHu3EczYEH7KY0p8tZD/BAFK31A+sxdfJXibPcpcEvgXhK8JPPM0d/ggATltou3xeNwtE725eerZkTMQCCffg3zbVACjUm5qC1TqLoDODep+3+6+bfhC4iuFniQg4ZdAAd9z4psNuNxUqMgdQWADIW8g3jSxOTOROyota0BeGPzDPa0pVBRqPCRqQFYi1xVKawILxudAkAoQp8ulqkIs3AvLaaDaMv5sZj6fgvOnqQFIv7hdKEQE19EFX92g6tH1rSOmisYUXd8jqK9qKbq8/1910av9E7Um/Ad3OTYO8NMZfGfKFU3FYbK3VoYGTWPZ5eS20lb+ltWA8SIu/G5qq+yugEpN2dbYTlADsjQNMx4G+iucYEZFDcjWNMj39/d935UToF4Y2UC2pijeiWDXA8R1SAuQpSkRUHPlZZ5dGNWBCk0DjhcC/oqS2BF5UYxbU65oSvr4NgxCoyCfpgF7lyPsKUtNmXjYywEonyLBsOsZGECZmDR9Unhxgjhk1z4wgE5b7Eof25dJ7G3t9r10cgFExNFv9TpNwszzkAgspF3njTMP3PXCy+frYHjzD1zOdAH1X870AdUuZ75QjddueeS16SVDLxAd0cIBxKlzxvP9rBUongFdPqO1EPQAxYNMvMjYrm3UCxRMeeR2baNuICk/qp8PhJN7gEgOx/F44OPJnTabQh9Q7I/ysz/oWz4Rjx1AUR4Pye64vkTsA8ry2KI84h/K1tANVDMp3VH5/x3p5Si+mTQDFUFxkKLhhiQQgAvGeIyjJKg5WcvJFmTRYNP0uYUIjjCDRxdBBmK3keMYxPiCL2TYORE4pwkkEKkqgCAZ+0jdUU6apokJAuZkBZQznAG505sGAaUBN1ERphaBH34CsXAxLrWj708nN83gDC43jiLgdUYlE51hemgfEMpYfvFTpQuYHxZoycyRMvp/lqoMPzEAsK/N9Q91tOiXBJ/+SvnF/olvSAAAAABJRU5ErkJggg=="
+SHEET_B64 = "iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAMAAADVRocKAAAABGdBTUEAALGPC/xhBQAAADNQTFRFAAAAxKju/96M7JoeYWu6nfjkiG2vo4bOY7ime9jExHxx36mI882s/7hMd4/bRzJL////Ur3JYAAAAAF0Uk5TAEDm2GYAAAQxSURBVGje7VmJcuMgDE1r11dio///2iIEWBIihh4zu52w6XhWhveEDhD4dnu1V/vDDULDx2/iR5YfgSvgnW/46GOwe2s9E35i6JRZ6EvzqG1J0EjjLGlLPqP6Hb3EWXV4T/U9HMmLSf0GCZW0kABOJxIWpUbR4bN/8o4mAAwmk6EppiZIArvEZjkQK3hQEofeyEsG6OKcDIEaKsAQHkgRe6H2Jr04CxwkWOUI2ptIJ5IBDeUeG3ykOEyDVkQdOL4DID2Bix4EyFEQCNPUHFyNBsuiyZAIoTA1sygmITTmm0/KB5lBi0kP4H7KlC6eFKScgWDjSsgbideXiHHAREiKBk/nhpE0jkJgyEqxJLk1dOjP5hghY/2yK8FPMlvzGQUWwBIIQXZ7L/dZO8af311vHDti1X9oJ3jqkqXPObrlSVJmBZRvcetZSuVJUGdiQFgLfbZ6p+zTpzC+Z4xg/BHu3EczYEH7KY0p8tZD/BAFK31A+sxdfJXibPcpcEvgXhK8JPPM0d/ggATltou3xeNwtE725eerZkTMQCCffg3zbVACjUm5qC1TqLoDODep+3+6+bfhC4iuFniQg4ZdAAd9z4psNuNxUqMgdQWADIW8g3jSxOTOROyota0BeGPzDPa0pVBRqPCRqQFYi1xVKawILxudAkAoQp8ulqkIs3AvLaaDaMv5sZj6fgvOnqQFIv7hdKEQE19EFX92g6tH1rSOmisYUXd8jqK9qKbq8/1910av9E7Um/Ad3OTYO8NMZfGfKFU3FYbK3VoYGTWPZ5eS20lb+ltWA8SIu/G5qq+yugEpN2dbYTlADsjQNMx4G+iucYEZFDcjWNMj39/d935UToF4Y2UC2pijeiWDXA8R1SAuQpSkRUHPlZZ5dGNWBCk0DjhcC/oqS2BF5UYxbU65oSvr4NgxCoyCfpgF7lyPsKUtNmXjYywEonymDsOsZGECZmDR9Unhxgjhk1z4wgE5b7Eof25dJ7G3t9r10cgFExNFv9TpNwszzkAgspF3njTMP3PXCy+frYHjzD1zOdAH1X870AdUuZ75QjddueeS16SVDLxAd0cIBxKlzxvP9rBUongFdPqO1EPQAxYNMvMjYrm3UCxRMeeR2baNuICk/qp8PhJN7gEgOx/F44OPJnTabQh9Q7I/ysz/oWz4Rjx1AUR4Pye64vkTsA8ry2KI84h/K1tANVDMp3VH5/x3p5Si+mTQDFUFxkKLhhiQQgAvGeIyjJKg5WcvJFmTRYNP0uYUIjjCDRxdBBmK3keMYxPiCL2TYORE4pwkkEKkqgCAZ+0jdUU6apokJAuZkBZQznAG505sGAaUBN1ERphaBH34CsXAxLrWj708nN83gDC43jiLgdUYlE51hemgfEMpYfvFTpQuYHxZoycyRMvp/lqoMPzEAsK/N9Q91tOiXBJ/+SvnF/olvSAAAAABJRU5ErkJggg=="
 
 try:
     try:
@@ -284,7 +303,7 @@ class Snake:
 
     def reset(self):
         self.x, self.y = -200, HEIGHT // 2
-        self.angle, self.base_speed, self.max_speed = 0, 2.5, 7.5
+        self.angle, self.base_speed, self.max_speed = 0, 2.5, 8.0
         self.current_speed, self.turn_speed, self.radius = self.base_speed, 0.11, 10
         self.length = 600
         self.body = [(self.x - i, self.y) for i in range(int(self.length))]
@@ -293,8 +312,7 @@ class Snake:
         self.effect_type = None
         self.effect_timer = 0
 
-    def update(self):
-        temp_max_speed = self.max_speed
+    def update(self, score=0):
         temp_radius = 10
         if self.effect_timer > 0:
             self.effect_timer -= 1
@@ -302,17 +320,31 @@ class Snake:
                 temp_radius = 18
             elif self.effect_type == "THIN":
                 temp_radius = 5
-            elif self.effect_type == "FAST":
-                temp_max_speed = 12.0   # 버그 수정: 원래 7.5로 효과 없던 것을 12로 상향
-            elif self.effect_type == "SLOW":
-                temp_max_speed = 2.5
             # MAGNET은 snake 속성 변경 없음, 외부에서 처리
         else:
             self.effect_type = None
 
         self.radius = temp_radius
-        speed_progress = (600 - self.length) / 590
-        self.current_speed = self.base_speed + (speed_progress * (temp_max_speed - self.base_speed))
+
+        # ── 점수 기반 속도 (구간 보간) ──
+        score_breakpoints = [(0, 2.5), (150, 3.0), (300, 4.5), (450, 5.5), (500, 6.0), (600, 5.5)]
+        s_clamped = max(0, score)
+        score_spd = score_breakpoints[-1][1]
+        for i in range(len(score_breakpoints) - 1):
+            s0, v0 = score_breakpoints[i]
+            s1, v1 = score_breakpoints[i + 1]
+            if s0 <= s_clamped < s1:
+                t = (s_clamped - s0) / (s1 - s0)
+                score_spd = v0 + t * (v1 - v0)
+                break
+        self.current_speed = score_spd
+
+        # ── FAST / SLOW 효과는 속도를 직접 고정값으로 덮어씀 ──
+        if self.effect_timer > 0:
+            if self.effect_type == "FAST":
+                self.current_speed = 4.5
+            elif self.effect_type == "SLOW":
+                self.current_speed = max(0.5, score_spd - 1.0)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
@@ -418,15 +450,131 @@ class Food:
                                  (self.x - 15 + offset[0], self.y - 15 + offset[1], (self.timer / 300) * 30, 4))
 
 
-def draw_exit(surface, frame_count, offset=(0, 0)):
-    cx, cy = WIDTH // 2 + offset[0], HEIGHT // 2 + offset[1]
-    for r in range(5, 35, 4):
-        pulse_r = r + (frame_count % 15) / 3
-        alpha = max(0, 200 - (pulse_r / 35) * 200)
-        s = pygame.Surface((pulse_r * 2, pulse_r * 2), pygame.SRCALPHA)
-        pygame.draw.circle(s, (*EXIT_COLOR, int(alpha)), (pulse_r, pulse_r), pulse_r, 2)
-        surface.blit(s, (cx - pulse_r, cy - pulse_r))
-    pygame.draw.circle(surface, WHITE, (cx, cy), 4)
+def draw_exit(surface, frame_count, offset=(0, 0), is_open=True, cycle_timer=0, max_timer=480, ex=None, ey=None):
+    if ex is None: ex = WIDTH // 2
+    if ey is None: ey = HEIGHT // 2
+    cx, cy = ex + offset[0], ey + offset[1]
+
+    if is_open:
+        # 외곽 황금 글로우 레이어
+        for gr, ga in [(62, 28), (50, 50), (38, 80), (26, 120)]:
+            pulse = 0.75 + 0.25 * math.sin(frame_count * 0.07)
+            gs = pygame.Surface((gr * 2 + 2, gr * 2 + 2), pygame.SRCALPHA)
+            pygame.draw.circle(gs, (255, 190, 40, int(ga * pulse)), (gr + 1, gr + 1), gr)
+            surface.blit(gs, (cx - gr - 1, cy - gr - 1))
+
+        # 회전하는 황금 빛줄기 8개
+        num_rays = 8
+        for i in range(num_rays):
+            ray_angle = (frame_count * 0.025) + i * (math.pi * 2 / num_rays)
+            r_in, r_out = 20, 52 + int(math.sin(frame_count * 0.09 + i) * 6)
+            x1 = cx + math.cos(ray_angle) * r_in
+            y1 = cy + math.sin(ray_angle) * r_in
+            x2 = cx + math.cos(ray_angle) * r_out
+            y2 = cy + math.sin(ray_angle) * r_out
+            ray_alpha = 120 + int(80 * math.sin(frame_count * 0.12 + i * 0.8))
+            rs = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+            pygame.draw.line(rs, (255, 210, 60, ray_alpha), (int(x1), int(y1)), (int(x2), int(y2)), 4)
+            surface.blit(rs, (0, 0))
+
+        # 역방향 회전 모래알 링 (외부)
+        num_dots_out = 16
+        for i in range(num_dots_out):
+            da = -(frame_count * 0.03) + i * (math.pi * 2 / num_dots_out)
+            dr = 44
+            dx = cx + math.cos(da) * dr
+            dy = cy + math.sin(da) * dr
+            sz = 3 + int(1.5 * math.sin(da * 2 + frame_count * 0.08))
+            ds = pygame.Surface((sz * 2 + 2, sz * 2 + 2), pygame.SRCALPHA)
+            pygame.draw.circle(ds, (255, 230, 120, 210), (sz + 1, sz + 1), sz)
+            surface.blit(ds, (int(dx) - sz - 1, int(dy) - sz - 1))
+
+        # 정방향 회전 모래알 링 (내부)
+        num_dots_in = 10
+        for i in range(num_dots_in):
+            da = (frame_count * 0.05) + i * (math.pi * 2 / num_dots_in)
+            dr = 28
+            dx = cx + math.cos(da) * dr
+            dy = cy + math.sin(da) * dr
+            sz = 2
+            ds = pygame.Surface((8, 8), pygame.SRCALPHA)
+            pygame.draw.circle(ds, (255, 255, 200, 180), (4, 4), sz)
+            surface.blit(ds, (int(dx) - 4, int(dy) - 4))
+
+        # 중앙 코어 (흰빛 → 황금)
+        core_r = 15 + int(math.sin(frame_count * 0.11) * 4)
+        for cr, ca, col in [
+            (core_r + 4, 80,  (255, 240, 160)),
+            (core_r,     200, (255, 255, 220)),
+            (core_r - 5, 255, (255, 255, 255)),
+        ]:
+            cs = pygame.Surface((cr * 2 + 2, cr * 2 + 2), pygame.SRCALPHA)
+            pygame.draw.circle(cs, (*col, ca), (cr + 1, cr + 1), cr)
+            surface.blit(cs, (cx - cr - 1, cy - cr - 1))
+
+        # 남은 시간 원호 (초록 → 빨간)
+        arc_ratio = cycle_timer / max_timer
+        arc_steps = int(arc_ratio * 48)
+        arc_color = (80, 255, 80) if arc_ratio > 0.35 else (255, 80, 80)
+        for step in range(arc_steps):
+            a = -math.pi / 2 + step * (math.pi * 2 / 48)
+            ax = cx + math.cos(a) * 58
+            ay = cy + math.sin(a) * 58
+            pygame.draw.circle(surface, arc_color, (int(ax), int(ay)), 3)
+
+        # 닫힘 임박 경고 깜빡임
+        if cycle_timer < 180 and frame_count % 18 < 9:
+            warn = font_en_mid.render("CLOSING!", True, (255, 60, 60))
+            ws = pygame.Surface((warn.get_width() + 12, warn.get_height() + 6), pygame.SRCALPHA)
+            ws.fill((0, 0, 0, 120))
+            surface.blit(ws, (cx - warn.get_width() // 2 - 6, cy + 52))
+            surface.blit(warn, (cx - warn.get_width() // 2, cy + 55))
+        else:
+            lbl = font_en_small.render("▶  ENTER HERE  ◀", True, (220, 255, 180))
+            surface.blit(lbl, (cx - lbl.get_width() // 2, cy + 60))
+
+    else:
+        # ── 포탈 닫힘 연출 ──
+        wait_secs = math.ceil(cycle_timer / 60)
+
+        # 어두운 모래빛 글로우
+        for gr, ga in [(55, 20), (42, 38), (30, 60)]:
+            gs = pygame.Surface((gr * 2 + 2, gr * 2 + 2), pygame.SRCALPHA)
+            pulse = 0.6 + 0.2 * math.sin(frame_count * 0.04)
+            pygame.draw.circle(gs, (90, 55, 20, int(ga * pulse)), (gr + 1, gr + 1), gr)
+            surface.blit(gs, (cx - gr - 1, cy - gr - 1))
+
+        # 느린 역회전 점들 (희미)
+        num_dots = 12
+        for i in range(num_dots):
+            da = (frame_count * 0.012) + i * (math.pi * 2 / num_dots)
+            dx = cx + math.cos(da) * 38
+            dy = cy + math.sin(da) * 38
+            ds = pygame.Surface((8, 8), pygame.SRCALPHA)
+            pygame.draw.circle(ds, (130, 85, 40, 110), (4, 4), 3)
+            surface.blit(ds, (int(dx) - 4, int(dy) - 4))
+
+        # 균열 효과 (X자 선)
+        crack_alpha = 160 + int(40 * math.sin(frame_count * 0.08))
+        crs = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        for angle_offset in [0.3, -0.3, 1.0, -1.0]:
+            a = angle_offset
+            pygame.draw.line(crs, (60, 35, 15, crack_alpha),
+                             (int(cx + math.cos(a) * 10), int(cy + math.sin(a) * 10)),
+                             (int(cx + math.cos(a) * 22), int(cy + math.sin(a) * 22)), 2)
+        surface.blit(crs, (0, 0))
+
+        # 어두운 코어
+        pygame.draw.circle(surface, (50, 30, 10), (cx, cy), 18)
+        pygame.draw.circle(surface, (70, 45, 20), (cx, cy), 11)
+
+        # 카운트다운 숫자
+        cd_surf = font_en_big.render(str(wait_secs), True, (220, 150, 50))
+        surface.blit(cd_surf, (cx - cd_surf.get_width() // 2, cy - cd_surf.get_height() // 2))
+
+        # "PORTAL SEALED" 라벨
+        lbl = font_en_small.render("PORTAL SEALED", True, (160, 95, 35))
+        surface.blit(lbl, (cx - lbl.get_width() // 2, cy + 58))
 
 
 def check_barrier_collision(x, y, radius):
@@ -448,7 +596,7 @@ def draw_barriers(surface, offset=(0, 0)):
             surface.blit(obs['image'], (obs['rect'].x + offset[0], obs['rect'].y + offset[1]))
 
 
-def create_random_obstacles():
+def create_random_obstacles(exit_x=WIDTH // 2, exit_y=HEIGHT // 2):
     obs_list = []
     cols, rows = 4, 3
     section_w = WIDTH // cols
@@ -484,7 +632,7 @@ def create_random_obstacles():
                     for i in range(2):
                         for j in range(2):
                             temp_group.append({'image': current_sand, 'rect': pygame.Rect(base_x + i * img_w, base_y + j * img_h, img_w, img_h)})
-                exit_rect = pygame.Rect(WIDTH // 2 - 80, HEIGHT // 2 - 80, 160, 160)
+                exit_rect = pygame.Rect(exit_x - 80, exit_y - 80, 160, 160)
                 if not any(new['rect'].colliderect(exit_rect) for new in temp_group):
                     if not any(any(new['rect'].inflate(20, 20).colliderect(ex['rect']) for ex in obs_list) for new in temp_group):
                         obs_list.extend(temp_group)
@@ -492,8 +640,21 @@ def create_random_obstacles():
     return obs_list
 
 
+# ─── 랜덤 탈출구 위치 생성 ───
+def get_random_exit_pos(obs_list=None):
+    """장애물과 겹치지 않는 랜덤 탈출구 위치 반환"""
+    for _ in range(300):
+        x = random.randint(150, WIDTH - 120)
+        y = random.randint(BARRIER_HEIGHT + 80, HEIGHT - BARRIER_HEIGHT - 80)
+        rect = pygame.Rect(x - 80, y - 80, 160, 160)
+        if obs_list is None or not any(obs['rect'].colliderect(rect) for obs in obs_list):
+            return x, y
+    return WIDTH // 2, HEIGHT // 2  # fallback
+
+
 # ─── 초기화 ───
-obstacles = create_random_obstacles()
+exit_x, exit_y = get_random_exit_pos()
+obstacles = create_random_obstacles(exit_x, exit_y)
 snake = Snake()
 foods = [Food(WHITE, 5), Food(YELLOW, 15), Food(RED, -20)]
 purple_food = Food(ORANGE_ITEM, 30)
@@ -523,6 +684,18 @@ reds_eaten = 0              # 총 빨간 먹이 수
 ghost_uses = 0              # 고스트 사용 횟수
 
 screen_flash = 0            # 화면 플래시 (프레임)
+is_paused = False           # 일시정지
+yoyo_warning_played = False # 요요 경고음 중복 방지
+milestone_flash_timer = 0   # 마일스톤 테두리 플래시
+milestone_flash_color = (255, 220, 60)
+lulu_announce_timer = 0     # 루루 등장 예고 타이머
+
+# ─── 탈출구 개폐 사이클 ───
+EXIT_OPEN_DURATION  = 300   # 열림 유지 시간 (5초)
+EXIT_CLOSE_DURATION = 300   # 닫힘 유지 시간 (5초)
+exit_is_open      = False
+exit_cycle_timer  = 0
+exit_announced    = False   # 600점 달성 시 최초 안내 여부
 
 
 # ─── 메인 루프 ───
@@ -544,13 +717,20 @@ while running:
                 else:
                     running = False
 
+            # P키 일시정지 (게임 중)
+            if event.key == pygame.K_p and scene == GAME:
+                is_paused = not is_paused
+
             # 타이틀 메뉴 입력
             if scene == TITLE and title_sub == TITLE_MENU:
                 if event.key == pygame.K_w:
                     menu_index = (menu_index - 1) % len(menu_items)
+                    if choice_sound: choice_sound.play()
                 elif event.key == pygame.K_s:
                     menu_index = (menu_index + 1) % len(menu_items)
+                    if choice_sound: choice_sound.play()
                 elif event.key == pygame.K_RETURN:
+                    if choice_sound: choice_sound.play()
                     if menu_index == 0:
                         scene = GAME
                     elif menu_index == 1:
@@ -562,7 +742,9 @@ while running:
                     title_sub = TITLE_MENU
 
             elif scene in [SUCCESS, FAILURE] and event.key == pygame.K_r:
-                obstacles = create_random_obstacles()
+                obstacles = create_random_obstacles(exit_x, exit_y)
+                exit_x, exit_y = get_random_exit_pos(obstacles)
+                obstacles = create_random_obstacles(exit_x, exit_y)
                 snake.reset()
                 foods = [Food(WHITE, 5), Food(YELLOW, 15), Food(RED, -20)]
                 purple_food = Food(ORANGE_ITEM, 30)
@@ -587,6 +769,13 @@ while running:
                 reds_eaten = 0
                 ghost_uses = 0
                 screen_flash = 0
+                is_paused = False
+                yoyo_warning_played = False
+                milestone_flash_timer = 0
+                lulu_announce_timer = 0
+                exit_is_open = False
+                exit_cycle_timer = 0
+                exit_announced = False
 
     # ══════════════════════════════════════
     #  타이틀 화면
@@ -639,21 +828,22 @@ while running:
                 ("[ 조작키 ]", (120, 60, 10), [
                     "A / D  :  왼쪽 / 오른쪽 방향 전환",
                     "Space  :  유령 모드 발동 (장애물 통과, 쿨다운 있음)",
+                    "P  :  일시정지 / 재개",
                 ]),
                 ("[ 먹이 종류 ]", (120, 60, 10), [
                     "초록 (+5)  /  노란 (+15)  :  몸 길이 감소, 콤보 가능",
                     "주황 (+30)  :  타이머 한정 등장",
                     "★ 별 (+50)  :  150 / 300 / 450점 달성 시 한정 등장!",
-                    "빨간 (-20)  :  몸 길이 증가  (3연속 섭취 시 데빌 보너스 +80!)",
+                    "지렁이 (-20)  :  몸 길이 증가  (3연속 섭취 시 데빌 보너스 +80!)",
                 ]),
                 ("[ 콤보 시스템 ]", (120, 60, 10), [
-                    "연속으로 먹을수록 COMBO 보너스 추가!  (빨간 먹이는 콤보 리셋)",
+                    "연속으로 먹을수록 COMBO 보너스 추가!  (지렁이는 콤보 리셋)",
                     "COMBO x2: +5  /  x3: +10  /  x4: +15  (콤보당 +5 누적)",
                 ]),
                 ("[ 게임 규칙 ]", (120, 60, 10), [
                     "요요 게이지가 차면 -20 Pts & 몸 길이 증가 (경고 깜빡임 주의!)",
-                    "특수 동물: 70점마다 등장, 먹으면 THICK/THIN/FAST/SLOW/MAGNET 효과",
-                    "600 Pts 달성 후 중앙 출구 도달 시 클리어!",
+                    "루루: 70점마다 등장, 먹으면 THICK/THIN/FAST/SLOW/MAGNET 효과",
+                    "600 Pts 달성 후 화면 가장자리 화살표 따라 탈출구 도달 시 클리어!",
                     "점수 -40 이하 시 게임 오버",
                 ]),
             ]
@@ -675,12 +865,13 @@ while running:
     # ══════════════════════════════════════
     elif scene in [GAME, FAILURE, SUCCESS]:
 
-        if scene == GAME:
+        if scene == GAME and not is_paused:
             # 고스트 사용 감지
             prev_ghost = snake.is_ghost
-            snake.update()
+            snake.update(score)
             if not prev_ghost and snake.is_ghost:
                 ghost_uses += 1
+                if ghost_sound: ghost_sound.play()
 
             # 콤보 타이머 감소
             if combo_timer > 0:
@@ -697,6 +888,9 @@ while running:
                 if max_score_reached >= milestone and milestone not in milestones_triggered and not star_food.active:
                     milestones_triggered.add(milestone)
                     star_food.spawn()
+                    if star_on_sound: star_on_sound.play()
+                    milestone_flash_timer = 90
+                    milestone_flash_color = (255, 220, 60)
                     floating_texts.append(FloatingText(WIDTH // 2 - 60, HEIGHT // 2 - 40, "★ BONUS STAR!", STAR_COLOR))
                     spawn_particles(WIDTH // 2, HEIGHT // 2, STAR_COLOR, 15)
 
@@ -707,6 +901,10 @@ while running:
                 special_animal.respawn()
                 special_animal.active = True
                 last_spawn_tier = current_tier
+                lulu_announce_timer = 120
+                floating_texts.append(FloatingText(WIDTH // 2 - 50, HEIGHT // 2 - 70,
+                                                   "⚠ 루루 등장!", (255, 160, 60)))
+                spawn_particles(special_animal.x, special_animal.y, (255, 160, 60), 10)
 
             # 빨간 먹이 수 조정
             target_bugs = 1 + (score // 100)
@@ -722,10 +920,12 @@ while running:
             # 별 먹이 업데이트
             star_food.update()
 
-            # 자석 효과 (MAGNET): 가까운 먹이를 당김
+            # 자석 효과 (MAGNET): 일반 먹이를 당김
             if snake.effect_type == "MAGNET" and snake.effect_timer > 0:
                 all_mag_foods = foods + ([purple_food] if purple_food.active else []) + ([star_food] if star_food.active else [])
                 for f in all_mag_foods:
+                    if hasattr(f, 'color') and f.color == RED:
+                        continue  # 빨간 먹이는 제외
                     dx = snake.x - f.x
                     dy = snake.y - f.y
                     dist = math.hypot(dx, dy)
@@ -733,6 +933,26 @@ while running:
                         pull = min(3.5, 500 / (dist * dist + 1))
                         f.x = max(20, min(WIDTH - 20, f.x + (dx / dist) * pull))
                         f.y = max(BARRIER_HEIGHT + 10, min(HEIGHT - BARRIER_HEIGHT - 10, f.y + (dy / dist) * pull))
+
+            # 악성 자석 효과 (EVILMAG): 빨간 먹이를 뱀 머리 쪽으로 강하게 당김
+            if snake.effect_type == "EVILMAG" and snake.effect_timer > 0:
+                red_foods_list = [f for f in foods if f.color == RED]
+                for f in red_foods_list:
+                    dx = snake.x - f.x
+                    dy = snake.y - f.y
+                    dist = math.hypot(dx, dy)
+                    if 0 < dist < 350:
+                        pull = min(5.0, 800 / (dist * dist + 1))
+                        f.x = max(20, min(WIDTH - 20, f.x + (dx / dist) * pull))
+                        f.y = max(BARRIER_HEIGHT + 10, min(HEIGHT - BARRIER_HEIGHT - 10, f.y + (dy / dist) * pull))
+
+            # 점수 기반 몸 길이 자동 단축 + 속도 연동
+            # score 0 → length ~580 / score 600 → length ~30
+            score_target_length = max(30, 580 - max(0, score) * 0.917)
+            if snake.length > score_target_length:
+                # 점수가 높을수록 더 빠르게 단축되도록 수렴 속도 추가 강화 (즉각적인 반응성)
+                reduction_speed = 1.2 + (max(0, score) / 600) * 2.8
+                snake.length -= reduction_speed
 
             # 요요 패널티
             if snake.yoyo_timer >= snake.yoyo_max:
@@ -748,12 +968,35 @@ while running:
 
             # 특수 동물 충돌
             if special_animal.active and math.hypot(snake.x - special_animal.x, snake.y - special_animal.y) < snake.radius + 15:
-                if eat_sound: eat_sound.play()
+                if lulu_sound: lulu_sound.play()
+                lulu_announce_timer = 0
                 special_animal.active = False
-                effect = random.choice(["THICK", "THIN", "FAST", "SLOW", "MAGNET"])
-                snake.effect_type, snake.effect_timer = effect, 600
-                floating_texts.append(FloatingText(special_animal.x, special_animal.y, f"EFFECT: {effect}!", ORANGE_ITEM))
-                spawn_particles(special_animal.x, special_animal.y, ORANGE_ITEM, 12)
+                effect_pool    = ["THICK", "THIN", "FAST", "SLOW", "MAGNET", "SCORE80", "EVILMAG"]
+                effect_weights = [10,      10,     10,     10,     10,       2,         8]        # SCORE80 희귀, EVILMAG 저확률
+                effect = random.choices(effect_pool, weights=effect_weights, k=1)[0]
+                if effect == "SCORE80":
+                    # 즉시 +80점 지급 (지속 효과 없음)
+                    score += 80
+                    screen_flash = 10
+                    spawn_particles(special_animal.x, special_animal.y, (255, 230, 60), 22)
+                    floating_texts.append(FloatingText(special_animal.x, special_animal.y,
+                                                       "★ SCORE +80!", STAR_COLOR))
+                    floating_texts.append(FloatingText(special_animal.x, special_animal.y - 30,
+                                                       "JACKPOT!!", (255, 200, 50)))
+                    shake_timer = 8
+                elif effect == "EVILMAG":
+                    snake.effect_type, snake.effect_timer = effect, 450
+                    floating_texts.append(FloatingText(special_animal.x, special_animal.y,
+                                                       "EVIL MAGNET!", RED))
+                    floating_texts.append(FloatingText(special_animal.x, special_animal.y - 28,
+                                                       "지렁이가 몰려온다!", (255, 80, 80)))
+                    shake_timer = 6
+                    spawn_particles(special_animal.x, special_animal.y, (220, 40, 40), 16)
+                else:
+                    snake.effect_type, snake.effect_timer = effect, 450
+                    floating_texts.append(FloatingText(special_animal.x, special_animal.y,
+                                                       f"EFFECT: {effect}!", ORANGE_ITEM))
+                    spawn_particles(special_animal.x, special_animal.y, ORANGE_ITEM, 12)
 
             # 주황 먹이 타이머
             if purple_food.active:
@@ -785,7 +1028,7 @@ while running:
                     else:
                         if eat_sound: eat_sound.play()
                         score += f.value
-                        snake.length = max(10, snake.length - (f.value * 1.8))
+                        snake.length = max(10, snake.length - (f.value * 2.2))
                         # 콤보 처리
                         red_streak = 0
                         foods_eaten += 1
@@ -796,6 +1039,8 @@ while running:
                             score += bonus
                             floating_texts.append(FloatingText(eat_x, eat_y - 28,
                                                                f"COMBO x{combo_count}!  +{bonus}", (255, 210, 60)))
+                            combo_idx = min(combo_count - 2, len(combo_sounds) - 1)
+                            if combo_sounds: combo_sounds[combo_idx].play()
                         p_color = (100, 220, 100) if f.color == WHITE else (220, 220, 80) if f.color == YELLOW else (255, 165, 0)
                         spawn_particles(eat_x, eat_y, p_color, 10)
 
@@ -814,7 +1059,7 @@ while running:
 
             # ── 별 먹이 충돌 ──
             if star_food.active and math.hypot(snake.x - star_food.x, snake.y - star_food.y) < snake.radius + 16:
-                if eat_sound: eat_sound.play()
+                if star_sound: star_sound.play()
                 score += 50
                 foods_eaten += 1
                 star_food.active = False
@@ -828,11 +1073,48 @@ while running:
                     score += bonus
                     floating_texts.append(FloatingText(star_food.x, star_food.y - 28,
                                                        f"COMBO x{combo_count}!  +{bonus}", (255, 210, 60)))
+                    combo_idx = min(combo_count - 2, len(combo_sounds) - 1)
+                    if combo_sounds: combo_sounds[combo_idx].play()
 
-            # 클리어 조건
+            # 클리어 조건 — 포탈 개폐 사이클
             if score >= 600:
-                can_exit = True
-                if math.hypot(snake.x - WIDTH // 2, snake.y - HEIGHT // 2) < 20:
+                if not can_exit:
+                    # 600점 최초 달성: 포탈 등장 연출
+                    can_exit = True
+                    exit_is_open = True
+                    exit_cycle_timer = EXIT_OPEN_DURATION
+                    if not exit_announced:
+                        exit_announced = True
+                        screen_flash = 12
+                        if portal_open_sound: portal_open_sound.play()
+                        floating_texts.append(FloatingText(exit_x - 80, exit_y - 80,
+                                                           "PORTAL OPENED!", (255, 220, 60)))
+                        spawn_particles(exit_x, exit_y, (255, 210, 60), 30)
+                        shake_timer = 8
+
+                # 포탈 타이머 틱
+                exit_cycle_timer -= 1
+                if exit_cycle_timer <= 0:
+                    if exit_is_open:
+                        # 열림 → 닫힘
+                        exit_is_open = False
+                        exit_cycle_timer = EXIT_CLOSE_DURATION
+                        if portal_sealed_sound: portal_sealed_sound.play()
+                        floating_texts.append(FloatingText(exit_x - 70, exit_y - 50,
+                                                           "PORTAL SEALED!", RED))
+                        shake_timer = 6
+                    else:
+                        # 닫힘 → 열림
+                        exit_is_open = True
+                        exit_cycle_timer = EXIT_OPEN_DURATION
+                        screen_flash = 8
+                        if portal_open_sound: portal_open_sound.play()
+                        floating_texts.append(FloatingText(exit_x - 70, exit_y - 50,
+                                                           "PORTAL OPENED!", (255, 220, 60)))
+                        spawn_particles(exit_x, exit_y, (255, 210, 60), 18)
+
+                # 진입: 포탈이 열려 있을 때만 가능
+                if exit_is_open and math.hypot(snake.x - exit_x, snake.y - exit_y) < 20:
                     scene = SUCCESS
                     if not played_end_sound and complete_sound:
                         complete_sound.play(); played_end_sound = True
@@ -864,7 +1146,11 @@ while running:
             screen.blit(tint, (0, 0))
 
         if can_exit:
-            draw_exit(screen, frame_count, render_offset)
+            draw_exit(screen, frame_count, render_offset,
+                      is_open=exit_is_open,
+                      cycle_timer=exit_cycle_timer,
+                      max_timer=EXIT_OPEN_DURATION if exit_is_open else EXIT_CLOSE_DURATION,
+                      ex=exit_x, ey=exit_y)
 
         snake.draw(screen, render_offset, is_dead=(scene == FAILURE))
 
@@ -895,6 +1181,24 @@ while running:
             screen.blit(fl, (0, 0))
             screen_flash -= 1
 
+        # 마일스톤 테두리 플래시
+        if milestone_flash_timer > 0:
+            border_alpha = int(200 * milestone_flash_timer / 90)
+            bfl = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+            pygame.draw.rect(bfl, (*milestone_flash_color, border_alpha), (0, 0, WIDTH, HEIGHT), 18)
+            screen.blit(bfl, (0, 0))
+            milestone_flash_timer -= 1
+
+        # 루루 등장 예고 배너
+        if lulu_announce_timer > 0 and special_animal.active:
+            lulu_announce_timer -= 1
+            if lulu_announce_timer % 20 < 10:
+                la_surf = font_ko_mid.render("⚠  루루 등장!", True, (255, 140, 0))
+                la_bg = pygame.Surface((la_surf.get_width() + 16, la_surf.get_height() + 6), pygame.SRCALPHA)
+                la_bg.fill((0, 0, 0, 130))
+                screen.blit(la_bg, (WIDTH // 2 - la_surf.get_width() // 2 - 8, 108))
+                screen.blit(la_surf, (WIDTH // 2 - la_surf.get_width() // 2, 111))
+
         # ── UI ──
         screen.blit(font_en_mid.render(f"Score: {score} / 600", True, BLACK),
                     (20 + render_offset[0], 20 + render_offset[1]))
@@ -924,7 +1228,7 @@ while running:
         screen.blit(font_en_small.render("YOYO GAUGE", True, BLACK),
                     (bx + render_offset[0], by - 25 + render_offset[1]))
 
-        # 요요 위험 경고 깜빡임
+        # 요요 위험 경고 깜빡임 + 경고음
         if yr > 0.78 and frame_count % 28 < 14:
             warn_surf = font_ko_mid.render("⚠  요요 위험!", True, RED)
             ws = pygame.Surface((warn_surf.get_width() + 10, warn_surf.get_height() + 4), pygame.SRCALPHA)
@@ -933,6 +1237,11 @@ while running:
                               78 + render_offset[1]))
             screen.blit(warn_surf, (WIDTH // 2 - warn_surf.get_width() // 2 + render_offset[0],
                                     80 + render_offset[1]))
+        if yr > 0.78 and not yoyo_warning_played:
+            if warning_sound: warning_sound.play()
+            yoyo_warning_played = True
+        elif yr <= 0.70:
+            yoyo_warning_played = False
 
         # 고스트 게이지
         gx = bx - 190
@@ -947,6 +1256,60 @@ while running:
         # 고스트 사용 횟수
         screen.blit(font_en_small.render(f"(used: {ghost_uses}x)", True, (80, 100, 140)),
                     (gx + render_offset[0], by + bh + 4 + render_offset[1]))
+
+        # 고스트 남은 시간 표시
+        if snake.is_ghost and snake.ghost_timer > 0:
+            gt_secs = math.ceil(snake.ghost_timer / 60)
+            gt_surf = font_en_small.render(f"GHOST ACTIVE: {gt_secs}s", True, BLUE_GHOST)
+            gt_bg = pygame.Surface((gt_surf.get_width() + 10, gt_surf.get_height() + 4), pygame.SRCALPHA)
+            gt_bg.fill((0, 0, 0, 110))
+            screen.blit(gt_bg, (gx + render_offset[0] - 2, by + bh + 20 + render_offset[1]))
+            screen.blit(gt_surf, (gx + render_offset[0] + 3, by + bh + 22 + render_offset[1]))
+
+        # 탈출구 방향 화살표 (600점 달성 후)
+        if can_exit:
+            ax_center, ay_center = WIDTH // 2, HEIGHT // 2
+            angle_to_exit = math.atan2(exit_y - ay_center, exit_x - ax_center)
+            margin = 28
+            # 화면 가장자리 교차점 계산
+            cos_a, sin_a = math.cos(angle_to_exit), math.sin(angle_to_exit)
+            if cos_a != 0:
+                tx = (WIDTH - margin) if cos_a > 0 else margin
+                ty = ay_center + sin_a * (tx - ax_center) / cos_a
+            else:
+                ty = (HEIGHT - margin) if sin_a > 0 else margin
+                tx = ax_center
+            ty = max(margin, min(HEIGHT - margin, ty))
+            tx = max(margin, min(WIDTH - margin, tx))
+            # 화살표 깜빡임 (포탈 열림 시 밝게, 닫힘 시 어둡게)
+            arrow_alpha = 200 if exit_is_open else 100
+            arrow_col = (100, 255, 100) if exit_is_open else (160, 100, 60)
+            pulse_r = 14 + int(4 * math.sin(frame_count * 0.12))
+            arr_surf = pygame.Surface((pulse_r * 4, pulse_r * 4), pygame.SRCALPHA)
+            # 삼각형 화살표
+            tip = (pulse_r * 2 + math.cos(angle_to_exit) * pulse_r,
+                   pulse_r * 2 + math.sin(angle_to_exit) * pulse_r)
+            left = (pulse_r * 2 + math.cos(angle_to_exit + 2.4) * pulse_r * 0.7,
+                    pulse_r * 2 + math.sin(angle_to_exit + 2.4) * pulse_r * 0.7)
+            right = (pulse_r * 2 + math.cos(angle_to_exit - 2.4) * pulse_r * 0.7,
+                     pulse_r * 2 + math.sin(angle_to_exit - 2.4) * pulse_r * 0.7)
+            pygame.draw.polygon(arr_surf, (*arrow_col, arrow_alpha), [tip, left, right])
+            screen.blit(arr_surf, (int(tx) - pulse_r * 2, int(ty) - pulse_r * 2))
+            # "EXIT" 라벨
+            ex_lbl = font_en_small.render("EXIT", True, arrow_col)
+            ex_lbl.set_alpha(arrow_alpha)
+            screen.blit(ex_lbl, (int(tx) - ex_lbl.get_width() // 2,
+                                  int(ty) - pulse_r * 2 - 16))
+
+        # 일시정지 오버레이
+        if is_paused and scene == GAME:
+            p_overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+            p_overlay.fill((0, 0, 0, 140))
+            screen.blit(p_overlay, (0, 0))
+            p_title = font_en_big.render("PAUSE", True, WHITE)
+            screen.blit(p_title, (WIDTH // 2 - p_title.get_width() // 2, HEIGHT // 2 - 60))
+            p_hint = font_ko_mid.render("[ P - 재개 ]", True, (200, 200, 200))
+            screen.blit(p_hint, (WIDTH // 2 - p_hint.get_width() // 2, HEIGHT // 2 + 10))
 
         # ── 결과 화면 ──
         if scene in [SUCCESS, FAILURE]:
@@ -966,7 +1329,7 @@ while running:
 
             # 통계
             stat1 = font_ko_small.render(
-                f"먹이: {foods_eaten}개   빨간: {reds_eaten}개   고스트: {ghost_uses}회", True, (200, 200, 200))
+                f"먹이: {foods_eaten}개   지렁이: {reds_eaten}개   고스트: {ghost_uses}회", True, (200, 200, 200))
             screen.blit(stat1, (WIDTH // 2 - stat1.get_width() // 2, HEIGHT // 2 - 20))
 
             if session_high_score > 0:
