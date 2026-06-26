@@ -1,0 +1,25 @@
+{
+  "last_stage": 29,
+  "stages": {
+    "1": {
+      "best_stars": 3,
+      "best_score": 5
+    },
+    "2": {
+      "best_stars": 3,
+      "best_score": 8
+    },
+    "3": {
+      "best_stars": 1,
+      "best_score": 18
+    },
+    "27": {
+      "best_stars": 2,
+      "best_score": 25
+    },
+    "28": {
+      "best_stars": 1,
+      "best_score": 49
+    }
+  }
+}
