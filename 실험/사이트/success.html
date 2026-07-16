@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>주문 완료 — BUBL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..700;1,6..72,200..500&family=Noto+Serif+KR:wght@200;300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Pretendard Variable',Pretendard,sans-serif;background:#0B0907;color:#F0EAE0;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;}
+a{text-decoration:none;color:inherit;}
+
+@keyframes checkIn{
+  0%{stroke-dashoffset:100;opacity:0;}
+  30%{opacity:1;}
+  100%{stroke-dashoffset:0;opacity:1;}
+}
+@keyframes circleIn{
+  0%{stroke-dashoffset:314;opacity:0;}
+  20%{opacity:1;}
+  100%{stroke-dashoffset:0;}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1;}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0;}
+}
+
+.check-circle circle{
+  stroke-dasharray:314;stroke-dashoffset:314;
+  animation:circleIn 0.8s cubic-bezier(.16,1,.3,1) 0.2s both;
+}
+.check-circle path{
+  stroke-dasharray:100;stroke-dashoffset:100;
+  animation:checkIn 0.5s cubic-bezier(.16,1,.3,1) 0.8s both;
+}
+
+.fade-up{animation:fadeUp 0.7s cubic-bezier(.16,1,.3,1) both;}
+.d1{animation-delay:.3s;} .d2{animation-delay:.5s;} .d3{animation-delay:.7s;} .d4{animation-delay:.9s;}
+
+.confetti{
+  position:fixed;top:-20px;width:10px;height:10px;border-radius:2px;
+  animation:confettiFall linear both;pointer-events:none;z-index:1000;
+}
+
+.step-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;padding:24px;display:flex;gap:18px;align-items:flex-start;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav style="background:rgba(11,9,7,.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05);padding:0 clamp(20px,4vw,48px);">
+  <div style="max-width:800px;margin:0 auto;height:68px;display:flex;align-items:center;justify-content:space-between;">
+    <a href="index.html" style="font-family:'Newsreader',serif;font-size:26px;letter-spacing:.08em;color:#F0EAE0;font-weight:400;">BUBL</a>
+    <span style="font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:rgba(240,234,224,.3);">주문 완료</span>
+  </div>
+</nav>
+
+<!-- CONFETTI CANVAS (JS-generated) -->
+<div id="confettiContainer"></div>
+
+<!-- MAIN -->
+<main style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(48px,8vw,100px) clamp(20px,4vw,40px);">
+  <div style="max-width:680px;width:100%;text-align:center;">
+
+    <!-- Check icon -->
+    <div style="display:flex;justify-content:center;margin-bottom:36px;">
+      <svg class="check-circle" width="96" height="96" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" stroke="#7ABF9A" stroke-width="3" fill="none"/>
+        <path d="M30 50 L44 64 L70 37" stroke="#7ABF9A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </div>
+
+    <!-- Headline -->
+    <div class="fade-up d1">
+      <div style="font-size:11px;letter-spacing:.26em;text-transform:uppercase;font-weight:700;color:#7ABF9A;margin-bottom:18px;">Order Confirmed</div>
+      <h1 style="font-family:'Noto Serif KR',serif;font-weight:200;font-size:clamp(32px,5vw,52px);letter-spacing:-.02em;color:#F0EAE0;line-height:1.2;margin-bottom:20px;">주문이 완료되었습니다</h1>
+      <p style="font-size:16px;color:rgba(240,234,224,.45);line-height:1.75;font-weight:400;">BUBL이 맛있게 찾아갈게요. 주문 확인 메일이 곧 발송됩니다.</p>
+    </div>
+
+    <!-- Order info card -->
+    <div class="fade-up d2" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:28px 32px;margin:40px 0;text-align:left;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div>
+          <div style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:rgba(240,234,224,.25);margin-bottom:8px;">주문 번호</div>
+          <div id="orderIdDisp" style="font-family:'Newsreader',serif;font-size:17px;color:#F0EAE0;letter-spacing:.04em;">-</div>
+        </div>
+        <div>
+          <div style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:rgba(240,234,224,.25);margin-bottom:8px;">결제 금액</div>
+          <div id="amountDisp" style="font-family:'Newsreader',serif;font-size:22px;color:#C4696D;font-weight:400;">-</div>
+        </div>
+        <div>
+          <div style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:rgba(240,234,224,.25);margin-bottom:8px;">주문 상품</div>
+          <div id="itemNameDisp" style="font-size:14px;color:rgba(240,234,224,.7);">-</div>
+        </div>
+        <div>
+          <div style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:rgba(240,234,224,.25);margin-bottom:8px;">예상 배송일</div>
+          <div id="deliveryDisp" style="font-size:14px;color:rgba(240,234,224,.7);">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="fade-up d3" style="display:flex;flex-direction:column;gap:12px;margin-bottom:48px;text-align:left;">
+      <div class="step-card">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(196,105,109,.15);border:1px solid rgba(196,105,109,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Newsreader',serif;font-size:18px;color:#C4696D;">1</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#F0EAE0;margin-bottom:5px;">주문 확인 메일 발송</div>
+          <div style="font-size:13px;color:rgba(240,234,224,.4);line-height:1.6;">입력하신 이메일로 주문 확인서가 발송됩니다. (5분 이내)</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(122,191,154,.1);border:1px solid rgba(122,191,154,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Newsreader',serif;font-size:18px;color:#7ABF9A;">2</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#F0EAE0;margin-bottom:5px;">상품 포장 및 출고</div>
+          <div style="font-size:13px;color:rgba(240,234,224,.4);line-height:1.6;">영업일 기준 1~2일 내 출고됩니다. CJ대한통운으로 배송됩니다.</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Newsreader',serif;font-size:18px;color:rgba(240,234,224,.5);">3</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#F0EAE0;margin-bottom:5px;">배송 완료</div>
+          <div style="font-size:13px;color:rgba(240,234,224,.4);line-height:1.6;">영업일 기준 2~3일 내 배송됩니다. 배송 중 문자 알림을 보내드립니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTAs -->
+    <div class="fade-up d4" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a href="index.html" style="display:inline-flex;align-items:center;justify-content:center;background:#F7F2EA;color:#0B0907;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:17px 38px;border-radius:100px;transition:opacity .2s;" onmouseover="this.style.opacity='.86'" onmouseout="this.style.opacity='1'">쇼핑 계속하기</a>
+      <a href="support.html" style="display:inline-flex;align-items:center;justify-content:center;background:transparent;color:rgba(240,234,224,.6);border:1.5px solid rgba(240,234,224,.2);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:16px 32px;border-radius:100px;transition:border-color .2s,color .2s;" onmouseover="this.style.borderColor='rgba(240,234,224,.5)';this.style.color='#F0EAE0'" onmouseout="this.style.borderColor='rgba(240,234,224,.2)';this.style.color='rgba(240,234,224,.6)'">고객센터</a>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer style="background:#070503;padding:32px clamp(20px,5vw,72px);border-top:1px solid rgba(255,255,255,.04);">
+  <div style="max-width:800px;margin:0 auto;text-align:center;font-size:12px;color:rgba(240,234,224,.2);">
+    © 2026 BUBL · <a href="terms.html" style="color:inherit;">이용약관</a> · <a href="privacy.html" style="color:inherit;">개인정보처리방침</a>
+  </div>
+</footer>
+
+
+<script>
+/* Parse URL params */
+var params = new URLSearchParams(window.location.search);
+var orderId = params.get('orderId') || params.get('paymentKey') || 'BUBL'+Date.now();
+var amount  = params.get('amount') || '0';
+var itemName = params.get('name') || params.get('orderName') || 'BUBL 딸기 스파클링';
+var customer = params.get('customer') || '';
+
+/* Clean up cart */
+localStorage.removeItem('bubl_cart');
+
+/* Delivery date: 3 business days from now */
+function addBusinessDays(d, n){
+  var date = new Date(d);
+  var count = 0;
+  while(count < n){
+    date.setDate(date.getDate()+1);
+    if(date.getDay()!==0 && date.getDay()!==6) count++;
+  }
+  return date;
+}
+var delivDate = addBusinessDays(new Date(), 3);
+var delivStr = delivDate.toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'})+'까지';
+
+document.getElementById('orderIdDisp').textContent = orderId;
+document.getElementById('amountDisp').textContent = '₩'+parseInt(amount).toLocaleString('ko-KR');
+document.getElementById('itemNameDisp').textContent = decodeURIComponent(itemName);
+document.getElementById('deliveryDisp').textContent = delivStr;
+
+/* Confetti */
+var colors = ['#C4696D','#F0EAE0','#7ABF9A','#E8B97A','#A8D4F5'];
+for(var i=0;i<40;i++){
+  (function(i){
+    setTimeout(function(){
+      var c = document.createElement('div');
+      c.className='confetti';
+      c.style.left = (Math.random()*100)+'vw';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.width = (6+Math.random()*10)+'px';
+      c.style.height = (6+Math.random()*10)+'px';
+      c.style.animationDuration = (2+Math.random()*3)+'s';
+      c.style.animationDelay = '0s';
+      document.getElementById('confettiContainer').appendChild(c);
+      setTimeout(function(){ c.remove(); }, 5000);
+    }, i*60);
+  })(i);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BUBL — 설탕을 덜어낸, 가장 맑은 딸기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..700;1,6..72,200..500&family=Noto+Serif+KR:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+
+<style>
+/* ─────────────────────────────────────────
+   BASE
+───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Pretendard Variable', Pretendard, sans-serif;
+  background: #0B0907;
+  color: #1A1511;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ─────────────────────────────────────────
+   ANIMATIONS
+───────────────────────────────────────── */
+@keyframes floatCan {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-18px); }
+}
+@keyframes ticker {
+  to { transform: translateX(-50%); }
+}
+
+/* ─────────────────────────────────────────
+   SCROLL REVEAL
+───────────────────────────────────────── */
+.r {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 1s cubic-bezier(.16,1,.3,1),
+              transform 1s cubic-bezier(.16,1,.3,1);
+}
+.r.on  { opacity: 1; transform: translateY(0); }
+.r.d1  { transition-delay: .08s; }
+.r.d2  { transition-delay: .18s; }
+.r.d3  { transition-delay: .28s; }
+.r.d4  { transition-delay: .38s; }
+.r.d5  { transition-delay: .48s; }
+
+/* ─────────────────────────────────────────
+   BUTTONS
+───────────────────────────────────────── */
+.btn-light {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #F7F2EA; color: #0B0907;
+  font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 700;
+  padding: 17px 38px; border-radius: 100px;
+  transition: opacity .2s, transform .2s;
+  white-space: nowrap;
+}
+.btn-light:hover { opacity: .86; transform: translateY(-2px); }
+
+.btn-ghost-light {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; color: rgba(240,234,224,.75);
+  border: 1.5px solid rgba(240,234,224,.22);
+  font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 700;
+  padding: 16px 36px; border-radius: 100px;
+  transition: border-color .2s, color .2s, transform .2s;
+  white-space: nowrap;
+}
+.btn-ghost-light:hover { border-color: rgba(240,234,224,.6); color: #F7F2EA; transform: translateY(-2px); }
+
+.btn-dark {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #0B0907; color: #F7F2EA;
+  font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 700;
+  padding: 17px 38px; border-radius: 100px;
+  transition: opacity .2s, transform .2s;
+  white-space: nowrap;
+}
+.btn-dark:hover { opacity: .82; transform: translateY(-2px); }
+
+.btn-ghost-dark {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; color: rgba(26,21,17,.7);
+  border: 1.5px solid rgba(26,21,17,.2);
+  font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 700;
+  padding: 16px 36px; border-radius: 100px;
+  transition: border-color .2s, color .2s, transform .2s;
+  white-space: nowrap;
+}
+.btn-ghost-dark:hover { border-color: rgba(26,21,17,.5); color: #1A1511; transform: translateY(-2px); }
+
+/* ─────────────────────────────────────────
+   NAV LINKS (dark hero)
+───────────────────────────────────────── */
+.nl {
+  color: rgba(240,234,224,.45);
+  font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 600;
+  transition: color .2s;
+}
+.nl:hover { color: #F0EAE0; }
+
+/* ─────────────────────────────────────────
+   CARD (can image)
+───────────────────────────────────────── */
+.can-img { filter: drop-shadow(0 36px 64px rgba(0,0,0,.55)); }
+
+/* ─────────────────────────────────────────
+   PRICING CARD HOVER
+───────────────────────────────────────── */
+.price-card {
+  transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s;
+}
+.price-card:hover { transform: translateY(-6px); }
+
+/* ─────────────────────────────────────────
+   FOOTER NAV LINKS
+───────────────────────────────────────── */
+.fl {
+  font-size: 14px; color: rgba(240,234,224,.5); font-weight: 400;
+  transition: color .2s; cursor: pointer;
+}
+.fl:hover { color: #F0EAE0; }
+</style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     ① HERO  ·  DARK · FULL VIEWPORT
+═══════════════════════════════════════════════════ -->
+<section id="top" style="position:relative; min-height:100svh; background:#0B0907; display:flex; flex-direction:column; overflow:hidden;">
+
+  <!-- Announcement bar -->
+  <div style="background:rgba(255,255,255,.03); border-bottom:1px solid rgba(255,255,255,.05); padding:10px; text-align:center; font-size:11px; letter-spacing:.2em; font-weight:600; text-transform:uppercase; color:rgba(240,234,224,.3);">
+    무료 배송 &nbsp;·&nbsp; 첫 구매 10% &nbsp;·&nbsp; 언제든 해지 가능
+  </div>
+
+  <!-- Sticky nav -->
+  <nav style="position:sticky; top:0; z-index:50; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; padding:18px clamp(20px,5vw,72px); background:rgba(11,9,7,.85); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,.05);">
+    <div style="display:flex; gap:clamp(16px,2.8vw,40px);">
+      <a href="#product" class="nl">철학</a>
+      <a href="#why" class="nl">성분</a>
+      <a href="#reviews" class="nl">후기</a>
+    </div>
+    <a href="#top" style="font-family:'Newsreader',serif; font-weight:400; font-size:30px; letter-spacing:.1em; color:#F0EAE0; text-align:center; white-space:nowrap;">BUBL</a>
+    <div style="display:flex; justify-content:flex-end; align-items:center; gap:18px;">
+      <button onclick="openCart()" class="nl" style="cursor:pointer; background:none; border:none; padding:0; font:inherit; display:flex; align-items:center; gap:6px;">장바구니 (<span id="cartCount">0</span>)</button>
+      <a href="#pricing" class="btn-light" style="padding:11px 22px; font-size:11px;">구매하기</a>
+    </div>
+  </nav>
+
+  <!-- Ambient background glow -->
+  <div style="position:absolute; top:30%; left:50%; transform:translate(-50%,-50%); width:700px; height:700px; border-radius:50%; background:radial-gradient(circle, rgba(196,105,109,.1) 0%, transparent 65%); pointer-events:none;"></div>
+
+  <!-- Hero body -->
+  <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px clamp(20px,5vw,72px) 80px; text-align:center; position:relative; z-index:1;">
+
+    <!-- Eyebrow label -->
+    <div class="r" style="display:inline-flex; align-items:center; gap:10px; border:1px solid rgba(240,234,224,.1); color:rgba(240,234,224,.4); font-size:10.5px; letter-spacing:.26em; font-weight:600; padding:8px 20px; border-radius:100px; text-transform:uppercase; margin-bottom:36px;">
+      <span style="width:5px; height:5px; border-radius:50%; background:#C4696D; flex-shrink:0;"></span>
+      No. 01 — Strawberry Sparkling · 350ml
+    </div>
+
+    <!-- Can image with spotlight effect -->
+    <div class="r d1" style="position:relative; animation:floatCan 7s ease-in-out infinite;">
+      <!-- Warm oval behind can so olive photo bg blends into dark page -->
+      <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:440px; height:540px; background:radial-gradient(ellipse, #352820 0%, #1C130C 38%, transparent 68%); border-radius:50%; pointer-events:none;"></div>
+      <img src="Input/딸기.png" alt="BUBL 딸기 스파클링 350ml" class="can-img" style="width:480px; position:relative; z-index:1;">
+    </div>
+
+    <!-- Main headline -->
+    <h1 class="r d2" style="font-family:'Pretendard Variable',Pretendard,sans-serif; font-weight:200; font-size:clamp(44px,6.8vw,92px); line-height:1.2; letter-spacing:-0.025em; color:#F0EAE0; margin-top:44px;">
+      설탕을 덜어낸,<br>
+      가장&nbsp;<em style="font-family:'Newsreader',serif; font-style:italic; color:#C4696D; font-weight:300;">맑은</em>&nbsp;딸기.
+    </h1>
+
+    <!-- Sub copy -->
+    <p class="r d3" style="font-size:16px; line-height:1.9; color:rgba(240,234,224,.45); max-width:400px; margin-top:22px; font-weight:400;">
+      진짜 딸기 농축과즙과 식이섬유 9g.<br>그 외엔 아무것도 더하지 않았습니다.
+    </p>
+
+    <!-- CTA row -->
+    <div class="r d4" style="display:flex; align-items:center; gap:12px; margin-top:38px; flex-wrap:wrap; justify-content:center;">
+      <a href="#pricing" class="btn-light">지금 구매하기</a>
+      <a href="#product" class="btn-ghost-light">성분 살펴보기</a>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="r d5" style="position:absolute; bottom:32px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px; color:rgba(240,234,224,.2); font-size:10px; letter-spacing:.22em; text-transform:uppercase;">
+      <div style="width:1px; height:48px; background:linear-gradient(to bottom,transparent,rgba(240,234,224,.18));"></div>
+      Scroll
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════
+     ② TICKER  ·  DARK (continues)
+═══════════════════════════════════════════════════ -->
+<div style="background:#0B0907; border-top:1px solid rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.06); overflow:hidden; padding:17px 0;">
+  <div style="display:flex; width:max-content; animation:ticker 32s linear infinite; font-family:'Newsreader',serif; font-style:italic; font-size:20px; color:rgba(240,234,224,.22); letter-spacing:.05em; white-space:nowrap;">
+    <span style="padding:0 30px;">Real Strawberry</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">No Sugar</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">9g Fiber</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">Non-GMO</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">Just Clean</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">무설탕 · 5kcal</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">Real Strawberry</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">No Sugar</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">9g Fiber</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">Non-GMO</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">Just Clean</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+    <span style="padding:0 30px;">무설탕 · 5kcal</span><span style="color:rgba(196,105,109,.5); font-size:9px; vertical-align:middle;">✦</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     ③ GIANT NUMBERS  ·  CREAM
+═══════════════════════════════════════════════════ -->
+<section style="background:#F7F2EA; padding:0 clamp(20px,5vw,72px);">
+  <div style="max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); border-left:1px solid rgba(26,21,17,.08);">
+
+    <div class="r" style="padding:clamp(48px,7vw,88px) clamp(24px,3.5vw,48px); border-right:1px solid rgba(26,21,17,.08);">
+      <div style="font-family:'Newsreader',serif; font-size:clamp(60px,7.5vw,100px); line-height:1; font-weight:400; color:#1A1511; letter-spacing:-.02em;">0<span style="font-size:.38em; color:#B0A898; font-weight:300;">g</span></div>
+      <div style="font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; font-weight:700; color:#B0A898; margin-top:18px;">당류</div>
+    </div>
+
+    <div class="r d1" style="padding:clamp(48px,7vw,88px) clamp(24px,3.5vw,48px); border-right:1px solid rgba(26,21,17,.08);">
+      <div style="font-family:'Newsreader',serif; font-size:clamp(60px,7.5vw,100px); line-height:1; font-weight:400; color:#1A1511; letter-spacing:-.02em;">5<span style="font-size:.32em; color:#B0A898; font-weight:300;">kcal</span></div>
+      <div style="font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; font-weight:700; color:#B0A898; margin-top:18px;">칼로리</div>
+    </div>
+
+    <div class="r d2" style="padding:clamp(48px,7vw,88px) clamp(24px,3.5vw,48px); border-right:1px solid rgba(26,21,17,.08);">
+      <div style="font-family:'Newsreader',serif; font-size:clamp(60px,7.5vw,100px); line-height:1; font-weight:400; color:#C4696D; letter-spacing:-.02em;">9<span style="font-size:.38em; color:#D49496; font-weight:300;">g</span></div>
+      <div style="font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; font-weight:700; color:#B0A898; margin-top:18px;">식이섬유</div>
+    </div>
+
+    <div class="r d3" style="padding:clamp(48px,7vw,88px) clamp(24px,3.5vw,48px);">
+      <div style="font-family:'Newsreader',serif; font-style:italic; font-size:clamp(44px,5.8vw,78px); line-height:1; font-weight:300; color:#1A1511; letter-spacing:-.01em;">없음</div>
+      <div style="font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; font-weight:700; color:#B0A898; margin-top:18px;">감미료</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════
+     ④ PHILOSOPHY  ·  DARK · EDITORIAL
+═══════════════════════════════════════════════════ -->
+<section id="product" style="background:#0B0907; padding:clamp(80px,11vw,150px) clamp(20px,5vw,72px);">
+  <div style="max-width:1180px; margin:0 auto;">
+
+    <!-- Section header -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,5vw,80px); align-items:end; margin-bottom:clamp(52px,7vw,90px);">
+      <div class="r">
+        <div style="font-size:10.5px; letter-spacing:.26em; text-transform:uppercase; font-weight:700; color:#C4696D; margin-bottom:22px;">Our Philosophy</div>
+        <h2 style="font-family:'Pretendard Variable',Pretendard,sans-serif; font-weight:200; font-size:clamp(34px,4.8vw,62px); line-height:1.25; letter-spacing:-.02em; color:#F0EAE0;">더하기보다<br>빼기를 택했습니다.</h2>
+      </div>
+      <div class="r d1">
+        <p style="font-size:17px; line-height:1.9; color:rgba(240,234,224,.4); font-weight:400; max-width:420px;">꼭 필요한 것만 남기니, 맛은 더 맑아졌어요. 재료 하나하나에 이유가 있고, 빠진 것에도 이유가 있습니다.</p>
+      </div>
+    </div>
+
+    <!-- 4 feature cards -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:2px;">
+
+      <div class="r" style="background:#141109; padding:44px 36px; border-radius:4px;">
+        <div style="font-family:'Newsreader',serif; font-style:italic; font-size:52px; color:rgba(196,105,109,.18); line-height:1; margin-bottom:28px; font-weight:300;">01</div>
+        <div style="font-family:'Noto Serif KR',serif; font-weight:400; font-size:18px; color:#F0EAE0; margin-bottom:14px; letter-spacing:-.01em;">진짜 딸기 농축과즙</div>
+        <p style="font-size:14.5px; line-height:1.85; color:rgba(240,234,224,.38); font-weight:400;">인공 향료 대신 진짜 딸기에서 짜낸 과즙. 진하고 자연스러운 딸기 맛 그대로.</p>
+      </div>
+
+      <div class="r d1" style="background:#141109; padding:44px 36px; border-radius:4px;">
+        <div style="font-family:'Newsreader',serif; font-style:italic; font-size:52px; color:rgba(196,105,109,.18); line-height:1; margin-bottom:28px; font-weight:300;">02</div>
+        <div style="font-family:'Noto Serif KR',serif; font-weight:400; font-size:18px; color:#F0EAE0; margin-bottom:14px; letter-spacing:-.01em;">장이 편한 식이섬유</div>
+        <p style="font-size:14.5px; line-height:1.85; color:rgba(240,234,224,.38); font-weight:400;">한 캔에 식이섬유 9g. 톡 쏘는 청량함과 함께 속까지 편안하게.</p>
+      </div>
+
+      <div class="r d2" style="background:#141109; padding:44px 36px; border-radius:4px;">
+        <div style="font-family:'Newsreader',serif; font-style:italic; font-size:52px; color:rgba(196,105,109,.18); line-height:1; margin-bottom:28px; font-weight:300;">03</div>
+        <div style="font-family:'Noto Serif KR',serif; font-weight:400; font-size:18px; color:#F0EAE0; margin-bottom:14px; letter-spacing:-.01em;">무설탕 · 5kcal</div>
+        <p style="font-size:14.5px; line-height:1.85; color:rgba(240,234,224,.38); font-weight:400;">설탕 없이 5kcal만. 달콤한 딸기 탄산을 매일 마셔도 부담 없어요.</p>
+      </div>
+
+      <div class="r d3" style="background:#141109; padding:44px 36px; border-radius:4px;">
+        <div style="font-family:'Newsreader',serif; font-style:italic; font-size:52px; color:rgba(196,105,109,.18); line-height:1; margin-bottom:28px; font-weight:300;">04</div>
+        <div style="font-family:'Noto Serif KR',serif; font-weight:400; font-size:18px; color:#F0EAE0; margin-bottom:14px; letter-spacing:-.01em;">군더더기 없는 성분</div>
+        <p style="font-size:14.5px; line-height:1.85; color:rgba(240,234,224,.38); font-weight:400;">읽을 수 있는 재료만. 불필요한 첨가물은 처음부터 넣지 않았어요.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════
+     ⑤ INGREDIENTS  ·  CREAM · SPLIT
+═══════════════════════════════════════════════════ -->
+<section id="why" style="background:#F7F2EA; padding:clamp(80px,11vw,150px) clamp(20px,5vw,72px); position:relative; overflow:hidden;">
+
+  <!-- Decorative large background circle -->
+  <div style="position:absolute; right:-160px; top:50%; transform:translateY(-50%); width:560px; height:560px; border-radius:50%; border:1px solid rgba(26,21,17,.06); pointer-events:none;"></div>
+  <div style="position:absolute; right:-100px; top:50%; transform:translateY(-50%); width:380px; height:380px; border-radius:50%; border:1px solid rgba(26,21,17,.06); pointer-events:none;"></div>
+
+  <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:clamp(48px,8vw,112px); align-items:center; position:relative; z-index:1;">
+
+    <!-- Left: can image -->
+    <div class="r" style="display:flex; justify-content:center; align-items:center; position:relative;">
+      <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:380px; height:380px; border-radius:50%; background:radial-gradient(circle, rgba(196,105,109,.1) 0%, transparent 68%); pointer-events:none;"></div>
+      <div style="animation:floatCan 6.5s ease-in-out infinite; position:relative; z-index:1;">
+        <img src="Input/딸기.png" alt="BUBL 딸기 스파클링" class="can-img" style="width:360px; filter:drop-shadow(0 28px 50px rgba(26,21,17,.18));">
+      </div>
+    </div>
+
+    <!-- Right: text + ingredient rows -->
+    <div>
+      <div class="r" style="font-size:10.5px; letter-spacing:.26em; text-transform:uppercase; font-weight:700; color:#C4696D; margin-bottom:20px;">Inside the can</div>
+      <h2 class="r d1" style="font-family:'Pretendard Variable',Pretendard,sans-serif; font-weight:200; font-size:clamp(32px,4.4vw,56px); line-height:1.3; letter-spacing:-.02em; color:#1A1511; margin-bottom:40px;">좋은 건 더하고,<br>나쁜 건 비웠어요.</h2>
+
+      <!-- 담은 것 -->
+      <div class="r d2" style="font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; font-weight:700; color:#C4696D; margin-bottom:14px;">담은 것</div>
+      <div class="r d2" style="display:flex; flex-direction:column; gap:2px; margin-bottom:32px;">
+        <div style="display:flex; align-items:center; gap:14px; background:#EEE8DC; padding:16px 20px; border-radius:8px;">
+          <span style="width:5px; height:5px; border-radius:50%; background:#C4696D; flex-shrink:0;"></span>
+          <span style="font-size:15px; font-weight:500; color:#1A1511;">탄산수 · 딸기 농축과즙</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; background:#EEE8DC; padding:16px 20px; border-radius:8px;">
+          <span style="width:5px; height:5px; border-radius:50%; background:#C4696D; flex-shrink:0;"></span>
+          <span style="font-size:15px; font-weight:500; color:#1A1511;">식이섬유(치커리 뿌리) · 천연 딸기향</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; background:#EEE8DC; padding:16px 20px; border-radius:8px;">
+          <span style="width:5px; height:5px; border-radius:50%; background:#C4696D; flex-shrink:0;"></span>
+          <span style="font-size:15px; font-weight:500; color:#1A1511;">미네랄</span>
+        </div>
+      </div>
+
+      <!-- 비운 것 -->
+      <div class="r d3" style="font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; font-weight:700; color:#B0A898; margin-bottom:14px;">비운 것</div>
+      <div class="r d3" style="background:rgba(26,21,17,.04); border:1px solid rgba(26,21,17,.07); padding:18px 20px; border-radius:8px; font-size:15px; line-height:2; color:#B0A898; text-decoration:line-through; text-decoration-color:rgba(196,105,109,.4);">
+        설탕 &nbsp;·&nbsp; 인공감미료 &nbsp;·&nbsp; 인공색소 &nbsp;·&nbsp; 보존료 &nbsp;·&nbsp; 카페인
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════
+     ⑥ REVIEW  ·  DARK · CINEMATIC
+═══════════════════════════════════════════════════ -->
+<section id="reviews" style="background:#0B0907; padding:clamp(80px,12vw,160px) clamp(20px,5vw,72px); position:relative; overflow:hidden;">
+
+  <!-- Decorative large quote mark -->
+  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-56%); font-family:'Newsreader',serif; font-size:min(36vw,440px); line-height:1; color:rgba(255,255,255,.025); pointer-events:none; user-select:none; font-weight:200;">"</div>
+
+  <div style="max-width:900px; margin:0 auto; text-align:center; position:relative; z-index:1;">
+    <div class="r" style="font-size:10.5px; letter-spacing:.26em; text-transform:uppercase; font-weight:700; color:#C4696D; margin-bottom:32px;">In their words</div>
+
+    <!-- Star rating -->
+    <div class="r d1" style="display:flex; justify-content:center; gap:4px; margin-bottom:36px;">
+      <span style="color:#C4696D; font-size:20px;">★★★★★</span>
+    </div>
+
+    <blockquote class="r d2" style="font-family:'Noto Serif KR',serif; font-weight:200; font-size:clamp(26px,3.8vw,50px); line-height:1.65; letter-spacing:-.025em; color:#F0EAE0; text-wrap:balance;">
+      "진짜 딸기 맛이 나는데 설탕이 없다니.<br>탄산을 못 끊던 제게 가장 깨끗한 위로예요."
+    </blockquote>
+
+    <div class="r d3" style="margin-top:36px; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:rgba(240,234,224,.3); font-weight:600;">
+      김서연 &nbsp;·&nbsp; 후기 4.9 / 5.0 &nbsp;·&nbsp; 12,840개
+    </div>
+
+    <!-- Horizontal divider with dot -->
+    <div class="r d4" style="display:flex; align-items:center; gap:20px; margin:56px auto 0; max-width:600px;">
+      <div style="flex:1; height:1px; background:rgba(255,255,255,.07);"></div>
+      <span style="color:#C4696D; font-size:8px;">✦</span>
+      <div style="flex:1; height:1px; background:rgba(255,255,255,.07);"></div>
+    </div>
+
+    <!-- 3 mini reviews -->
+    <div class="r d5" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px; margin-top:1px; background:rgba(255,255,255,.05); border-radius:16px; overflow:hidden; margin-top:56px;">
+
+      <div style="background:#0F0C09; padding:30px 26px; text-align:left;">
+        <div style="color:#C4696D; font-size:13px; letter-spacing:2px; margin-bottom:14px;">★★★★★</div>
+        <p style="font-family:'Noto Serif KR',serif; font-weight:300; font-size:15px; line-height:1.75; color:rgba(240,234,224,.55); margin-bottom:20px;">회사 책상에 늘 둬요. 오후에 당 떨어질 때 한 캔이면 충분해요.</p>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:32px; height:32px; border-radius:50%; background:#C4696D; display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:12px; flex-shrink:0;">이</div>
+          <div>
+            <div style="font-size:12px; font-weight:700; color:rgba(240,234,224,.7);">이준호</div>
+            <div style="font-size:11px; color:rgba(240,234,224,.3);">@junho.daily</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#0F0C09; padding:30px 26px; text-align:left;">
+        <div style="color:#C4696D; font-size:13px; letter-spacing:2px; margin-bottom:14px;">★★★★★</div>
+        <p style="font-family:'Noto Serif KR',serif; font-weight:300; font-size:15px; line-height:1.75; color:rgba(240,234,224,.55); margin-bottom:20px;">탄산이 딱 좋아요. 딸기향이 인공적이지 않아서 질리지가 않네요.</p>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:32px; height:32px; border-radius:50%; background:#7A6A5A; display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:12px; flex-shrink:0;">박</div>
+          <div>
+            <div style="font-size:12px; font-weight:700; color:rgba(240,234,224,.7);">박지민</div>
+            <div style="font-size:11px; color:rgba(240,234,224,.3);">@jimin_fizz</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#0F0C09; padding:30px 26px; text-align:left;">
+        <div style="color:#C4696D; font-size:13px; letter-spacing:2px; margin-bottom:14px;">★★★★☆</div>
+        <p style="font-family:'Noto Serif KR',serif; font-weight:300; font-size:15px; line-height:1.75; color:rgba(240,234,224,.55); margin-bottom:20px;">성분표가 짧아서 안심돼요. 콜라 끊고 BUBL로 갈아탔습니다.</p>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:32px; height:32px; border-radius:50%; background:#4A4038; display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; font-size:12px; flex-shrink:0;">최</div>
+          <div>
+            <div style="font-size:12px; font-weight:700; color:rgba(240,234,224,.7);">최유진</div>
+            <div style="font-size:11px; color:rgba(240,234,224,.3);">@yujin.life</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════
+     ⑦ PRICING  ·  CREAM
+═══════════════════════════════════════════════════ -->
+<section id="pricing" style="background:#F7F2EA; padding:clamp(80px,11vw,150px) clamp(20px,5vw,72px);">
+  <div style="max-width:1080px; margin:0 auto;">
+
+    <!-- Header -->
+    <div style="text-align:center; max-width:520px; margin:0 auto clamp(56px,8vw,100px);">
+      <div class="r" style="font-size:10.5px; letter-spacing:.26em; text-transform:uppercase; font-weight:700; color:#C4696D; margin-bottom:20px;">Pricing</div>
+      <h2 class="r d1" style="font-family:'Noto Serif KR',serif; font-weight:300; font-size:clamp(34px,5vw,56px); line-height:1.15; letter-spacing:-.02em; color:#1A1511;">오늘부터, BUBL.</h2>
+      <p class="r d2" style="font-size:15px; color:#9A9183; margin-top:18px; font-weight:400; line-height:1.7;">무료 배송 · 언제든 해지 가능 · 첫 구매 만족 보장</p>
+    </div>
+
+    <!-- 3 cards, center one is elevated -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; align-items:center;">
+
+      <!-- 체험팩 -->
+      <div class="r price-card" style="background:#EEE8DC; border:1px solid rgba(26,21,17,.08); border-radius:24px; padding:40px 30px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+        <div style="font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; font-weight:700; color:#9A9183; margin-bottom:6px;">체험팩</div>
+        <div style="font-size:13px; color:#C4696D; font-weight:600; margin-bottom:26px;">처음이라면 가볍게 · 4캔</div>
+        <img src="Input/딸기.png" alt="BUBL" class="can-img" style="width:120px; filter:drop-shadow(0 16px 28px rgba(26,21,17,.18)); margin-bottom:28px;">
+        <div style="font-family:'Newsreader',serif; font-size:42px; color:#1A1511; font-weight:400; line-height:1;">₩9,900</div>
+        <div style="font-size:12px; color:#9A9183; margin-top:8px; letter-spacing:.06em; font-weight:500;">캔당 ₩2,475</div>
+        <button onclick="addToCart('trial')" class="btn-ghost-dark" style="margin-top:32px; width:100%; cursor:pointer; font:inherit;">담기</button>
+      </div>
+
+      <!-- 12캔 BEST — elevated -->
+      <div class="r d1 price-card" style="position:relative; background:#0B0907; border-radius:24px; padding:48px 30px; display:flex; flex-direction:column; align-items:center; text-align:center; box-shadow:0 28px 72px rgba(11,9,7,.32), 0 8px 24px rgba(11,9,7,.2); transform:translateY(-16px);">
+        <!-- Badge -->
+        <div style="position:absolute; top:-15px; left:50%; transform:translateX(-50%); background:#C4696D; color:#fff; font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; padding:7px 22px; border-radius:100px; white-space:nowrap; box-shadow:0 8px 20px rgba(196,105,109,.4);">🔥 가장 인기</div>
+        <div style="font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; font-weight:700; color:rgba(196,105,109,.7); margin-bottom:6px;">12캔 박스</div>
+        <div style="font-size:13px; color:rgba(240,234,224,.35); font-weight:600; margin-bottom:26px;">매일 한 캔, 딱 좋아요</div>
+        <img src="Input/딸기.png" alt="BUBL" class="can-img" style="width:132px; filter:drop-shadow(0 20px 40px rgba(0,0,0,.6)); margin-bottom:28px;">
+        <div style="font-family:'Newsreader',serif; font-size:46px; color:#F0EAE0; font-weight:400; line-height:1;">₩26,900</div>
+        <div style="font-size:12px; color:rgba(240,234,224,.35); margin-top:8px; letter-spacing:.06em; font-weight:500;">캔당 ₩2,241 · 9% 할인</div>
+        <button onclick="addToCart('box12')" class="btn-light" style="margin-top:32px; width:100%; cursor:pointer; font:inherit;">담기</button>
+      </div>
+
+      <!-- 정기구독 -->
+      <div class="r d2 price-card" style="background:#EEE8DC; border:1px solid rgba(26,21,17,.08); border-radius:24px; padding:40px 30px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+        <div style="font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; font-weight:700; color:#9A9183; margin-bottom:6px;">정기구독</div>
+        <div style="font-size:13px; color:#C4696D; font-weight:600; margin-bottom:26px;">매달 자동 배송 · 월 12캔</div>
+        <img src="Input/딸기.png" alt="BUBL" class="can-img" style="width:120px; filter:drop-shadow(0 16px 28px rgba(26,21,17,.18)); margin-bottom:28px;">
+        <div style="display:flex; align-items:baseline; gap:10px; justify-content:center;">
+          <span style="font-family:'Newsreader',serif; font-size:42px; color:#1A1511; font-weight:400; line-height:1;">₩22,900</span>
+          <span style="font-size:14px; color:#B0A898; text-decoration:line-through; text-decoration-color:rgba(196,105,109,.45); font-weight:500;">26,900</span>
+        </div>
+        <div style="font-size:12px; color:#C4696D; margin-top:8px; letter-spacing:.06em; font-weight:700;">15% 추가 할인</div>
+        <button onclick="addToCart('sub')" class="btn-dark" style="margin-top:32px; width:100%; cursor:pointer; font:inherit;">구독 시작</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════
+     ⑧ FOOTER  ·  DARK · MINIMAL
+═══════════════════════════════════════════════════ -->
+<footer style="background:#0B0907; padding:clamp(64px,9vw,108px) clamp(20px,5vw,72px) 40px; border-top:1px solid rgba(255,255,255,.05);">
+  <div style="max-width:1100px; margin:0 auto;">
+
+    <!-- Top row -->
+    <div style="display:grid; grid-template-columns:1.5fr 1fr 1fr 1.4fr; gap:44px; padding-bottom:56px; border-bottom:1px solid rgba(255,255,255,.06);">
+
+      <div>
+        <div style="font-family:'Newsreader',serif; font-size:36px; letter-spacing:.08em; color:#F0EAE0; font-weight:400; margin-bottom:18px;">BUBL</div>
+        <p style="font-size:14px; line-height:1.8; color:rgba(240,234,224,.35); max-width:210px; font-weight:400;">덜어낸 만큼 맑아지는 맛. 가장 깨끗한 딸기 탄산.</p>
+      </div>
+
+      <div>
+        <div style="font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:rgba(240,234,224,.25); margin-bottom:20px; font-weight:700;">제품</div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <a class="fl" href="#pricing">딸기 스파클링</a>
+          <a class="fl" href="#pricing">전체 라인업</a>
+          <button class="fl" onclick="addToCart('sub')" style="background:none; border:none; padding:0; font:inherit; cursor:pointer; text-align:left;">구독</button>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:rgba(240,234,224,.25); margin-bottom:20px; font-weight:700;">회사</div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <a class="fl" href="brand.html">브랜드 스토리</a>
+          <a class="fl" href="stores.html">매장 찾기</a>
+          <a class="fl" href="support.html">고객센터</a>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:rgba(240,234,224,.25); margin-bottom:20px; font-weight:700;">뉴스레터</div>
+        <p style="font-size:13px; color:rgba(240,234,224,.3); margin-bottom:18px; font-weight:400; line-height:1.65;">첫 구매 10% 쿠폰을 보내드려요.</p>
+        <div style="display:flex; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:100px; overflow:hidden; padding:4px 4px 4px 18px;">
+          <input placeholder="이메일 주소" style="flex:1; min-width:0; background:transparent; border:none; color:rgba(240,234,224,.7); font-size:13px; outline:none; font-family:inherit;">
+          <button style="background:#C4696D; border:none; color:#fff; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; padding:11px 18px; border-radius:100px; cursor:pointer; font-family:inherit; white-space:nowrap; transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">구독</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom row -->
+    <div style="padding-top:28px; display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; font-size:12px; letter-spacing:.06em; color:rgba(240,234,224,.2); font-weight:400;">
+      <span>© 2026 BUBL. All rights reserved.</span>
+      <span><a href="terms.html" style="color:inherit; transition:color .2s;" onmouseover="this.style.color='rgba(240,234,224,.5)'" onmouseout="this.style.color='inherit'">이용약관</a> &nbsp;·&nbsp; <a href="privacy.html" style="color:inherit; transition:color .2s;" onmouseover="this.style.color='rgba(240,234,224,.5)'" onmouseout="this.style.color='inherit'">개인정보처리방침</a></span>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════
+     CART DRAWER
+═══════════════════════════════════════════════════ -->
+<style>
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;}
+.cart-overlay.open{opacity:1;pointer-events:all;}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:#0F0C09;z-index:201;transform:translateX(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;border-left:1px solid rgba(255,255,255,.07);}
+.cart-drawer.open{transform:translateX(0);}
+.cart-item-enter{animation:slideIn .3s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+</style>
+
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:24px 28px;border-bottom:1px solid rgba(255,255,255,.07);">
+    <div style="font-family:'Newsreader',serif;font-size:22px;color:#F0EAE0;letter-spacing:.06em;">장바구니</div>
+    <button onclick="closeCart()" style="background:none;border:none;color:rgba(240,234,224,.5);font-size:22px;cursor:pointer;line-height:1;padding:4px;">×</button>
+  </div>
+  <!-- Items -->
+  <div id="cartItems" style="flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:16px;"></div>
+  <!-- Empty state -->
+  <div id="cartEmpty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(240,234,224,.25);padding:40px;text-align:center;">
+    <div style="font-family:'Newsreader',serif;font-style:italic;font-size:48px;margin-bottom:16px;opacity:.3;">∅</div>
+    <div style="font-size:14px;line-height:1.7;">장바구니가 비어 있어요.<br>마음에 드는 상품을 담아보세요.</div>
+  </div>
+  <!-- Footer -->
+  <div id="cartFooter" style="padding:24px 28px;border-top:1px solid rgba(255,255,255,.07);display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;">
+      <span style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(240,234,224,.4);font-weight:600;">합계</span>
+      <span id="cartTotal" style="font-family:'Newsreader',serif;font-size:28px;color:#F0EAE0;font-weight:400;"></span>
+    </div>
+    <button onclick="goCheckout()" style="width:100%;background:#F7F2EA;color:#0B0907;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:17px;border-radius:100px;border:none;cursor:pointer;font-family:inherit;transition:opacity .2s;" onmouseover="this.style.opacity='.86'" onmouseout="this.style.opacity='1'">결제하기 →</button>
+    <p style="text-align:center;font-size:12px;color:rgba(240,234,224,.25);margin-top:14px;">무료 배송 · 안전한 결제</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     CART + SCROLL REVEAL SCRIPTS
+═══════════════════════════════════════════════════ -->
+<script>
+/* ─── Products ─── */
+var PRODUCTS = {
+  trial: { id:'trial', name:'BUBL 딸기 체험팩', desc:'4캔', price:9900,  type:'일회성' },
+  box12: { id:'box12', name:'BUBL 딸기 12캔 박스', desc:'12캔', price:26900, type:'일회성' },
+  sub:   { id:'sub',   name:'BUBL 딸기 정기구독', desc:'월 12캔', price:22900, type:'정기구독' }
+};
+
+/* ─── Cart state ─── */
+function getCart(){ return JSON.parse(localStorage.getItem('bubl_cart')||'[]'); }
+function saveCart(c){ localStorage.setItem('bubl_cart', JSON.stringify(c)); }
+
+function addToCart(pid){
+  var cart = getCart();
+  var idx = cart.findIndex(function(x){ return x.id===pid; });
+  if(idx>-1){ cart[idx].qty++; } else { cart.push({id:pid, qty:1}); }
+  saveCart(cart);
+  updateCartUI();
+  openCart();
+}
+
+function removeFromCart(pid){
+  var cart = getCart().filter(function(x){ return x.id!==pid; });
+  saveCart(cart);
+  updateCartUI();
+}
+
+function changeQty(pid, delta){
+  var cart = getCart();
+  var idx = cart.findIndex(function(x){ return x.id===pid; });
+  if(idx===-1) return;
+  cart[idx].qty += delta;
+  if(cart[idx].qty<1) cart.splice(idx,1);
+  saveCart(cart);
+  updateCartUI();
+}
+
+function getTotal(){
+  return getCart().reduce(function(s,x){
+    var p = PRODUCTS[x.id]; return s + (p ? p.price*x.qty : 0);
+  },0);
+}
+
+function fmt(n){ return '₩'+n.toLocaleString(); }
+
+/* ─── Render cart ─── */
+function updateCartUI(){
+  var cart = getCart();
+  var total = getTotal();
+
+  /* nav count */
+  var cnt = cart.reduce(function(s,x){ return s+x.qty; },0);
+  document.getElementById('cartCount').textContent = cnt;
+
+  /* items */
+  var el = document.getElementById('cartItems');
+  var empty = document.getElementById('cartEmpty');
+  var footer = document.getElementById('cartFooter');
+  el.innerHTML='';
+
+  if(cart.length===0){
+    empty.style.display='flex';
+    footer.style.display='none';
+  } else {
+    empty.style.display='none';
+    footer.style.display='block';
+    cart.forEach(function(item){
+      var p = PRODUCTS[item.id];
+      if(!p) return;
+      var div = document.createElement('div');
+      div.className='cart-item-enter';
+      div.style.cssText='display:flex;gap:14px;align-items:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px 16px;';
+      div.innerHTML=
+        '<img src="Input/딸기.png" style="width:52px;height:auto;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4));">'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:13px;font-weight:600;color:#F0EAE0;">'+p.name+'</div>'+
+          '<div style="font-size:11px;color:rgba(240,234,224,.35);margin-top:3px;">'+p.desc+' · '+p.type+'</div>'+
+          '<div style="font-family:\'Newsreader\',serif;font-size:18px;color:#C4696D;margin-top:6px;">'+fmt(p.price)+'</div>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:0;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;">'+
+          '<button onclick="changeQty(\''+p.id+'\',-1)" style="background:none;border:none;color:rgba(240,234,224,.6);font-size:18px;width:34px;height:34px;cursor:pointer;line-height:1;">−</button>'+
+          '<span style="font-size:13px;font-weight:700;color:#F0EAE0;min-width:20px;text-align:center;">'+item.qty+'</span>'+
+          '<button onclick="changeQty(\''+p.id+'\',1)" style="background:none;border:none;color:rgba(240,234,224,.6);font-size:18px;width:34px;height:34px;cursor:pointer;line-height:1;">+</button>'+
+        '</div>';
+      el.appendChild(div);
+    });
+  }
+  document.getElementById('cartTotal').textContent = fmt(total);
+}
+
+function openCart(){
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartDrawer').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeCart(){
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.body.style.overflow='';
+}
+function goCheckout(){
+  if(getCart().length===0) return;
+  location.href='checkout.html';
+}
+
+/* ─── Init ─── */
+updateCartUI();
+
+/* ─── Scroll reveal ─── */
+(function(){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
+    });
+  },{ threshold:0.1, rootMargin:'0px 0px -48px 0px' });
+  document.querySelectorAll('.r').forEach(function(el){ io.observe(el); });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+{
+  "version_name": "hist_gradient_boosting_regressor-v2-20260622-130832-736363",
+  "model_type": "hist_gradient_boosting_regressor",
+  "feature_columns": [
+    "technical_score",
+    "volume_score",
+    "risk_score",
+    "final_score",
+    "rsi",
+    "volatility_20d",
+    "price_rows",
+    "historical_news_available",
+    "historical_financial_available",
+    "market_kr",
+    "market_us",
+    "recent_5d_return",
+    "recent_20d_return",
+    "ma5_gap",
+    "ma20_gap",
+    "volume_change_rate",
+    "atr_percent",
+    "log_trading_value",
+    "liquidity_percentile",
+    "relative_strength_5d",
+    "market_return_1d",
+    "market_return_20d",
+    "market_breadth",
+    "market_volatility",
+    "regime_bull",
+    "regime_bear",
+    "regime_sideways",
+    "regime_high_vol"
+  ],
+  "metrics": {
+    "dataset": {
+      "source": "historical_replay",
+      "total_historical_rows": 35942,
+      "usable_direction_rows": 35266,
+      "flat_excluded": 676,
+      "invalid_feature_snapshot_excluded": 0
+    },
+    "training": {
+      "samples": 21978
+    },
+    "calibration": {
+      "samples": 4520
+    },
+    "test": {
+      "samples": 8768,
+      "mean_absolute_error": 3.298148,
+      "baseline_mean_absolute_error": 3.238749
+    },
+    "candidate_criteria": {
+      "eligible": false,
+      "reasons": [
+        "MAE가 기준 모델보다 낮아야 함"
+      ],
+      "automatic_activation": false
+    },
+    "split_counts": {
+      "training": 21978,
+      "calibration": 4520,
+      "test": 8768
+    }
+  },
+  "status": "rejected",
+  "is_active": false
+}

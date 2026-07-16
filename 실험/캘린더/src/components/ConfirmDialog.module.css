@@ -1,0 +1,83 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(46, 42, 74, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn var(--transition-fast);
+}
+
+.dialog {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lifted);
+  padding: 24px 26px;
+  width: min(360px, calc(100vw - 48px));
+  animation: popIn var(--transition-base);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.message {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+  word-break: break-word;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.cancelButton {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: 9px 16px;
+  border-radius: 999px;
+  transition: background var(--transition-fast);
+}
+
+.cancelButton:hover {
+  background: var(--color-today-bg);
+}
+
+.confirmButton,
+.dangerButton {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 9px 20px;
+  border-radius: 999px;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.confirmButton {
+  background: var(--color-primary-hover);
+}
+
+.confirmButton:hover {
+  background: #5a7ce8;
+}
+
+.dangerButton {
+  background: var(--color-danger);
+}
+
+.dangerButton:hover {
+  background: #d84a6e;
+}
+
+.confirmButton:hover,
+.dangerButton:hover {
+  transform: translateY(-1px);
+}

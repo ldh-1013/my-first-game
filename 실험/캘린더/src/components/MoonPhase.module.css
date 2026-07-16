@@ -1,0 +1,5 @@
+.moon {
+  opacity: 0.33;
+  flex-shrink: 0;
+  pointer-events: none;
+}

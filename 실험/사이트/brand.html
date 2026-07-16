@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>브랜드 스토리 — BUBL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..700;1,6..72,200..500&family=Noto+Serif+KR:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{font-family:'Pretendard Variable',Pretendard,sans-serif;background:#F7F2EA;color:#1A1511;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+img{display:block;max-width:100%;}
+
+.fl{font-size:13px;color:rgba(240,234,224,.4);cursor:pointer;transition:color .2s;letter-spacing:.06em;}
+.fl:hover{color:rgba(240,234,224,.75);}
+
+.r{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);}
+.r.on{opacity:1;transform:translateY(0);}
+.r.d1{transition-delay:.1s;}.r.d2{transition-delay:.2s;}.r.d3{transition-delay:.32s;}.r.d4{transition-delay:.44s;}
+
+.value-card{background:#fff;border:1px solid rgba(26,21,17,.07);border-radius:20px;padding:32px 28px;transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s;}
+.value-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(26,21,17,.08);}
+
+.timeline-item{display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;}
+.timeline-year{font-family:'Newsreader',serif;font-size:42px;font-weight:200;color:rgba(26,21,17,.18);line-height:1;}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav style="position:sticky;top:0;z-index:100;background:rgba(247,242,234,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(26,21,17,.07);">
+  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,48px);height:68px;">
+    <a href="index.html" style="font-family:'Newsreader',serif;font-size:26px;letter-spacing:.08em;color:#1A1511;font-weight:400;">BUBL</a>
+    <div style="display:flex;align-items:center;gap:28px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;">
+      <a href="index.html#pricing" style="color:rgba(26,21,17,.45);transition:color .2s;" onmouseover="this.style.color='#1A1511'" onmouseout="this.style.color='rgba(26,21,17,.45)'">구매</a>
+      <a href="stores.html" style="color:rgba(26,21,17,.45);transition:color .2s;" onmouseover="this.style.color='#1A1511'" onmouseout="this.style.color='rgba(26,21,17,.45)'">매장</a>
+      <a href="support.html" style="color:rgba(26,21,17,.45);transition:color .2s;" onmouseover="this.style.color='#1A1511'" onmouseout="this.style.color='rgba(26,21,17,.45)'">고객센터</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════
+     HERO
+══════════════════════════════════ -->
+<section style="background:#0B0907;padding:clamp(80px,13vw,160px) clamp(20px,5vw,72px) clamp(80px,10vw,130px);overflow:hidden;position:relative;">
+  <!-- Subtle glow -->
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(196,105,109,.12) 0%,transparent 65%);pointer-events:none;"></div>
+
+  <div style="max-width:900px;margin:0 auto;text-align:center;position:relative;z-index:1;">
+    <div class="r" style="font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;font-weight:700;color:#C4696D;margin-bottom:28px;">Brand Story</div>
+    <h1 class="r d1" style="font-family:'Noto Serif KR',serif;font-weight:200;font-size:clamp(38px,6.5vw,82px);line-height:1.15;letter-spacing:-.025em;color:#F0EAE0;margin-bottom:32px;">
+      덜어낸 것들이<br>만들어낸 이야기
+    </h1>
+    <p class="r d2" style="font-size:clamp(16px,2vw,19px);line-height:1.8;color:rgba(240,234,224,.45);max-width:620px;margin:0 auto;font-weight:300;">
+      BUBL은 '덜어냄'의 철학에서 시작했습니다. 필요 없는 것을 하나씩 빼면 남는 것이 가장 본질적인 맛이라는 믿음으로.
+    </p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     ORIGIN STORY
+══════════════════════════════════ -->
+<section style="padding:clamp(72px,10vw,130px) clamp(20px,5vw,72px);">
+  <div style="max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,7vw,100px);align-items:center;">
+
+    <!-- Text -->
+    <div>
+      <div class="r" style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;font-weight:700;color:#C4696D;margin-bottom:22px;">The Beginning</div>
+      <h2 class="r d1" style="font-family:'Noto Serif KR',serif;font-weight:300;font-size:clamp(26px,3.5vw,38px);line-height:1.35;letter-spacing:-.02em;color:#1A1511;margin-bottom:28px;">달콤한 것들이 지쳐버렸을 때</h2>
+      <div class="r d2" style="font-size:15px;line-height:1.9;color:#5A5048;font-weight:400;display:flex;flex-direction:column;gap:18px;">
+        <p>2021년 여름, 세 명의 식품 과학자가 서울 연구실에 모였습니다. 그들이 마시던 탄산음료에서 공통점을 발견한 뒤였습니다. "왜 무언가를 마실 때마다 후회해야 할까?"</p>
+        <p>한국인이 연간 소비하는 설탕의 상당 부분이 음료에서 온다는 사실이 그들의 출발점이었습니다. 맛있어도 마신 뒤 개운하지 않은 음료, 성분표가 너무 긴 음료를 마시고 싶지 않았습니다.</p>
+        <p>그래서 반대로 만들기로 했습니다. 뺄 수 있는 건 모두 빼고, 딸기의 진짜 향만 남겨두는 것. BUBL은 그 질문의 답입니다.</p>
+      </div>
+    </div>
+
+    <!-- Visual: large text quote -->
+    <div class="r d2" style="background:#0B0907;border-radius:28px;padding:clamp(40px,5vw,64px) clamp(30px,4vw,50px);display:flex;align-items:center;justify-content:center;min-height:320px;">
+      <div style="text-align:center;">
+        <div style="font-family:'Newsreader',serif;font-style:italic;font-size:clamp(20px,3vw,30px);color:rgba(240,234,224,.7);line-height:1.7;font-weight:200;">"필요 없는 것을 하나씩 빼면<br>남는 것이 가장 본질적인 맛이다."</div>
+        <div style="margin-top:24px;font-size:11.5px;letter-spacing:.16em;color:rgba(240,234,224,.25);font-weight:600;">— BUBL 창업자 이민준</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     DARK PHILOSOPHY
+══════════════════════════════════ -->
+<section style="background:#0B0907;padding:clamp(72px,10vw,130px) clamp(20px,5vw,72px);">
+  <div style="max-width:1000px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:clamp(48px,7vw,90px);">
+      <div class="r" style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;font-weight:700;color:#C4696D;margin-bottom:18px;">Our Values</div>
+      <h2 class="r d1" style="font-family:'Noto Serif KR',serif;font-weight:200;font-size:clamp(28px,4vw,48px);line-height:1.25;color:#F0EAE0;">BUBL이 지키는 네 가지 약속</h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px;background:rgba(255,255,255,.04);border-radius:24px;overflow:hidden;">
+
+      <div class="r" style="background:#0F0C09;padding:40px 32px;">
+        <div style="font-family:'Newsreader',serif;font-size:56px;color:rgba(196,105,109,.3);line-height:1;margin-bottom:20px;font-weight:200;">∅</div>
+        <h3 style="font-size:16px;font-weight:700;color:#F0EAE0;margin-bottom:12px;">무설탕</h3>
+        <p style="font-size:14px;color:rgba(240,234,224,.4);line-height:1.75;">설탕은 물론, 인공 감미료도 없습니다. 단맛은 딸기 자체에서만 옵니다.</p>
+      </div>
+
+      <div class="r d1" style="background:#0F0C09;padding:40px 32px;">
+        <div style="font-family:'Newsreader',serif;font-size:56px;color:rgba(196,105,109,.3);line-height:1;margin-bottom:20px;font-weight:200;">◎</div>
+        <h3 style="font-size:16px;font-weight:700;color:#F0EAE0;margin-bottom:12px;">투명한 성분</h3>
+        <p style="font-size:14px;color:rgba(240,234,224,.4);line-height:1.75;">탄산수, 딸기 천연향, 미네랄. 성분이 단 세 가지입니다. 외울 수 있을 만큼.</p>
+      </div>
+
+      <div class="r d2" style="background:#0F0C09;padding:40px 32px;">
+        <div style="font-family:'Newsreader',serif;font-size:56px;color:rgba(196,105,109,.3);line-height:1;margin-bottom:20px;font-weight:200;">~</div>
+        <h3 style="font-size:16px;font-weight:700;color:#F0EAE0;margin-bottom:12px;">자연 탄산</h3>
+        <p style="font-size:14px;color:rgba(240,234,224,.4);line-height:1.75;">강하게 쏘지 않는 부드러운 탄산. 언제 마셔도 부담 없는 깊이를 추구합니다.</p>
+      </div>
+
+      <div class="r d3" style="background:#0F0C09;padding:40px 32px;">
+        <div style="font-family:'Newsreader',serif;font-size:56px;color:rgba(196,105,109,.3);line-height:1;margin-bottom:20px;font-weight:200;">↑</div>
+        <h3 style="font-size:16px;font-weight:700;color:#F0EAE0;margin-bottom:12px;">지속 가능성</h3>
+        <p style="font-size:14px;color:rgba(240,234,224,.4);line-height:1.75;">포장재의 80%를 재활용 소재로 사용합니다. 지구에도 부담을 덜기 위해.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     TIMELINE
+══════════════════════════════════ -->
+<section style="padding:clamp(72px,10vw,130px) clamp(20px,5vw,72px);">
+  <div style="max-width:720px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:clamp(48px,6vw,80px);">
+      <div class="r" style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;font-weight:700;color:#C4696D;margin-bottom:18px;">Timeline</div>
+      <h2 class="r d1" style="font-family:'Noto Serif KR',serif;font-weight:300;font-size:clamp(26px,4vw,42px);line-height:1.3;letter-spacing:-.02em;color:#1A1511;">BUBL의 걸음</h2>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:0;">
+
+      <div class="r timeline-item" style="padding-bottom:48px;border-left:1px solid rgba(26,21,17,.1);padding-left:32px;margin-left:40px;position:relative;">
+        <div style="position:absolute;left:-6px;top:6px;width:12px;height:12px;border-radius:50%;background:#C4696D;"></div>
+        <div>
+          <div style="font-family:'Newsreader',serif;font-size:36px;font-weight:200;color:rgba(26,21,17,.18);margin-bottom:12px;">2021</div>
+          <h3 style="font-size:16px;font-weight:700;color:#1A1511;margin-bottom:8px;">연구 시작</h3>
+          <p style="font-size:14px;color:#7A6A5A;line-height:1.75;">서울 마포구 소규모 연구실에서 설탕 없이 딸기 맛을 살리는 탄산 레시피 개발 시작. 187번의 시제품 끝에 첫 번째 프로토타입 완성.</p>
+        </div>
+      </div>
+
+      <div class="r d1 timeline-item" style="padding-bottom:48px;border-left:1px solid rgba(26,21,17,.1);padding-left:32px;margin-left:40px;position:relative;">
+        <div style="position:absolute;left:-6px;top:6px;width:12px;height:12px;border-radius:50%;background:#C4696D;"></div>
+        <div>
+          <div style="font-family:'Newsreader',serif;font-size:36px;font-weight:200;color:rgba(26,21,17,.18);margin-bottom:12px;">2022</div>
+          <h3 style="font-size:16px;font-weight:700;color:#1A1511;margin-bottom:8px;">법인 설립 & 첫 생산</h3>
+          <p style="font-size:14px;color:#7A6A5A;line-height:1.75;">(주)버블 법인 설립. 충청남도 논산 딸기 농장과 계약 재배 파트너십 체결. 첫 생산 배치 2,000캔 완판.</p>
+        </div>
+      </div>
+
+      <div class="r d2 timeline-item" style="padding-bottom:48px;border-left:1px solid rgba(26,21,17,.1);padding-left:32px;margin-left:40px;position:relative;">
+        <div style="position:absolute;left:-6px;top:6px;width:12px;height:12px;border-radius:50%;background:#C4696D;"></div>
+        <div>
+          <div style="font-family:'Newsreader',serif;font-size:36px;font-weight:200;color:rgba(26,21,17,.18);margin-bottom:12px;">2023</div>
+          <h3 style="font-size:16px;font-weight:700;color:#1A1511;margin-bottom:8px;">온라인 런칭 & 입점</h3>
+          <p style="font-size:14px;color:#7A6A5A;line-height:1.75;">공식 온라인 스토어 오픈과 동시에 신세계몰, 마켓컬리 입점. 출시 3개월 만에 누적 주문 1만 건 달성.</p>
+        </div>
+      </div>
+
+      <div class="r d3 timeline-item" style="padding-bottom:48px;border-left:1px solid rgba(26,21,17,.1);padding-left:32px;margin-left:40px;position:relative;">
+        <div style="position:absolute;left:-6px;top:6px;width:12px;height:12px;border-radius:50%;background:#C4696D;"></div>
+        <div>
+          <div style="font-family:'Newsreader',serif;font-size:36px;font-weight:200;color:rgba(26,21,17,.18);margin-bottom:12px;">2024</div>
+          <h3 style="font-size:16px;font-weight:700;color:#1A1511;margin-bottom:8px;">전국 편의점 입점</h3>
+          <p style="font-size:14px;color:#7A6A5A;line-height:1.75;">CU, GS25 전국 5,000개 지점 입점. 소비자 선정 '올해의 음료' 수상. 구독 서비스 회원 5,000명 돌파.</p>
+        </div>
+      </div>
+
+      <div class="r d4 timeline-item" style="padding-left:32px;margin-left:40px;position:relative;">
+        <div style="position:absolute;left:-6px;top:6px;width:12px;height:12px;border-radius:50%;background:rgba(196,105,109,.3);border:2px solid #C4696D;"></div>
+        <div>
+          <div style="font-family:'Newsreader',serif;font-size:36px;font-weight:200;color:#C4696D;margin-bottom:12px;">2026</div>
+          <h3 style="font-size:16px;font-weight:700;color:#1A1511;margin-bottom:8px;">지금, 여기</h3>
+          <p style="font-size:14px;color:#7A6A5A;line-height:1.75;">12,840명의 후기, 4.9점의 만족도. 그리고 아직 마셔보지 못한 분들을 위해 오늘도 만들고 있습니다.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     TEAM
+══════════════════════════════════ -->
+<section style="background:#0B0907;padding:clamp(72px,10vw,130px) clamp(20px,5vw,72px);">
+  <div style="max-width:900px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:clamp(48px,6vw,80px);">
+      <div class="r" style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;font-weight:700;color:#C4696D;margin-bottom:18px;">Founders</div>
+      <h2 class="r d1" style="font-family:'Noto Serif KR',serif;font-weight:200;font-size:clamp(26px,4vw,44px);color:#F0EAE0;">만든 사람들</h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;">
+
+      <div class="r" style="text-align:center;padding:36px 24px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;">
+        <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#C4696D,#A04A4E);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-family:'Newsreader',serif;font-size:28px;color:#fff;font-weight:400;">이</div>
+        <div style="font-size:16px;font-weight:700;color:#F0EAE0;margin-bottom:4px;">이민준</div>
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#C4696D;margin-bottom:16px;font-weight:600;">CEO & Co-founder</div>
+        <p style="font-size:13px;color:rgba(240,234,224,.4);line-height:1.75;">서울대 식품공학과 출신. 음료 업계 8년 경력 후 "진짜 깨끗한 음료"를 만들기 위해 창업.</p>
+      </div>
+
+      <div class="r d1" style="text-align:center;padding:36px 24px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;">
+        <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#7A6A5A,#5A4A3A);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-family:'Newsreader',serif;font-size:28px;color:#fff;font-weight:400;">김</div>
+        <div style="font-size:16px;font-weight:700;color:#F0EAE0;margin-bottom:4px;">김수아</div>
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#C4696D;margin-bottom:16px;font-weight:600;">COO & Co-founder</div>
+        <p style="font-size:13px;color:rgba(240,234,224,.4);line-height:1.75;">연세대 경영학과, KAIST 창업 MBA. 스타트업 운영 전문가로 BUBL의 성장을 이끌고 있습니다.</p>
+      </div>
+
+      <div class="r d2" style="text-align:center;padding:36px 24px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:20px;">
+        <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#4A6A5A,#3A5A4A);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-family:'Newsreader',serif;font-size:28px;color:#fff;font-weight:400;">박</div>
+        <div style="font-size:16px;font-weight:700;color:#F0EAE0;margin-bottom:4px;">박도현</div>
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#C4696D;margin-bottom:16px;font-weight:600;">CTO & Co-founder</div>
+        <p style="font-size:13px;color:rgba(240,234,224,.4);line-height:1.75;">고려대 화학공학과, 식품 향료 전문 박사. 딸기 천연향 추출 특허 보유. BUBL의 맛을 만드는 사람.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
+     CTA
+══════════════════════════════════ -->
+<section style="padding:clamp(72px,10vw,120px) clamp(20px,5vw,72px);text-align:center;">
+  <div style="max-width:540px;margin:0 auto;">
+    <h2 class="r" style="font-family:'Noto Serif KR',serif;font-weight:300;font-size:clamp(28px,4.5vw,48px);letter-spacing:-.02em;color:#1A1511;margin-bottom:24px;">오늘, 첫 캔을 열어보세요.</h2>
+    <p class="r d1" style="font-size:15px;color:#9A9183;margin-bottom:36px;line-height:1.75;">설탕 없이도 이렇게 맛있을 수 있다는 걸 직접 느껴보세요.</p>
+    <a class="r d2" href="index.html#pricing" style="display:inline-flex;align-items:center;gap:10px;background:#0B0907;color:#F7F2EA;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:18px 42px;border-radius:100px;transition:opacity .2s;" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+      지금 구매하기 →
+    </a>
+  </div>
+</section>
+
+
+<!-- ── FOOTER ── -->
+<footer style="background:#0B0907;padding:clamp(48px,7vw,80px) clamp(20px,5vw,72px) 36px;border-top:1px solid rgba(255,255,255,.05);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:44px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.06);">
+      <div>
+        <div style="font-family:'Newsreader',serif;font-size:32px;letter-spacing:.08em;color:#F0EAE0;margin-bottom:14px;">BUBL</div>
+        <p style="font-size:13px;color:rgba(240,234,224,.3);line-height:1.8;max-width:200px;">덜어낸 만큼 맑아지는 맛.</p>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(240,234,224,.2);margin-bottom:18px;font-weight:700;">제품</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <a class="fl" href="index.html#pricing">딸기 스파클링</a>
+          <a class="fl" href="index.html#pricing">구독</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(240,234,224,.2);margin-bottom:18px;font-weight:700;">회사</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <a class="fl" href="brand.html" style="color:rgba(240,234,224,.65);">브랜드 스토리</a>
+          <a class="fl" href="stores.html">매장 찾기</a>
+          <a class="fl" href="support.html">고객센터</a>
+        </div>
+      </div>
+    </div>
+    <div style="padding-top:24px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:12px;color:rgba(240,234,224,.2);">
+      <span>© 2026 BUBL (주)버블. All rights reserved.</span>
+      <span><a href="terms.html" style="color:inherit;">이용약관</a> &nbsp;·&nbsp; <a href="privacy.html" style="color:inherit;">개인정보처리방침</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var io = new IntersectionObserver(function(e){
+    e.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('on'); io.unobserve(x.target); }});
+  },{ threshold:0.08, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.r').forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>

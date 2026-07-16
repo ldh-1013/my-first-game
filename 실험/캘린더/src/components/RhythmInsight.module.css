@@ -1,0 +1,41 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  padding: 13px 18px;
+  animation: fadeSlideUp var(--transition-base);
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary-hover);
+  background: var(--color-today-bg);
+  padding: 2px 9px;
+  border-radius: 999px;
+  margin-right: 9px;
+  vertical-align: 1px;
+}

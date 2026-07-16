@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>고객센터 — BUBL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..700;1,6..72,200..500&family=Noto+Serif+KR:wght@200;300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{font-family:'Pretendard Variable',Pretendard,sans-serif;background:#F7F2EA;color:#1A1511;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+
+.fl{font-size:13px;color:rgba(240,234,224,.4);transition:color .2s;}
+.fl:hover{color:rgba(240,234,224,.75);}
+
+.r{opacity:0;transform:translateY(22px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1);}
+.r.on{opacity:1;transform:translateY(0);}
+.r.d1{transition-delay:.1s;}.r.d2{transition-delay:.2s;}.r.d3{transition-delay:.32s;}
+
+/* FAQ Accordion */
+.faq-item{background:#fff;border:1px solid rgba(26,21,17,.07);border-radius:14px;overflow:hidden;transition:box-shadow .2s;}
+.faq-item:hover{box-shadow:0 6px 24px rgba(26,21,17,.06);}
+.faq-q{width:100%;background:none;border:none;padding:22px 24px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-family:inherit;text-align:left;gap:16px;}
+.faq-q-text{font-size:15px;font-weight:600;color:#1A1511;line-height:1.5;}
+.faq-icon{width:28px;height:28px;border-radius:50%;background:rgba(26,21,17,.06);display:flex;align-items:center;justify-content:center;font-size:16px;color:#9A9183;flex-shrink:0;transition:transform .3s,background .2s;}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:#C4696D;color:#fff;}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.16,1,.3,1),padding .3s;}
+.faq-a-inner{padding:0 24px 22px;font-size:14px;color:#7A6A5A;line-height:1.85;}
+.faq-item.open .faq-a{max-height:600px;}
+
+/* Form */
+.inp{width:100%;background:#fff;border:1.5px solid rgba(26,21,17,.12);border-radius:10px;padding:14px 16px;font-size:14px;color:#1A1511;font-family:inherit;outline:none;transition:border-color .2s;}
+.inp:focus{border-color:#C4696D;}
+.inp::placeholder{color:rgba(26,21,17,.3);}
+.field-label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(26,21,17,.4);margin-bottom:8px;}
+textarea.inp{resize:vertical;min-height:130px;}
+
+/* Category tabs */
+.cat-btn{padding:9px 20px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.1em;cursor:pointer;border:1.5px solid rgba(26,21,17,.12);background:transparent;color:rgba(26,21,17,.5);font-family:inherit;transition:all .2s;}
+.cat-btn.selected{background:#0B0907;color:#F7F2EA;border-color:#0B0907;}
+.cat-btn:hover:not(.selected){border-color:rgba(26,21,17,.3);color:#1A1511;}
+
+.contact-card{background:#0B0907;border-radius:20px;padding:28px;transition:transform .25s cubic-bezier(.16,1,.3,1);}
+.contact-card:hover{transform:translateY(-4px);}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav style="position:sticky;top:0;z-index:100;background:rgba(247,242,234,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(26,21,17,.07);">
+  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,48px);height:68px;">
+    <a href="index.html" style="font-family:'Newsreader',serif;font-size:26px;letter-spacing:.08em;color:#1A1511;font-weight:400;">BUBL</a>
+    <div style="display:flex;align-items:center;gap:28px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;">
+      <a href="index.html#pricing" style="color:rgba(26,21,17,.45);transition:color .2s;" onmouseover="this.style.color='#1A1511'" onmouseout="this.style.color='rgba(26,21,17,.45)'">구매</a>
+      <a href="brand.html" style="color:rgba(26,21,17,.45);transition:color .2s;" onmouseover="this.style.color='#1A1511'" onmouseout="this.style.color='rgba(26,21,17,.45)'">브랜드</a>
+      <a href="stores.html" style="color:rgba(26,21,17,.45);transition:color .2s;" onmouseover="this.style.color='#1A1511'" onmouseout="this.style.color='rgba(26,21,17,.45)'">매장</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section style="background:#0B0907;padding:clamp(64px,10vw,120px) clamp(20px,5vw,72px);text-align:center;">
+  <div class="r" style="font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;font-weight:700;color:#C4696D;margin-bottom:22px;">Customer Service</div>
+  <h1 class="r d1" style="font-family:'Noto Serif KR',serif;font-weight:200;font-size:clamp(34px,5.5vw,66px);line-height:1.2;color:#F0EAE0;margin-bottom:20px;">고객센터</h1>
+  <p class="r d2" style="font-size:clamp(15px,2vw,18px);color:rgba(240,234,224,.4);max-width:520px;margin:0 auto 40px;line-height:1.8;font-weight:300;">
+    BUBL 팀이 빠르게 도와드립니다. 평균 응답 시간 2시간.
+  </p>
+
+  <!-- Quick contact -->
+  <div class="r d2" style="display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <a href="#contact-form" style="display:inline-flex;align-items:center;gap:8px;background:#F7F2EA;color:#0B0907;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;padding:14px 28px;border-radius:100px;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      문의하기
+    </a>
+    <a href="https://pf.kakao.com/_bubl" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);color:rgba(240,234,224,.75);border:1.5px solid rgba(255,255,255,.15);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;padding:13px 24px;border-radius:100px;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.13)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">
+      💬 카카오톡
+    </a>
+  </div>
+</section>
+
+
+<!-- ── CONTACT CHANNELS ── -->
+<section style="background:#F7F2EA;padding:clamp(56px,8vw,100px) clamp(20px,5vw,72px);">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:clamp(36px,5vw,60px);">
+      <div class="r" style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;font-weight:700;color:#C4696D;margin-bottom:14px;">Contact</div>
+      <h2 class="r d1" style="font-family:'Noto Serif KR',serif;font-weight:300;font-size:clamp(24px,3.5vw,38px);color:#1A1511;">연락 방법</h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+
+      <div class="r contact-card">
+        <div style="font-size:28px;margin-bottom:16px;">💬</div>
+        <div style="font-size:14px;font-weight:700;color:#F0EAE0;margin-bottom:8px;">카카오톡 채널</div>
+        <div style="font-size:13px;color:rgba(240,234,224,.4);line-height:1.7;margin-bottom:16px;">가장 빠른 응답. 평일 09:00–18:00 실시간 상담 가능.</div>
+        <a href="#" style="font-size:12px;color:#C4696D;font-weight:700;letter-spacing:.1em;">@BUBL_official →</a>
+      </div>
+
+      <div class="r d1 contact-card">
+        <div style="font-size:28px;margin-bottom:16px;">✉️</div>
+        <div style="font-size:14px;font-weight:700;color:#F0EAE0;margin-bottom:8px;">이메일</div>
+        <div style="font-size:13px;color:rgba(240,234,224,.4);line-height:1.7;margin-bottom:16px;">24시간 접수, 영업일 기준 1–2일 내 답변 드립니다.</div>
+        <a href="mailto:hello@bubl.kr" style="font-size:12px;color:#C4696D;font-weight:700;letter-spacing:.1em;">hello@bubl.kr →</a>
+      </div>
+
+      <div class="r d2 contact-card">
+        <div style="font-size:28px;margin-bottom:16px;">📞</div>
+        <div style="font-size:14px;font-weight:700;color:#F0EAE0;margin-bottom:8px;">전화 상담</div>
+        <div style="font-size:13px;color:rgba(240,234,224,.4);line-height:1.7;margin-bottom:16px;">평일 09:00–17:00. 점심 12:00–13:00 제외.</div>
+        <a href="tel:1588-0000" style="font-size:12px;color:#C4696D;font-weight:700;letter-spacing:.1em;">1588-0000 →</a>
+      </div>
+
+      <div class="r d3 contact-card">
+        <div style="font-size:28px;margin-bottom:16px;">📦</div>
+        <div style="font-size:14px;font-weight:700;color:#F0EAE0;margin-bottom:8px;">교환 · 반품</div>
+        <div style="font-size:13px;color:rgba(240,234,224,.4);line-height:1.7;margin-bottom:16px;">수령 후 7일 이내 신청. 불량품은 무료 회수 처리.</div>
+        <a href="#contact-form" style="font-size:12px;color:#C4696D;font-weight:700;letter-spacing:.1em;">양식으로 신청 →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ── FAQ ── -->
+<section style="background:#F7F2EA;padding:clamp(40px,6vw,80px) clamp(20px,5vw,72px);">
+  <div style="max-width:820px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:clamp(36px,5vw,56px);">
+      <div class="r" style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;font-weight:700;color:#C4696D;margin-bottom:14px;">FAQ</div>
+      <h2 class="r d1" style="font-family:'Noto Serif KR',serif;font-weight:300;font-size:clamp(24px,3.5vw,38px);color:#1A1511;">자주 묻는 질문</h2>
+    </div>
+
+    <!-- Category filter -->
+    <div class="r d1" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;">
+      <button class="cat-btn selected" onclick="filterFaq('all',this)">전체</button>
+      <button class="cat-btn" onclick="filterFaq('order',this)">주문 · 배송</button>
+      <button class="cat-btn" onclick="filterFaq('product',this)">제품</button>
+      <button class="cat-btn" onclick="filterFaq('sub',this)">구독</button>
+      <button class="cat-btn" onclick="filterFaq('return',this)">교환 · 환불</button>
+    </div>
+
+    <div id="faqList" style="display:flex;flex-direction:column;gap:10px;"></div>
+
+  </div>
+</section>
+
+
+<!-- ── CONTACT FORM ── -->
+<section id="contact-form" style="background:#0B0907;padding:clamp(64px,9vw,110px) clamp(20px,5vw,72px);">
+  <div style="max-width:720px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:clamp(40px,5vw,64px);">
+      <div class="r" style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;font-weight:700;color:#C4696D;margin-bottom:14px;">Contact Form</div>
+      <h2 class="r d1" style="font-family:'Noto Serif KR',serif;font-weight:200;font-size:clamp(26px,4vw,44px);color:#F0EAE0;margin-bottom:14px;">문의하기</h2>
+      <p class="r d2" style="font-size:14px;color:rgba(240,234,224,.4);line-height:1.7;">영업일 기준 1–2일 이내 이메일로 답변을 보내드립니다.</p>
+    </div>
+
+    <form id="contactForm" onsubmit="submitForm(event)" style="display:flex;flex-direction:column;gap:20px;">
+
+      <div class="r" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <label class="field-label" style="color:rgba(240,234,224,.35);" for="cName">이름 *</label>
+          <input id="cName" class="inp" type="text" placeholder="홍길동" required style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:#F0EAE0;">
+        </div>
+        <div>
+          <label class="field-label" style="color:rgba(240,234,224,.35);" for="cEmail">이메일 *</label>
+          <input id="cEmail" class="inp" type="email" placeholder="hello@example.com" required style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:#F0EAE0;">
+        </div>
+      </div>
+
+      <div class="r d1">
+        <label class="field-label" style="color:rgba(240,234,224,.35);" for="cPhone">휴대폰 번호</label>
+        <input id="cPhone" class="inp" type="tel" placeholder="010-0000-0000" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:#F0EAE0;">
+      </div>
+
+      <div class="r d1">
+        <label class="field-label" style="color:rgba(240,234,224,.35);">문의 유형 *</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:7px;padding:10px 16px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:100px;cursor:pointer;font-size:13px;color:rgba(240,234,224,.7);transition:border-color .2s;">
+            <input type="radio" name="cType" value="배송" style="accent-color:#C4696D;"> 배송 문의
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;padding:10px 16px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:100px;cursor:pointer;font-size:13px;color:rgba(240,234,224,.7);">
+            <input type="radio" name="cType" value="교환/반품" style="accent-color:#C4696D;"> 교환/반품
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;padding:10px 16px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:100px;cursor:pointer;font-size:13px;color:rgba(240,234,224,.7);">
+            <input type="radio" name="cType" value="구독" style="accent-color:#C4696D;"> 구독 문의
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;padding:10px 16px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:100px;cursor:pointer;font-size:13px;color:rgba(240,234,224,.7);">
+            <input type="radio" name="cType" value="제품" style="accent-color:#C4696D;"> 제품 문의
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;padding:10px 16px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:100px;cursor:pointer;font-size:13px;color:rgba(240,234,224,.7);">
+            <input type="radio" name="cType" value="기타" style="accent-color:#C4696D;" checked> 기타
+          </label>
+        </div>
+      </div>
+
+      <div class="r d2">
+        <label class="field-label" style="color:rgba(240,234,224,.35);" for="cMsg">문의 내용 *</label>
+        <textarea id="cMsg" class="inp" placeholder="문의하실 내용을 자세히 적어주세요." required style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:#F0EAE0;min-height:140px;"></textarea>
+      </div>
+
+      <div class="r d2">
+        <label class="field-label" style="color:rgba(240,234,224,.35);" for="cOrder">주문 번호 (선택)</label>
+        <input id="cOrder" class="inp" type="text" placeholder="BUBL1234567890" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:#F0EAE0;">
+      </div>
+
+      <div class="r d3" id="formSuccess" style="display:none;background:rgba(122,191,154,.1);border:1px solid rgba(122,191,154,.25);border-radius:12px;padding:18px 20px;text-align:center;">
+        <div style="font-size:24px;margin-bottom:8px;">✓</div>
+        <div style="font-size:14px;font-weight:600;color:#7ABF9A;margin-bottom:4px;">문의가 접수되었습니다</div>
+        <div style="font-size:13px;color:rgba(240,234,224,.4);">영업일 기준 1–2일 이내에 <span id="replyEmail" style="color:#C4696D;font-weight:600;"></span>으로 답변드리겠습니다.</div>
+      </div>
+
+      <button type="submit" class="r d3" style="background:#F7F2EA;color:#0B0907;font-family:inherit;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:18px;border-radius:100px;border:none;cursor:pointer;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+        문의 보내기 →
+      </button>
+
+    </form>
+  </div>
+</section>
+
+
+<!-- ── FOOTER ── -->
+<footer style="background:#070503;padding:clamp(40px,6vw,72px) clamp(20px,5vw,72px) 32px;border-top:1px solid rgba(255,255,255,.04);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.05);">
+      <div>
+        <div style="font-family:'Newsreader',serif;font-size:30px;letter-spacing:.08em;color:#F0EAE0;margin-bottom:10px;">BUBL</div>
+        <p style="font-size:13px;color:rgba(240,234,224,.3);">덜어낸 만큼 맑아지는 맛.</p>
+      </div>
+      <div style="display:flex;gap:48px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(240,234,224,.2);margin-bottom:14px;font-weight:700;">회사</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a class="fl" href="brand.html">브랜드 스토리</a>
+            <a class="fl" href="stores.html">매장 찾기</a>
+            <a class="fl" href="support.html" style="color:rgba(240,234,224,.65);">고객센터</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(240,234,224,.2);margin-bottom:14px;font-weight:700;">법적</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a class="fl" href="terms.html">이용약관</a>
+            <a class="fl" href="privacy.html">개인정보처리방침</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding-top:20px;font-size:12px;color:rgba(240,234,224,.2);">© 2026 BUBL (주)버블. All rights reserved.</div>
+  </div>
+</footer>
+
+
+<script>
+var FAQ_DATA = [
+  { cat:'order', q:'주문 후 언제 받을 수 있나요?', a:'영업일 기준 1~2일 내 출고되며, 출고 후 1~2일 내 배송 완료됩니다. 총 3~4 영업일 정도 예상해주세요. 배송 시작 시 CJ대한통운 운송장 번호가 문자로 발송됩니다.' },
+  { cat:'order', q:'도서 산간 지역도 배송 가능한가요?', a:'네, 가능합니다. 다만 제주도 및 도서 산간 지역은 추가 배송비(3,000원)가 발생할 수 있으며, 1~2일 더 소요될 수 있습니다.' },
+  { cat:'order', q:'주문 취소는 어떻게 하나요?', a:'출고 전에는 고객센터(1588-0000) 또는 카카오톡 채널(@BUBL_official)로 연락 주시면 무료 취소 가능합니다. 출고 이후에는 교환/반품 절차를 진행해 주세요.' },
+  { cat:'order', q:'묶음 배송이 가능한가요?', a:'동일 주소지로 같은 날 여러 건을 주문하셨다면 고객센터에 문의해 주세요. 가능한 경우 묶음 처리해 드립니다.' },
+  { cat:'product', q:'BUBL은 설탕이 정말 없나요?', a:'네, 맞습니다. BUBL에는 설탕(자당)을 포함해 인공 감미료, 스테비아 등 어떠한 감미료도 들어가지 않습니다. 성분표에는 탄산수, 딸기 천연향, 미네랄(칼슘, 마그네슘)만 표기되어 있습니다.' },
+  { cat:'product', q:'칼로리가 얼마나 되나요?', a:'1캔(250ml) 기준 5kcal 미만입니다. 무가당 음료이므로 식이요법 중이신 분들도 부담 없이 드실 수 있습니다.' },
+  { cat:'product', q:'카페인이 있나요?', a:'BUBL에는 카페인이 전혀 포함되어 있지 않습니다. 임산부, 어린이, 카페인에 민감한 분들도 안심하고 드실 수 있습니다.' },
+  { cat:'product', q:'알레르기 성분이 있나요?', a:'BUBL의 주요 알레르기 성분: 딸기 추출물(소량). 딸기 알레르기가 있으신 분들은 섭취에 주의해 주세요. 그 외 유제품, 글루텐, 견과류 성분은 포함되지 않습니다.' },
+  { cat:'sub', q:'정기구독이란 무엇인가요?', a:'매달 자동으로 BUBL 딸기 스파클링 12캔을 배송해 드리는 서비스입니다. 일반 구매 대비 15% 할인된 가격(₩22,900/월)으로 이용 가능하며, 언제든지 해지하거나 배송 주기를 변경할 수 있습니다.' },
+  { cat:'sub', q:'구독 해지는 어떻게 하나요?', a:'다음 배송 예정일 7일 전까지 고객센터에 해지 신청을 해주시면 위약금 없이 해지 가능합니다. 카카오톡 채널(@BUBL_official) 또는 이메일(hello@bubl.kr)로 연락해 주세요.' },
+  { cat:'sub', q:'구독 배송일을 변경할 수 있나요?', a:'네, 가능합니다. 마이페이지에서 직접 변경하시거나, 고객센터를 통해 원하시는 날짜로 조정해 드립니다. 배송 예정일 5일 전까지 요청 부탁드립니다.' },
+  { cat:'return', q:'제품이 파손된 채로 도착했어요.', a:'정말 죄송합니다. 사진 촬영 후 카카오톡(@BUBL_official) 또는 hello@bubl.kr로 보내주시면 즉시 재발송 또는 전액 환불 처리해 드립니다. 파손 제품은 반송하실 필요가 없습니다.' },
+  { cat:'return', q:'마음에 들지 않아 반품하고 싶어요.', a:'수령 후 7일 이내에 미개봉 제품에 한해 반품이 가능합니다. 반품 배송비(2,500원)는 고객 부담이며, 환불은 3~5 영업일 이내 처리됩니다. 단, 첫 구매 고객은 7일 이내 전액 환불 보장 혜택을 적용받으실 수 있습니다.' },
+  { cat:'return', q:'첫 구매 만족 보장이란 무엇인가요?', a:'처음 BUBL을 구매하셨다면, 어떤 이유로도 수령 후 7일 이내에 환불 신청 가능합니다. 별도 문의 없이 고객센터에 연락 주시면 전액 환불 처리해 드립니다. 제품은 반송하실 필요 없습니다.' },
+];
+
+function renderFaq(items){
+  var el = document.getElementById('faqList');
+  el.innerHTML = '';
+  items.forEach(function(f, i){
+    var div = document.createElement('div');
+    div.className = 'faq-item';
+    div.dataset.cat = f.cat;
+    div.innerHTML =
+      '<button class="faq-q" onclick="toggleFaq(this)">'+
+        '<span class="faq-q-text">'+f.q+'</span>'+
+        '<span class="faq-icon">+</span>'+
+      '</button>'+
+      '<div class="faq-a"><div class="faq-a-inner">'+f.a+'</div></div>';
+    el.appendChild(div);
+  });
+}
+
+function toggleFaq(btn){
+  var item = btn.parentElement;
+  var isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(x){ x.classList.remove('open'); });
+  if(!isOpen) item.classList.add('open');
+}
+
+function filterFaq(cat, btn){
+  document.querySelectorAll('.cat-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  var filtered = cat==='all' ? FAQ_DATA : FAQ_DATA.filter(function(f){ return f.cat===cat; });
+  renderFaq(filtered);
+}
+
+function submitForm(e){
+  e.preventDefault();
+  var email = document.getElementById('cEmail').value.trim();
+  document.getElementById('replyEmail').textContent = email;
+  document.getElementById('contactForm').querySelector('button[type=submit]').style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+  document.getElementById('formSuccess').classList.add('on');
+}
+
+renderFaq(FAQ_DATA);
+
+(function(){
+  var io = new IntersectionObserver(function(e){
+    e.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('on'); io.unobserve(x.target); }});
+  },{ threshold:0.06 });
+  document.querySelectorAll('.r').forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>

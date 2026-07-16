@@ -1,0 +1,28 @@
+:root {
+  --color-bg: #f5f6fe;
+  --color-surface: #ffffff;
+  --color-primary: #7c9eff;
+  --color-primary-hover: #6b8cf5;
+  --color-secondary: #c7b9ff;
+  --color-accent: #a5c4ff;
+  --color-today-bg: #e8eeff;
+  --color-text-primary: #2e2a4a;
+  --color-text-secondary: #8a87a6;
+  --color-border: #e4e1f7;
+  --color-work: #7c9eff;
+  --color-personal: #c7b9ff;
+  --color-important: #ff9eb5;
+  --color-idea: #9ee7c7;
+  --color-danger: #e75a7e;
+  --color-cell: #fbfbff;
+  --color-cell-hover: #f1f3fe;
+  --shadow-soft: 0 4px 20px rgba(124, 158, 255, 0.12);
+  --shadow-lifted: 0 10px 32px rgba(124, 158, 255, 0.24);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --font-body: 'Pretendard Variable', Pretendard, 'Inter', -apple-system, 'Segoe UI', sans-serif;
+  --font-numeric: 'Inter', 'Pretendard Variable', Pretendard, sans-serif;
+  --transition-fast: 160ms ease-out;
+  --transition-base: 240ms ease-out;
+}

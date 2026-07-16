@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>결제 — BUBL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..700;1,6..72,200..500&family=Noto+Serif+KR:wght@200;300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<script src="https://js.tosspayments.com/v2/base"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{font-family:'Pretendard Variable',Pretendard,sans-serif;background:#F7F2EA;color:#1A1511;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+
+.inp{
+  width:100%;background:#fff;border:1.5px solid rgba(26,21,17,.12);border-radius:10px;
+  padding:14px 16px;font-size:15px;color:#1A1511;font-family:inherit;
+  outline:none;transition:border-color .2s;
+}
+.inp:focus{border-color:#C4696D;}
+.inp::placeholder{color:rgba(26,21,17,.3);}
+
+.field-label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(26,21,17,.4);margin-bottom:8px;}
+
+@media(max-width:820px){
+  .checkout-grid{grid-template-columns:1fr !important;}
+  .order-sticky{position:static !important;order:-1;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav style="position:sticky;top:0;z-index:100;background:rgba(247,242,234,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(26,21,17,.07);">
+  <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,48px);height:68px;">
+    <a href="index.html" style="font-family:'Newsreader',serif;font-size:26px;letter-spacing:.08em;color:#1A1511;font-weight:400;">BUBL</a>
+    <a href="index.html" style="font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:rgba(26,21,17,.4);display:flex;align-items:center;gap:6px;transition:color .2s;" onmouseover="this.style.color='#1A1511'" onmouseout="this.style.color='rgba(26,21,17,.4)'">← 쇼핑 계속하기</a>
+  </div>
+</nav>
+
+<!-- ── BREADCRUMB ── -->
+<div style="max-width:1200px;margin:0 auto;padding:20px clamp(20px,4vw,48px) 0;">
+  <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(26,21,17,.35);letter-spacing:.06em;">
+    <a href="index.html" style="color:inherit;">홈</a>
+    <span>›</span>
+    <a href="index.html#pricing" style="color:inherit;">상품</a>
+    <span>›</span>
+    <span style="color:#1A1511;font-weight:600;">결제</span>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<main style="max-width:1200px;margin:0 auto;padding:clamp(28px,4vw,48px) clamp(20px,4vw,48px) 100px;">
+
+  <div class="checkout-grid" style="display:grid;grid-template-columns:1fr 400px;gap:40px;align-items:start;">
+
+    <!-- ═══ LEFT COLUMN ═══ -->
+    <div>
+      <h1 style="font-family:'Noto Serif KR',serif;font-weight:300;font-size:clamp(26px,3.5vw,36px);letter-spacing:-.015em;color:#1A1511;margin-bottom:36px;">결제 정보 입력</h1>
+
+      <!-- Delivery section -->
+      <div style="background:#fff;border:1px solid rgba(26,21,17,.08);border-radius:20px;padding:32px;margin-bottom:16px;">
+        <h2 style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(26,21,17,.4);margin-bottom:26px;">배송 정보</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div style="grid-column:1/-1">
+            <label class="field-label" for="name">받는 분 이름 *</label>
+            <input id="name" class="inp" type="text" placeholder="홍길동" autocomplete="name">
+          </div>
+          <div>
+            <label class="field-label" for="email">이메일 *</label>
+            <input id="email" class="inp" type="email" placeholder="hello@bubl.kr" autocomplete="email">
+          </div>
+          <div>
+            <label class="field-label" for="phone">휴대폰 번호 *</label>
+            <input id="phone" class="inp" type="tel" placeholder="010-0000-0000" autocomplete="tel">
+          </div>
+          <div style="grid-column:1/-1">
+            <label class="field-label" for="addr">배송 주소 *</label>
+            <input id="addr" class="inp" type="text" placeholder="서울특별시 강남구 테헤란로 123" style="margin-bottom:10px;" autocomplete="street-address">
+            <input id="addr2" class="inp" type="text" placeholder="상세 주소 (동/호수 등)" autocomplete="address-line2">
+          </div>
+          <div>
+            <label class="field-label" for="zip">우편번호</label>
+            <input id="zip" class="inp" type="text" placeholder="06236" autocomplete="postal-code">
+          </div>
+          <div>
+            <label class="field-label" for="delivery-req">배송 요청사항</label>
+            <input id="delivery-req" class="inp" type="text" placeholder="문 앞에 놓아 주세요">
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment widget -->
+      <div style="background:#fff;border:1px solid rgba(26,21,17,.08);border-radius:20px;padding:32px;margin-bottom:16px;">
+        <h2 style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(26,21,17,.4);margin-bottom:24px;">결제 수단</h2>
+        <div id="payment-method" style="min-height:120px;"></div>
+      </div>
+
+      <!-- Agreement -->
+      <div id="agreement-wrap" style="background:#fff;border:1px solid rgba(26,21,17,.08);border-radius:20px;padding:28px;margin-bottom:28px;">
+        <div id="agreement" style="min-height:60px;"></div>
+      </div>
+
+      <!-- CTA -->
+      <button id="payBtn" onclick="handlePayment()" style="width:100%;background:#0B0907;color:#F7F2EA;font-family:inherit;font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:20px;border-radius:100px;border:none;cursor:pointer;transition:opacity .2s,transform .15s;" onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'">
+        결제하기 →
+      </button>
+      <p style="text-align:center;font-size:11.5px;color:rgba(26,21,17,.3);margin-top:14px;line-height:1.6;">SSL 암호화 보안 결제 · Powered by Toss Payments</p>
+    </div>
+
+    <!-- ═══ RIGHT COLUMN: ORDER SUMMARY ═══ -->
+    <div class="order-sticky" style="position:sticky;top:90px;">
+      <div style="background:#0B0907;border-radius:24px;padding:32px;color:#F0EAE0;">
+        <h2 style="font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(240,234,224,.3);margin-bottom:24px;">주문 요약</h2>
+
+        <!-- Items from cart -->
+        <div id="orderItems" style="display:flex;flex-direction:column;gap:18px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.07);"></div>
+
+        <!-- Totals -->
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.07);">
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(240,234,224,.4);">
+            <span>상품 금액</span><span id="subtotalDisp">-</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(240,234,224,.4);">
+            <span>배송비</span><span style="color:#7ABF9A;font-weight:600;">무료</span>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px;">
+          <span style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(240,234,224,.3);">총 결제</span>
+          <span id="totalDisp" style="font-family:'Newsreader',serif;font-size:34px;color:#F0EAE0;font-weight:400;">-</span>
+        </div>
+
+        <!-- Guarantee -->
+        <div style="background:rgba(196,105,109,.1);border:1px solid rgba(196,105,109,.18);border-radius:12px;padding:16px;">
+          <div style="font-size:11.5px;font-weight:700;color:rgba(196,105,109,.95);margin-bottom:5px;">첫 구매 만족 보장</div>
+          <div style="font-size:12px;color:rgba(240,234,224,.4);line-height:1.65;">첫 구매 후 7일 이내 미만족 시 100% 환불을 보장합니다.</div>
+        </div>
+
+        <!-- Badges -->
+        <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border-radius:100px;padding:7px 14px;">
+            <span style="font-size:14px;">🔒</span>
+            <span style="font-size:11px;color:rgba(240,234,224,.4);font-weight:600;">보안 결제</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border-radius:100px;padding:7px 14px;">
+            <span style="font-size:14px;">🚚</span>
+            <span style="font-size:11px;color:rgba(240,234,224,.4);font-weight:600;">무료 배송</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+</main>
+
+
+<!-- ── FOOTER ── -->
+<footer style="background:#0B0907;padding:36px clamp(20px,5vw,72px);border-top:1px solid rgba(255,255,255,.05);">
+  <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;font-size:12px;color:rgba(240,234,224,.2);">
+    <span style="font-family:'Newsreader',serif;font-size:22px;color:rgba(240,234,224,.7);letter-spacing:.08em;">BUBL</span>
+    <span>© 2026 BUBL. All rights reserved. &nbsp;·&nbsp;
+      <a href="terms.html" style="color:inherit;">이용약관</a> &nbsp;·&nbsp;
+      <a href="privacy.html" style="color:inherit;">개인정보처리방침</a></span>
+  </div>
+</footer>
+
+
+<script>
+var PRODUCTS = {
+  trial:{ id:'trial', name:'BUBL 딸기 체험팩', desc:'4캔', price:9900  },
+  box12:{ id:'box12', name:'BUBL 딸기 12캔 박스', desc:'12캔', price:26900 },
+  sub:  { id:'sub',   name:'BUBL 딸기 정기구독', desc:'월 12캔 자동배송', price:22900 }
+};
+
+function fmt(n){ return '₩'+n.toLocaleString('ko-KR'); }
+function getCart(){ return JSON.parse(localStorage.getItem('bubl_cart')||'[]'); }
+
+/* Render order summary */
+var globalTotal = 0;
+(function(){
+  var cart = getCart();
+  if(!cart||cart.length===0){ location.href='index.html'; return; }
+  var container = document.getElementById('orderItems');
+  var total = 0;
+  cart.forEach(function(item){
+    var p = PRODUCTS[item.id]; if(!p) return;
+    var sub = p.price * item.qty; total += sub;
+    var d = document.createElement('div');
+    d.style.cssText = 'display:flex;gap:14px;align-items:center;';
+    d.innerHTML =
+      '<div style="position:relative;flex-shrink:0;">'+
+        '<img src="Input/딸기.png" style="width:50px;height:auto;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5));">'+
+        '<span style="position:absolute;top:-6px;right:-6px;background:#C4696D;color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;">'+item.qty+'</span>'+
+      '</div>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:13px;font-weight:600;color:#F0EAE0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+p.name+'</div>'+
+        '<div style="font-size:11px;color:rgba(240,234,224,.35);margin-top:3px;">'+p.desc+'</div>'+
+      '</div>'+
+      '<div style="font-family:\'Newsreader\',serif;font-size:18px;color:#C4696D;flex-shrink:0;">'+fmt(sub)+'</div>';
+    container.appendChild(d);
+  });
+  globalTotal = total;
+  document.getElementById('subtotalDisp').textContent = fmt(total);
+  document.getElementById('totalDisp').textContent = fmt(total);
+})();
+
+/* Toss Payments */
+var widgets = null;
+
+async function initToss(){
+  try {
+    var tp = TossPayments('test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq');
+    widgets = tp.widgets({ customerKey: TossPayments.ANONYMOUS });
+    await widgets.setAmount({ currency:'KRW', value: globalTotal });
+    await widgets.renderPaymentMethods({ selector:'#payment-method', variantKey:'DEFAULT' });
+    await widgets.renderAgreement({ selector:'#agreement', variantKey:'AGREEMENT' });
+  } catch(e) {
+    renderDemoPayment();
+  }
+}
+
+function renderDemoPayment(){
+  document.getElementById('payment-method').innerHTML =
+    '<div style="background:rgba(196,105,109,.07);border:1.5px solid rgba(196,105,109,.2);border-radius:12px;padding:18px;margin-bottom:20px;">'+
+      '<p style="font-size:12px;color:#C4696D;font-weight:700;margin-bottom:6px;">⚠️ 데모 모드 (로컬 파일)</p>'+
+      '<p style="font-size:12px;color:rgba(26,21,17,.5);line-height:1.7;">Toss Payments 위젯은 로컬 서버(Live Server 등)에서 실행 시 활성화됩니다.<br>지금은 데모 결제 화면으로 동작합니다.</p>'+
+    '</div>'+
+    '<div style="display:grid;gap:14px;">'+
+      '<div><label class="field-label">카드 번호</label><input class="inp" placeholder="4000-0000-0000-0002" value="4000-0000-0000-0002"></div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'+
+        '<div><label class="field-label">유효 기간</label><input class="inp" placeholder="MM/YY" value="12/26"></div>'+
+        '<div><label class="field-label">CVC</label><input class="inp" placeholder="000" value="123"></div>'+
+      '</div>'+
+      '<div><label class="field-label">카드 비밀번호 앞 2자리</label><input class="inp" type="password" placeholder="●●" maxlength="2" value="12"></div>'+
+    '</div>';
+  document.getElementById('agreement').innerHTML =
+    '<label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">'+
+      '<input type="checkbox" checked style="margin-top:2px;accent-color:#C4696D;width:16px;height:16px;flex-shrink:0;">'+
+      '<span style="font-size:13px;color:rgba(26,21,17,.6);line-height:1.65;">구매 조건 확인 및 결제 진행에 동의합니다. (<a href="terms.html" style="color:#C4696D;">이용약관</a> 및 <a href="privacy.html" style="color:#C4696D;">개인정보처리방침</a> 동의 포함)</span>'+
+    '</label>';
+}
+
+async function handlePayment(){
+  var name = document.getElementById('name').value.trim();
+  var email = document.getElementById('email').value.trim();
+  var phone = document.getElementById('phone').value.trim();
+  var addr = document.getElementById('addr').value.trim();
+  if(!name||!email||!phone||!addr){
+    alert('배송 정보(이름, 이메일, 휴대폰, 주소)를 모두 입력해주세요.');
+    return;
+  }
+  var btn = document.getElementById('payBtn');
+  btn.disabled = true;
+  btn.style.opacity = '.5';
+  btn.textContent = '처리 중...';
+
+  var cart = getCart();
+  var orderId = 'BUBL'+Date.now();
+  var orderName = cart.length===1
+    ? PRODUCTS[cart[0].id].name+' '+cart[0].qty+'개'
+    : PRODUCTS[cart[0].id].name+' 외 '+(cart.length-1)+'건';
+
+  if(widgets){
+    try {
+      var base = window.location.href.replace(/\/checkout\.html(\?.*)?$/, '/');
+      await widgets.requestPayment({
+        orderId: orderId,
+        orderName: orderName,
+        customerName: name,
+        customerEmail: email,
+        customerMobilePhone: phone.replace(/-/g,''),
+        successUrl: base+'success.html?orderId='+orderId+'&amount='+globalTotal+'&name='+encodeURIComponent(orderName)+'&customer='+encodeURIComponent(name),
+        failUrl: base+'checkout.html',
+      });
+    } catch(e){
+      btn.disabled=false; btn.style.opacity='1'; btn.textContent='결제하기 →';
+    }
+  } else {
+    /* Demo mode */
+    var order = { orderId:orderId, total:globalTotal, orderName:orderName, customerName:name, cart:cart, addr:addr, timestamp:Date.now() };
+    localStorage.setItem('bubl_last_order', JSON.stringify(order));
+    localStorage.removeItem('bubl_cart');
+    setTimeout(function(){
+      location.href = 'success.html?orderId='+orderId+'&amount='+globalTotal+'&name='+encodeURIComponent(orderName)+'&customer='+encodeURIComponent(name);
+    }, 900);
+  }
+}
+
+initToss();
+</script>
+</body>
+</html>

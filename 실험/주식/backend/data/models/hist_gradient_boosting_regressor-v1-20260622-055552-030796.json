@@ -1,0 +1,44 @@
+{
+  "version_name": "hist_gradient_boosting_regressor-v1-20260622-055552-030796",
+  "model_type": "hist_gradient_boosting_regressor",
+  "feature_columns": [
+    "technical_score",
+    "volume_score",
+    "risk_score",
+    "final_score",
+    "rsi",
+    "volatility_20d",
+    "price_rows",
+    "historical_news_available",
+    "historical_financial_available",
+    "market_kr",
+    "market_us"
+  ],
+  "metrics": {
+    "dataset": {
+      "source": "historical_replay",
+      "total_historical_rows": 35942,
+      "usable_direction_rows": 35266,
+      "flat_excluded": 676,
+      "invalid_feature_snapshot_excluded": 0
+    },
+    "training": {
+      "samples": 21978
+    },
+    "calibration": {
+      "samples": 4520
+    },
+    "test": {
+      "samples": 8768,
+      "mean_absolute_error": 3.265274,
+      "baseline_mean_absolute_error": 3.238749
+    },
+    "split_counts": {
+      "training": 21978,
+      "calibration": 4520,
+      "test": 8768
+    }
+  },
+  "status": "rejected",
+  "is_active": false
+}

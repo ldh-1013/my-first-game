@@ -1,0 +1,104 @@
+.wrap {
+  animation: fadeSlideUp var(--transition-base);
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 14px;
+}
+
+.scroll {
+  overflow-x: auto;
+  padding-bottom: 8px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, #fbfbff 0%, #f4f6ff 100%);
+}
+
+.canvas {
+  display: block;
+}
+
+.tickLine {
+  stroke: var(--color-border);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+.tickLabel {
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--color-text-secondary);
+}
+
+.laneLabel {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.link {
+  fill: none;
+  stroke-width: 1.5;
+  opacity: 0.5;
+  stroke-linecap: round;
+}
+
+.node {
+  cursor: pointer;
+}
+
+.nodeCircle {
+  transition: transform var(--transition-fast);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.node:hover .nodeCircle {
+  transform: scale(1.18);
+}
+
+.nodeHit {
+  fill: transparent;
+}
+
+.nodeLabel {
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--color-text-secondary);
+  text-anchor: middle;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+}
+
+.node:hover .nodeLabel {
+  opacity: 1;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 56px 16px;
+  color: var(--color-text-secondary);
+  animation: fadeSlideUp var(--transition-base);
+}
+
+.empty svg {
+  color: var(--color-secondary);
+  margin-bottom: 12px;
+}
+
+.emptyTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.emptyHint {
+  font-size: 13px;
+  margin-top: 6px;
+  line-height: 1.6;
+}

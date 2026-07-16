@@ -1,0 +1,58 @@
+.clock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: linear-gradient(120deg, #e8eeff 0%, #f0ebff 55%, #edeffe 100%);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 22px 28px;
+}
+
+.date {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.time {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+}
+
+.seconds {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--color-primary-hover);
+  margin-left: 2px;
+}
+
+.todayChip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-surface);
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.todayChip:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lifted);
+}
+
+.chipIcon {
+  color: var(--color-primary-hover);
+}
