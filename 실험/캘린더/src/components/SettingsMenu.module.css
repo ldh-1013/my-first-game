@@ -34,7 +34,8 @@
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lifted);
   padding: 6px;
-  min-width: 196px;
+  /* 테마 3단 선택의 '라이트'·'시스템'(한글 3글자)이 한 줄로 들어가는 최소 폭 */
+  min-width: 210px;
   z-index: 60;
   animation: fadeSlideUp var(--transition-fast);
 }
@@ -96,4 +97,63 @@
 
 .fileInput {
   display: none;
+}
+
+/* 테마 3단 선택 — App.module.css의 보기 전환 세그먼트와 같은 감각 */
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+  padding: 8px 12px 6px;
+}
+
+.segment {
+  /* 균등 그리드와 미끄러지는 알약은 SegmentedControl이 맡는다 */
+  --segment-pad: 3px;
+  background: var(--color-toggle-track);
+  border-radius: 999px;
+  padding: var(--segment-pad);
+  margin: 0 6px;
+}
+
+.segmentButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: 7px 3px;
+  border-radius: 999px;
+  /* 폭이 모자라도 '라이/트'로 접히지 않게 — 접히면 pill 높이까지 들쭉날쭉해진다 */
+  white-space: nowrap;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+/* 글자에 밀려 아이콘이 찌그러지지 않게 (접힐 땐 14px가 12.7px로 눌렸다) */
+.segmentButton svg {
+  flex: none;
+}
+
+.segmentButton:hover {
+  color: var(--color-text-primary);
+}
+
+/* 배경과 그림자는 뒤에서 미끄러지는 알약이 그린다. 여기서는 글자색만 바뀐다 */
+.segmentActive {
+  color: var(--color-text-primary);
+}
+
+.segmentActive svg {
+  color: var(--color-primary-hover);
+}
+
+/* 자동 백업 상태 — 조작이 아니라 안내라서 메뉴 항목보다 작고 흐리게 */
+.backupNote {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  padding: 2px 12px 8px;
+  line-height: 1.5;
 }

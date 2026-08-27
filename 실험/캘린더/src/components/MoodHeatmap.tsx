@@ -8,6 +8,7 @@ import { MOOD_LEVELS, MOOD_META, moodColor, moodLabel } from '../utils/mood';
 import styles from './MoodHeatmap.module.css';
 
 const WEEKS = 53;
+const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
 
 interface Cell {
   key: string;
@@ -85,9 +86,9 @@ export function MoodHeatmap() {
         </div>
         <div className={styles.gridRow}>
           <div className={styles.weekdays}>
-            <span>월</span>
-            <span>수</span>
-            <span>금</span>
+            {WEEKDAY_LABELS.map((label) => (
+              <span key={label}>{label}</span>
+            ))}
           </div>
           <div className={styles.grid}>
             {columns.map((week, wi) => (

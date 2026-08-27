@@ -126,7 +126,7 @@
 }
 
 .categoryActive {
-  background: color-mix(in srgb, var(--cat-color) 22%, white);
+  background: color-mix(in srgb, var(--cat-color) 22%, var(--color-chip-base));
   border-color: var(--cat-color);
   color: var(--color-text-primary);
 }
@@ -266,7 +266,7 @@
 .saveButton {
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-on-primary);
   background: var(--color-primary-hover);
   padding: 8px 20px;
   border-radius: 999px;
@@ -274,6 +274,6 @@
 }
 
 .saveButton:hover {
-  background: #5a7ce8;
+  background: var(--color-primary-active);
   transform: translateY(-1px);
 }

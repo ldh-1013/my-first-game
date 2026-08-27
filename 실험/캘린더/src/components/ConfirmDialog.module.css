@@ -1,7 +1,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(46, 42, 74, 0.28);
+  background: var(--color-backdrop-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,7 +55,7 @@
 .dangerButton {
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-on-primary);
   padding: 9px 20px;
   border-radius: 999px;
   transition: background var(--transition-fast), transform var(--transition-fast);
@@ -66,7 +66,7 @@
 }
 
 .confirmButton:hover {
-  background: #5a7ce8;
+  background: var(--color-primary-active);
 }
 
 .dangerButton {
@@ -74,7 +74,7 @@
 }
 
 .dangerButton:hover {
-  background: #d84a6e;
+  background: var(--color-danger-hover);
 }
 
 .confirmButton:hover,

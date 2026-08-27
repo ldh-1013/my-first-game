@@ -1,23 +1,17 @@
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { ArrowRight, Sparkles } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useTodayKey } from '../hooks/useTodayKey';
+import { useNow, useTodayKey } from '../store/clock';
 import { useCalendarStore } from '../store/calendarStore';
 import styles from './ClockWidget.module.css';
 
 export function ClockWidget() {
-  const [now, setNow] = useState(() => new Date());
+  const now = useNow('second');
   const todayKey = useTodayKey();
   const openDate = useCalendarStore((s) => s.openDate);
   const todayCount = useCalendarStore(
     (s) => s.events.filter((event) => event.date === todayKey).length,
   );
-
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(new Date()), 1000);
-    return () => window.clearInterval(id);
-  }, []);
 
   return (
     <section className={styles.clock} aria-label="현재 시각">

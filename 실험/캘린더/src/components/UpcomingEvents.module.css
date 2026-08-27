@@ -96,3 +96,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* 완료된 일정 — 목록 순서는 그대로, 흐려지고 옅은 취소선만 */
+.itemDone {
+  opacity: 0.55;
+}
+
+.itemDone .title {
+  text-decoration: line-through;
+  text-decoration-color: var(--color-text-secondary);
+  text-decoration-thickness: 1px;
+  color: var(--color-text-secondary);
+}

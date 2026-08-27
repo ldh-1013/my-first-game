@@ -1,0 +1,95 @@
+/* StatsWidget/UpcomingEvents와 같은 카드 톤을 그대로 따른다 */
+.widget {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 20px;
+}
+
+.widgetTitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--color-text-primary);
+}
+
+.widgetTitle svg {
+  color: var(--color-primary-hover);
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* App.module.css의 .todayButton과 같은 필(pill) 감각 — 세로로 조금 더 키운 형태 */
+.toolButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 14px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-primary-hover);
+  background: var(--color-surface);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.toolButton:hover {
+  background: var(--color-today-bg);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+.toolActive {
+  background: var(--color-today-bg);
+  border-color: var(--color-primary);
+}
+
+.toolName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.toolState {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* 돌아가는 중임을 알리는 작은 숨쉬기 점 */
+.pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: toolPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes toolPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

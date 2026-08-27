@@ -1,0 +1,41 @@
+/*
+ * 세그먼트 트랙의 공통 뼈대. 색·폰트·패딩 값은 호출부 모듈이 정하고,
+ * 여기서는 "칸이 균등하고, 알약이 그 위를 미끄러진다"는 구조만 책임진다.
+ */
+
+.track {
+  position: relative;
+  display: grid;
+  /* gap을 두면 알약 폭(100% / n)과 한 칸의 폭이 어긋나 위치가 점점 밀린다 */
+  grid-template-columns: repeat(var(--segment-count), 1fr);
+}
+
+/* 트랙 안쪽 여백은 호출부가 --segment-pad로 알려 준다 (기본 3px) */
+.highlight {
+  position: absolute;
+  top: var(--segment-pad, 3px);
+  bottom: var(--segment-pad, 3px);
+  left: var(--segment-pad, 3px);
+  width: calc((100% - var(--segment-pad, 3px) * 2) / var(--segment-count));
+  border-radius: 999px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+  /* 테마 전환 전역 규칙에서 빠져 있으므로(themeExempt) 색과 그림자도 여기서 직접 챙긴다 */
+  transition:
+    transform var(--transition-base),
+    background-color var(--transition-base),
+    box-shadow var(--transition-base);
+  pointer-events: none;
+}
+
+/* 버튼이 알약 위에 올라와야 글자가 가려지지 않는다 */
+.track > :not(.highlight) {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlight {
+    transition: none;
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "my-calendar",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "개인용 파스텔 캘린더",
   "author": "zrcsh",
   "type": "module",
@@ -11,7 +11,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "app": "electron .",
-    "dist:win": "npm run build && electron-builder --win portable"
+    "dist:win": "npm run build && electron-builder --win nsis"
   },
   "build": {
     "appId": "com.zrcsh.mycalendar",
@@ -26,12 +26,16 @@
     ],
     "win": {
       "target": [
-        "portable"
+        "nsis"
       ],
       "icon": "build/icon.ico"
     },
-    "portable": {
-      "artifactName": "MyCalendar-${version}.exe"
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "artifactName": "MyCalendar-Setup-${version}.exe"
     }
   },
   "dependencies": {

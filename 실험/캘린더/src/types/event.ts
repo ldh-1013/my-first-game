@@ -11,11 +11,13 @@ export interface CalendarEvent {
   projectTag?: string; // 성좌 뷰에서 묶이는 자유 프로젝트 태그
   isSealed?: boolean; // 타임캡슐 봉인 여부
   sealedUntil?: string; // 'YYYY-MM-DD' 이 날짜 전까지 잠김
+  completed?: boolean; // 완료 체크 여부
   createdAt: string;
   updatedAt: string;
 }
 
-export type EventInput = Omit<CalendarEvent, 'id' | 'createdAt' | 'updatedAt'>;
+// completed는 폼에서 만드는 값이 아니라 체크 버튼으로만 바뀌는 상태라 입력 타입에서 뺀다
+export type EventInput = Omit<CalendarEvent, 'id' | 'createdAt' | 'updatedAt' | 'completed'>;
 
 export const CATEGORIES: EventCategory[] = ['work', 'personal', 'important', 'idea', 'custom'];
 

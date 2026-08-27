@@ -12,13 +12,90 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: var(--bg-gradient, linear-gradient(180deg, #f5f6fe 0%, #eff0fd 100%));
+  background: var(--bg-gradient, var(--gradient-default));
   background-attachment: fixed;
   color: var(--color-text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   /* 시간대에 따라 배경이 스냅되지 않고 부드럽게 흘러가도록 */
   transition: background 3s ease;
+}
+
+/*
+  테마를 바꾸는 300ms 동안에만 켜지는 크로스페이드(themeStore가 data-theme-switch를 켠다).
+  body의 3s는 시간대 그라디언트가 천천히 흘러가라고 준 값이라 테마 전환에 쓰면 답답하고,
+  카드/글자는 아예 트랜지션이 없어서 뚝 끊긴다. 이 순간에만 --transition-base로 통일한다.
+
+  범위를 이렇게 잡은 이유:
+  - 상시 트랜지션이 아니라 전환 순간에만 켜지므로, 드래그·리사이즈 중인 요소가
+    엉뚱하게 애니메이션되는 일이 없다.
+  - background-image까지 넣어야 그라디언트 표면(body, 시계 카드, 공휴일 빗금)이 같이 넘어간다.
+    라이트/다크 그라디언트가 같은 구조(각도·정지점 수)라 브라우저가 보간할 수 있다.
+  - box-shadow가 빠져 있으면 색은 흐르는데 그림자만 뚝 바뀌어, 화면 일부만 매끄러워 보인다.
+    다크에서 그림자에 1px 링이 더해지므로 특히 눈에 띈다.
+  - 아이콘 내부(svg 안쪽 path 등)는 전체 노드의 3분의 1을 차지하는데, lucide 아이콘은
+    currentColor라 부모의 color 트랜지션을 그대로 따라온다. 그래서 svg 내부는 통째로 빼고,
+    색을 직접 지정한 손그림 일러스트(fill/stroke 속성을 가진 것)만 따로 되돌려 넣는다.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-theme-switch] body {
+    transition: background var(--transition-base);
+  }
+
+  /*
+    이 규칙은 transition을 통째로 갈아끼우므로(!important), 전환 순간에 자기 모션을
+    계속 돌려야 하는 요소는 빠져야 한다. 그런 요소에는 플레인 클래스를 하나 더 붙인다.
+    - .themeFade: opacity로 스스로 사라지는 배경 덮개
+    - .themeExempt: 자기 트랜지션을 스스로 관리하는 요소(세그먼트 알약처럼
+      하필 테마를 바꾸는 그 클릭에 같이 움직여야 하는 것들). 대신 그 요소는
+      자기 모듈 CSS에서 색·그림자 트랜지션까지 직접 챙겨야 한다.
+  */
+  :root[data-theme-switch] *:not(svg *, .themeFade, .themeExempt),
+  :root[data-theme-switch] *:not(svg *, .themeFade, .themeExempt)::before,
+  :root[data-theme-switch] *:not(svg *, .themeFade, .themeExempt)::after {
+    transition:
+      background-color var(--transition-base),
+      background-image var(--transition-base),
+      border-color var(--transition-base),
+      box-shadow var(--transition-base),
+      color var(--transition-base),
+      fill var(--transition-base),
+      stroke var(--transition-base) !important;
+  }
+
+  :root[data-theme-switch] svg :is([fill], [stroke]) {
+    transition:
+      fill var(--transition-base),
+      stroke var(--transition-base) !important;
+  }
+}
+
+/*
+  테마가 바뀌기 직전의 배경을 덮고 있다가 사라지는 한 장 (themeStore가 붙였다 뗀다).
+  z-index: -1이라 body 배경 위, 앱 콘텐츠 아래에 깔린다.
+*/
+.themeFade {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-attachment: fixed;
+  transition: opacity var(--transition-base);
+}
+
+/*
+  움직임 최소화: 테마 전환은 위 블록이 통째로 빠져 즉시 바뀐다.
+  시간대 배경의 3s 흐름도 여기서는 끈다 — 저 블록이 없으면 테마를 바꿀 때
+  body만 3초에 걸쳐 늦게 따라오는, 가장 어색한 조합이 된다.
+*/
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+
+  .themeFade {
+    display: none;
+  }
 }
 
 button {
@@ -54,12 +131,12 @@ select {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d8d4f2;
+  background: var(--color-scrollbar);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #c4bfea;
+  background: var(--color-scrollbar-hover);
 }
 
 @keyframes fadeSlideUp {

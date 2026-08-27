@@ -18,7 +18,7 @@
 }
 
 .sunday {
-  color: #e786a3;
+  color: var(--color-weekend-sun);
 }
 
 .saturday {
@@ -60,13 +60,85 @@
   opacity: 0.42;
 }
 
+/* ---------- 공휴일 ----------
+   '오늘'(푸른 톤)과 헷갈리지 않도록 따뜻한 살구 톤 워시를 셀 전체에 깐다.
+   빨간 글씨 하나로 때우지 않고 배경 + 이름 라벨 + (대체면) 빗금을 함께 쓴다. */
+.holiday {
+  background: var(--color-holiday-bg);
+}
+
+.holiday:hover {
+  background: color-mix(in srgb, var(--color-holiday-bg) 82%, var(--color-holiday-accent));
+}
+
+/* 대체공휴일 — 타임캡슐(.itemLocked)이 쓰는 빗금 문법을 그대로 빌려
+   '원래 날짜를 대신하는 날'이라는 느낌을 은은하게 얹는다 */
+.holidaySubstitute {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--color-holiday-bg) 0 9px,
+    var(--color-holiday-stripe) 9px 18px
+  );
+}
+
+/* 아직 공식 발표 전이라 계산으로 뽑은 날 — 점선 테두리로 확정된 공휴일과 구분한다.
+   .cell이 이미 1.5px 투명 테두리를 갖고 있어 레이아웃이 밀리지 않는다. */
+.holidayProjected {
+  border-style: dashed;
+  border-color: var(--color-holiday-accent);
+}
+
+/* 연휴 이어붙임: 안쪽 모서리를 각지게 깎아 사흘이 한 덩어리로 읽히게 한다.
+   칸 사이 6px 간격은 그대로라 완전히 붙지는 않지만 흐름은 이어져 보인다. */
+.joinPrev {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.joinNext {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.holidayNumber {
+  color: var(--color-holiday-text);
+}
+
+/* 일정 미리보기 pill(.preview)과 헷갈리지 않도록 모양을 다르게 간다:
+   채운 알약이 아니라 왼쪽에 세로 바만 세운 글자 라벨이다. */
+.holidayLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-holiday-text);
+  border-left: 2px solid var(--color-holiday-accent);
+  padding-left: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.holidayGuess {
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--color-holiday-accent);
+  border: 1px dashed var(--color-holiday-accent);
+  border-radius: 4px;
+  padding: 0 3px;
+  flex-shrink: 0;
+}
+
 .today {
   background: var(--color-today-bg);
 }
 
 .today .dayNumber {
   background: var(--color-primary-hover);
-  color: #ffffff;
+  color: var(--color-on-primary);
 }
 
 .selected {
@@ -96,7 +168,7 @@
 }
 
 .sundayNumber {
-  color: #d96f92;
+  color: var(--color-weekend-sun-strong);
 }
 
 .saturdayNumber {
@@ -105,7 +177,7 @@
 
 .today .sundayNumber,
 .today .saturdayNumber {
-  color: #ffffff;
+  color: var(--color-on-primary);
 }
 
 .preview {
@@ -165,4 +237,9 @@
   .cell {
     min-height: 76px;
   }
+}
+
+/* 완료된 일정의 미리보기 — 아이콘을 억지로 넣지 않고 투명도만 낮춘다 */
+.previewDone {
+  opacity: 0.5;
 }

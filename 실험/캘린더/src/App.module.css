@@ -34,6 +34,46 @@
   justify-content: center;
 }
 
+/*
+  캘린더 / 스톱워치 / 타이머를 겹쳐 두는 칸.
+  세 화면이 같은 grid-area를 차지하므로 칸 높이는 가장 큰 화면에 맞춰지고,
+  덕분에 전환 도중 페이지 높이가 출렁이지 않는다.
+*/
+.screens {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+}
+
+.screen {
+  grid-area: 1 / 1;
+  min-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) scale(0.99);
+  pointer-events: none;
+  /* visibility도 트랜지션 목록에 넣어야 사라지는 화면이 페이드가 끝날 때까지 보인다 */
+  transition:
+    opacity var(--transition-base),
+    transform var(--transition-base),
+    visibility var(--transition-base);
+}
+
+.screenActive {
+  opacity: 1;
+  visibility: visible;
+  /* transform: none이라 정지 상태에서는 컨테이닝 블록이 생기지 않는다 (sticky 사이드바 보호) */
+  transform: none;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen {
+    transform: none;
+    transition: opacity var(--transition-fast), visibility var(--transition-fast);
+  }
+}
+
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 312px;
@@ -118,11 +158,12 @@
 }
 
 .toggle {
+  /* 균등 그리드와 미끄러지는 알약은 SegmentedControl이 맡는다 */
+  --segment-pad: 4px;
   margin-left: auto;
-  display: flex;
-  background: #edeffd;
+  background: var(--color-toggle-track);
   border-radius: 999px;
-  padding: 4px;
+  padding: var(--segment-pad);
 }
 
 .toggleButton {
@@ -134,10 +175,9 @@
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 
+/* 배경과 그림자는 뒤에서 미끄러지는 알약이 그린다. 여기서는 글자색만 바뀐다 */
 .toggleActive {
-  background: var(--color-surface);
   color: var(--color-text-primary);
-  box-shadow: var(--shadow-soft);
 }
 
 .shortcutHint {

@@ -1,0 +1,278 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 460px;
+}
+
+.ringWrap {
+  position: relative;
+  width: clamp(230px, 34vw, 300px);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ringCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ClockWidget의 .time과 같은 톤 */
+.display {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(36px, 6vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--color-text-primary);
+}
+
+/* 시:분:초(최대 99:59:59)가 되면 글자 수가 8자라 한 단계 줄인다 */
+.displayLong {
+  font-size: clamp(30px, 4.6vw, 38px);
+}
+
+.caption {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+/* 완료 순간: 블로킹 다이얼로그 대신 링 전체가 조용히 두근거린다 */
+.ringFinished {
+  animation: timerPulse 1.1s ease-in-out infinite;
+}
+
+.ringFinished .display {
+  color: var(--color-primary-hover);
+}
+
+@keyframes timerPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    transform: scale(1.035);
+    filter: drop-shadow(0 6px 20px var(--glow-timer));
+  }
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 10px 12px 10px 16px;
+  border-radius: 999px;
+  background: var(--color-today-bg);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary-hover);
+  box-shadow: var(--shadow-soft);
+  animation: fadeSlideUp var(--transition-base);
+}
+
+.bannerText {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.bannerButton {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-on-primary);
+  background: var(--color-primary-hover);
+  border-radius: 999px;
+  padding: 5px 14px;
+  transition: background var(--transition-fast);
+}
+
+.bannerButton:hover {
+  background: var(--color-primary-active);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.mainButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-on-primary);
+  background: var(--color-primary-hover);
+  border-radius: 999px;
+  padding: 13px 30px;
+  box-shadow: var(--shadow-soft);
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.mainButton:hover:not(:disabled) {
+  background: var(--color-primary-active);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lifted);
+}
+
+.mainButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+  box-shadow: none;
+}
+
+.mainButtonPause {
+  background: var(--color-secondary);
+  color: var(--color-on-secondary);
+}
+
+.mainButtonPause:hover:not(:disabled) {
+  background: var(--color-secondary-hover);
+}
+
+.subButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary-hover);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 10px 18px;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.subButton:hover:not(:disabled) {
+  background: var(--color-today-bg);
+  border-color: var(--color-primary);
+}
+
+.subButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+  color: var(--color-text-secondary);
+}
+
+.setup {
+  width: 100%;
+  margin-top: 26px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inputLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* EventForm의 입력 톤을 따른다 */
+.numberInput {
+  width: 62px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-cell);
+  padding: 8px 10px;
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  transition: border-color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.numberInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.numberInput:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.colon {
+  font-family: var(--font-numeric);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  margin-top: -2px;
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.preset {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary-hover);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.preset:hover:not(:disabled) {
+  background: var(--color-today-bg);
+  border-color: var(--color-primary);
+}
+
+.presetActive {
+  background: var(--color-today-bg);
+  border-color: var(--color-primary);
+  color: var(--color-text-primary);
+}
+
+.preset:disabled {
+  opacity: 0.45;
+  cursor: default;
+}

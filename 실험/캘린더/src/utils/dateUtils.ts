@@ -21,15 +21,29 @@ export function fromDateKey(key: string): Date {
   return parse(key, DATE_KEY_FORMAT, new Date());
 }
 
+/**
+ * 주의 시작 요일을 일요일로 못박는다.
+ *
+ * CalendarGrid/WeekView는 ['일','월',...,'토'] 고정 헤더를 그려 놓고 날짜를 배열 순서대로
+ * 흘려보내므로, 그리드가 일요일에서 시작한다는 전제가 깨지면 달 전체가 한 칸씩 밀린다.
+ * date-fns의 기본값도 0이라 지금 동작은 그대로지만, 어딘가에서 setDefaultOptions로
+ * 월요일 시작 로케일(예: de, enGB)을 지정하는 순간 헤더와 어긋나 버린다.
+ * 암묵적 기본값에 기대지 않고 명시해서 그 사고를 원천 차단한다.
+ */
+const WEEK_OPTIONS = { weekStartsOn: 0 } as const;
+
 /** 월 그리드에 표시할 날짜들 (앞뒤 달 포함, 일요일 시작) */
 export function getMonthGridDays(anchor: Date): Date[] {
-  const start = startOfWeek(startOfMonth(anchor));
-  const end = endOfWeek(endOfMonth(anchor));
+  const start = startOfWeek(startOfMonth(anchor), WEEK_OPTIONS);
+  const end = endOfWeek(endOfMonth(anchor), WEEK_OPTIONS);
   return eachDayOfInterval({ start, end });
 }
 
 export function getWeekDays(anchor: Date): Date[] {
-  return eachDayOfInterval({ start: startOfWeek(anchor), end: endOfWeek(anchor) });
+  return eachDayOfInterval({
+    start: startOfWeek(anchor, WEEK_OPTIONS),
+    end: endOfWeek(anchor, WEEK_OPTIONS),
+  });
 }
 
 export function formatMonthTitle(date: Date): string {

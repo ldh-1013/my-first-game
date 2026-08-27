@@ -1,0 +1,201 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* ClockWidget의 .time과 같은 감각 — 숫자 폭이 고정되어 흔들리지 않게 tabular-nums */
+.display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  white-space: nowrap;
+  transition: color var(--transition-base);
+}
+
+.main {
+  font-size: clamp(48px, 8vw, 80px);
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.centi {
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-left: 2px;
+  transition: color var(--transition-base);
+}
+
+.displayRunning .centi {
+  color: var(--color-primary-hover);
+}
+
+.caption {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-top: 6px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.mainButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-on-primary);
+  background: var(--color-primary-hover);
+  border-radius: 999px;
+  padding: 13px 30px;
+  box-shadow: var(--shadow-soft);
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.mainButton:hover {
+  background: var(--color-primary-active);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lifted);
+}
+
+.mainButtonPause {
+  background: var(--color-secondary);
+  color: var(--color-on-secondary);
+}
+
+.mainButtonPause:hover {
+  background: var(--color-secondary-hover);
+}
+
+.subButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary-hover);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 10px 18px;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.subButton:hover:not(:disabled) {
+  background: var(--color-today-bg);
+  border-color: var(--color-primary);
+}
+
+.subButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+  color: var(--color-text-secondary);
+}
+
+.laps {
+  width: 100%;
+  margin-top: 26px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 14px;
+}
+
+.lapList {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.lapRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 8px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+.lapRow:not(.lapHead) {
+  animation: fadeSlideUp var(--transition-base);
+}
+
+.lapRow:not(.lapHead):nth-child(odd) {
+  background: var(--color-cell);
+}
+
+.lapHead {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+  padding-bottom: 4px;
+}
+
+.lapHead span:first-child {
+  text-align: left;
+}
+
+.lapHead span:not(:first-child),
+.lapSplit,
+.lapTotal {
+  min-width: 84px;
+  text-align: right;
+}
+
+.lapIndex {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.lapSplit {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.lapTotal {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.badgeFast,
+.badgeSlow {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  font-style: normal;
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+
+.badgeFast {
+  color: var(--color-success);
+  background: var(--color-success-soft);
+}
+
+.badgeSlow {
+  color: var(--color-danger);
+  background: var(--color-danger-soft);
+}

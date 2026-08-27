@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { Search } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useCalendarStore } from '../store/calendarStore';
+import { useToolStore } from '../store/toolStore';
 import { getEventColor, type CalendarEvent } from '../types/event';
 import { compareEvents, fromDateKey } from '../utils/dateUtils';
 import { isTypingTarget } from '../utils/keyboard';
@@ -15,6 +16,7 @@ function formatResultDate(event: CalendarEvent): string {
 export function SearchBar() {
   const events = useCalendarStore((s) => s.events);
   const openDate = useCalendarStore((s) => s.openDate);
+  const closeTool = useToolStore((s) => s.closeTool);
   const [query, setQuery] = useState('');
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -56,6 +58,9 @@ export function SearchBar() {
   const showDropdown = focused && query.trim().length > 0;
 
   const handleSelect = (event: CalendarEvent) => {
+    // 헤더의 검색은 스톱워치/타이머 화면에서도 쓸 수 있다.
+    // 그 상태로 상세 패널만 띄우면 뒤가 캘린더가 아니라 어색하므로 캘린더로 먼저 되돌린다.
+    closeTool();
     openDate(event.date);
     setQuery('');
     setFocused(false);

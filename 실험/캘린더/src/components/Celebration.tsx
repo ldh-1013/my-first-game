@@ -5,7 +5,13 @@ import { loadCelebratedIds, saveCelebratedIds } from '../utils/storage';
 import styles from './Celebration.module.css';
 
 const SPARKLE_COUNT = 18;
-const COLORS = ['#7C9EFF', '#C7B9FF', '#9EE7C7', '#FF9EB5', '#A5C4FF'];
+const COLORS = [
+  'var(--color-tag-1)',
+  'var(--color-tag-2)',
+  'var(--color-tag-4)',
+  'var(--color-tag-5)',
+  'var(--color-tag-3)',
+];
 
 /**
  * 봉인 해제일이 지난 타임캡슐을 페이지 로드 시 감지해

@@ -18,7 +18,7 @@
   height: 30px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
-  color: #ffffff;
+  color: var(--color-on-primary);
   flex-shrink: 0;
 }
 

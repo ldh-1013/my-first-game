@@ -7,16 +7,18 @@ import { compareEvents, fromDateKey } from '../utils/dateUtils';
 import { useTodayKey } from '../hooks/useTodayKey';
 import styles from './ConstellationView.module.css';
 
-// 파스텔 팔레트 안에서만 순환 (새 채도 색 만들지 않음)
+// 파스텔 팔레트 안에서만 순환 (새 채도 색 만들지 않음).
+// SVG의 fill/stroke는 var()를 그대로 받으므로, 색값은 tokens.css에 두고
+// 다크 모드에서 8색이 어두운 바탕에서도 서로 구분되는 값으로 교체되게 한다.
 const TAG_PALETTE = [
-  '#7C9EFF',
-  '#C7B9FF',
-  '#A5C4FF',
-  '#9EE7C7',
-  '#FF9EB5',
-  '#B8A7F0',
-  '#8FD8E6',
-  '#F5B8D0',
+  'var(--color-tag-1)',
+  'var(--color-tag-2)',
+  'var(--color-tag-3)',
+  'var(--color-tag-4)',
+  'var(--color-tag-5)',
+  'var(--color-tag-6)',
+  'var(--color-tag-7)',
+  'var(--color-tag-8)',
 ];
 
 const LANE_HEIGHT = 74;

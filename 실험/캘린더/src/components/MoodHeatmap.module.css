@@ -74,17 +74,6 @@
   line-height: 15px;
 }
 
-.weekdays span:nth-child(1) {
-  grid-row: 2;
-}
-
-.weekdays span:nth-child(2) {
-  grid-row: 4;
-}
-
-.weekdays span:nth-child(3) {
-  grid-row: 6;
-}
 
 .grid {
   display: flex;

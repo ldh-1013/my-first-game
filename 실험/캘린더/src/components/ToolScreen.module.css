@@ -1,0 +1,80 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 100%;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* App.module.css의 .navButton과 같은 형태 — CSS Modules라 규칙을 그대로 옮겨 적는다 */
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  transition: background var(--transition-fast), color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.backButton:hover {
+  background: var(--color-today-bg);
+  color: var(--color-primary-hover);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.title svg {
+  color: var(--color-primary-hover);
+}
+
+.hint {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.hint kbd {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  padding: 1px 6px;
+}
+
+.stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 36px 28px;
+}
+
+@media (max-width: 860px) {
+  .hint {
+    display: none;
+  }
+
+  .stage {
+    padding: 28px 18px;
+  }
+}

@@ -15,7 +15,7 @@ const SEGMENT_COLORS: Record<EventCategory, string> = {
   personal: 'var(--color-personal)',
   important: 'var(--color-important)',
   idea: 'var(--color-idea)',
-  custom: '#b8b5d1',
+  custom: 'var(--color-category-custom)',
 };
 
 interface Segment {

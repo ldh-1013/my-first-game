@@ -1,10 +1,11 @@
 import { differenceInCalendarDays } from 'date-fns';
-import { Lock, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { Check, Lock, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTodayKey } from '../hooks/useTodayKey';
 import { useCalendarStore } from '../store/calendarStore';
 import { CATEGORY_LABELS, getEventColor, isLocked, type CalendarEvent } from '../types/event';
 import { compareEvents, formatDayTitle, fromDateKey } from '../utils/dateUtils';
+import { getHoliday } from '../utils/holidays';
 import { ConfirmDialog } from './ConfirmDialog';
 import { EventForm } from './EventForm';
 import { MoodPicker } from './MoodPicker';
@@ -13,20 +14,45 @@ import styles from './DateDetailPanel.module.css';
 interface EventItemProps {
   event: CalendarEvent;
   locked: boolean;
+  todayKey: string;
+  onToggleComplete: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-function EventItem({ event, locked, onEdit, onDelete }: EventItemProps) {
+function EventItem({
+  event,
+  locked,
+  todayKey,
+  onToggleComplete,
+  onEdit,
+  onDelete,
+}: EventItemProps) {
   const dDay = locked
-    ? differenceInCalendarDays(fromDateKey(event.sealedUntil!), new Date())
+    ? differenceInCalendarDays(fromDateKey(event.sealedUntil!), fromDateKey(todayKey))
     : 0;
+
+  const done = Boolean(event.completed);
 
   return (
     <article
-      className={`${styles.item} ${locked ? styles.itemLocked : ''}`}
+      className={`${styles.item} ${locked ? styles.itemLocked : ''} ${
+        done ? styles.itemDone : ''
+      }`}
       style={{ '--event-color': getEventColor(event) } as React.CSSProperties}
     >
+      {/* 잠긴 타임캡슐은 수정과 마찬가지로 완료 체크도 막는다 */}
+      {!locked && (
+        <button
+          type="button"
+          className={`${styles.check} ${done ? styles.checkDone : ''}`}
+          onClick={onToggleComplete}
+          aria-pressed={done}
+          aria-label={done ? `${event.title} 완료 해제` : `${event.title} 완료로 표시`}
+        >
+          {done && <Check size={11} strokeWidth={3.5} aria-hidden />}
+        </button>
+      )}
       <div className={styles.itemBar} aria-hidden />
       <div className={styles.itemBody}>
         {locked ? (
@@ -68,24 +94,24 @@ function EmptyState() {
   return (
     <div className={styles.empty}>
       <svg viewBox="0 0 120 100" width="120" height="100" aria-hidden>
-        <rect x="22" y="22" width="76" height="64" rx="14" fill="#edeffe" />
-        <rect x="22" y="22" width="76" height="20" rx="10" fill="#c7b9ff" opacity="0.55" />
-        <rect x="38" y="14" width="6" height="14" rx="3" fill="#a5c4ff" />
-        <rect x="76" y="14" width="6" height="14" rx="3" fill="#a5c4ff" />
-        <circle cx="45" cy="58" r="4" fill="#a5c4ff" />
-        <circle cx="60" cy="58" r="4" fill="#c7b9ff" />
-        <circle cx="75" cy="58" r="4" fill="#9ee7c7" />
+        <rect x="22" y="22" width="76" height="64" rx="14" fill="var(--color-illust-paper)" />
+        <rect x="22" y="22" width="76" height="20" rx="10" fill="var(--color-illust-band)" opacity="0.55" />
+        <rect x="38" y="14" width="6" height="14" rx="3" fill="var(--color-illust-accent)" />
+        <rect x="76" y="14" width="6" height="14" rx="3" fill="var(--color-illust-accent)" />
+        <circle cx="45" cy="58" r="4" fill="var(--color-illust-accent)" />
+        <circle cx="60" cy="58" r="4" fill="var(--color-illust-band)" />
+        <circle cx="75" cy="58" r="4" fill="var(--color-illust-mint)" />
         <path
           d="M52 72 q8 7 16 0"
-          stroke="#8a87a6"
+          stroke="var(--color-illust-line)"
           strokeWidth="2.4"
           strokeLinecap="round"
           fill="none"
         />
-        <path d="M104 34 l2.2 5 5 2.2 -5 2.2 -2.2 5 -2.2 -5 -5 -2.2 5 -2.2 z" fill="#ff9eb5" />
+        <path d="M104 34 l2.2 5 5 2.2 -5 2.2 -2.2 5 -2.2 -5 -5 -2.2 5 -2.2 z" fill="var(--color-illust-pink)" />
         <path
           d="M12 54 l1.7 3.8 3.8 1.7 -3.8 1.7 -1.7 3.8 -1.7 -3.8 -3.8 -1.7 3.8 -1.7 z"
-          fill="#a5c4ff"
+          fill="var(--color-illust-accent)"
         />
       </svg>
       <p className={styles.emptyTitle}>아직 일정이 없어요</p>
@@ -99,6 +125,7 @@ export function DateDetailPanel() {
   const selectDate = useCalendarStore((s) => s.selectDate);
   const events = useCalendarStore((s) => s.events);
   const deleteEvent = useCalendarStore((s) => s.deleteEvent);
+  const toggleComplete = useCalendarStore((s) => s.toggleComplete);
   const todayKey = useTodayKey();
 
   const [displayDate, setDisplayDate] = useState<string | null>(null);
@@ -124,6 +151,7 @@ export function DateDetailPanel() {
   }, [selectedDate, deleteTarget, selectDate]);
 
   const open = selectedDate !== null;
+  const holiday = displayDate ? getHoliday(displayDate) : null;
   const dayEvents = displayDate
     ? events.filter((event) => event.date === displayDate).sort(compareEvents)
     : [];
@@ -144,6 +172,8 @@ export function DateDetailPanel() {
         key={event.id}
         event={event}
         locked={locked}
+        todayKey={todayKey}
+        onToggleComplete={() => toggleComplete(event.id)}
         onEdit={() => {
           setEditingId(event.id);
           setCreating(false);
@@ -172,6 +202,19 @@ export function DateDetailPanel() {
                 <h2 className={styles.dateTitle}>
                   {formatDayTitle(displayDate)}
                   {displayDate === todayKey && <span className={styles.todayBadge}>오늘</span>}
+                  {holiday && (
+                    <span
+                      className={styles.holidayBadge}
+                      title={
+                        holiday.isSubstitute
+                          ? `원래 공휴일 ${holiday.substituteFor}`
+                          : '공휴일'
+                      }
+                    >
+                      {holiday.name}
+                      {holiday.isProjected ? ' (예상)' : ''}
+                    </span>
+                  )}
                 </h2>
                 <p className={styles.count}>
                   {dayEvents.length > 0 ? `일정 ${dayEvents.length}개` : ' '}
@@ -187,7 +230,8 @@ export function DateDetailPanel() {
               </button>
             </header>
 
-            <MoodPicker dateKey={displayDate} />
+            {/* 아직 오지 않은 날에는 기분을 기록할 수 없게 숨김 */}
+            {displayDate <= todayKey && <MoodPicker dateKey={displayDate} />}
 
             {!isCreating && (
               <button

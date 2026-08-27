@@ -12,7 +12,7 @@
   overflow-x: auto;
   padding-bottom: 8px;
   border-radius: var(--radius-md);
-  background: linear-gradient(180deg, #fbfbff 0%, #f4f6ff 100%);
+  background: var(--gradient-constellation);
 }
 
 .canvas {

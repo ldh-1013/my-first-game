@@ -1,0 +1,9 @@
+node_modules/
+release/
+dist/
+*.exe
+*.pkg
+
+# build/는 무시하되, 설치 파일 아이콘 원본은 소스다 (package.json이 참조)
+!build/
+!build/icon.ico

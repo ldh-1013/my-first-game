@@ -1,0 +1,100 @@
+/*
+ * 놀라게 하는 화면이 아니라 안내하는 화면. 빨간 경고색 대신 다른 카드들과 같은
+ * 표면·간격을 쓰고, 사용자가 스크린샷 한 장으로 상황을 전할 수 있을 만큼만 보여 준다.
+ */
+
+.screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.card {
+  width: min(560px, 100%);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg, 20px);
+  box-shadow: var(--shadow-soft);
+  padding: 28px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 10px;
+}
+
+.lead {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin-bottom: 18px;
+}
+
+.message {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: var(--color-cell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  word-break: break-word;
+}
+
+.stack {
+  margin-top: 10px;
+  max-height: 220px;
+  overflow: auto;
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  background: var(--color-cell);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  white-space: pre-wrap;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.primary,
+.secondary {
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 9px 18px;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.secondary {
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.secondary:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+}
+
+.note {
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}

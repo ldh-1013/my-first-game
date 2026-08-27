@@ -1,17 +1,2 @@
-import { useEffect, useState } from 'react';
-import { toDateKey } from '../utils/dateUtils';
-
-/** 자정이 넘어가면 자동으로 갱신되는 오늘 날짜 키 (매분 체크) */
-export function useTodayKey(): string {
-  const [todayKey, setTodayKey] = useState(() => toDateKey(new Date()));
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      const key = toDateKey(new Date());
-      setTodayKey((prev) => (prev === key ? prev : key));
-    }, 60_000);
-    return () => window.clearInterval(id);
-  }, []);
-
-  return todayKey;
-}
+// 중앙 시계(store/clock)로 위임한다. 기존 import 경로를 그대로 유지하기 위한 재노출.
+export { useTodayKey } from '../store/clock';

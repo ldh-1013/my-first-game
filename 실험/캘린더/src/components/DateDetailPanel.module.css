@@ -1,7 +1,7 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(46, 42, 74, 0.18);
+  background: var(--color-backdrop);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--transition-base);
@@ -21,7 +21,7 @@
   width: min(400px, 92vw);
   background: var(--color-surface);
   border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-  box-shadow: -8px 0 40px rgba(124, 158, 255, 0.25);
+  box-shadow: var(--shadow-panel);
   padding: 24px;
   overflow-y: auto;
   transform: translateX(calc(100% + 48px));
@@ -93,7 +93,7 @@
   gap: 6px;
   font-size: 14px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-on-primary);
   background: var(--color-primary-hover);
   padding: 11px;
   border-radius: var(--radius-md);
@@ -101,7 +101,7 @@
 }
 
 .addButton:hover {
-  background: #5a7ce8;
+  background: var(--color-primary-active);
   transform: translateY(-1px);
 }
 
@@ -174,7 +174,7 @@
   background: repeating-linear-gradient(
     135deg,
     var(--color-cell) 0 10px,
-    #f3f1fb 10px 20px
+    var(--color-locked-stripe) 10px 20px
   );
 }
 
@@ -202,7 +202,7 @@
   font-size: 11px;
   font-weight: 600;
   color: var(--color-text-primary);
-  background: color-mix(in srgb, var(--event-color) 22%, white);
+  background: color-mix(in srgb, var(--event-color) 22%, var(--color-chip-base));
   padding: 2px 8px;
   border-radius: 999px;
 }
@@ -253,7 +253,7 @@
 
 .deleteAction:hover {
   color: var(--color-danger) !important;
-  background: #ffedf2 !important;
+  background: var(--color-danger-soft) !important;
 }
 
 .empty {
@@ -276,4 +276,64 @@
   color: var(--color-text-secondary);
   margin-top: 4px;
   line-height: 1.6;
+}
+
+/* 공휴일 배지 — '오늘' 배지와 같은 알약 모양이되 따뜻한 톤으로 구분한다 */
+.holidayBadge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-holiday-text);
+  background: var(--color-holiday-bg);
+  border: 1px solid var(--color-holiday-accent);
+  padding: 2px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* ---------- 완료 체크 ----------
+   각진 기본 체크박스 대신, 이 앱이 이미 쓰는 원형 모티프(무드 스와치·카테고리 점)에 맞춘
+   작은 원형 버튼. 체크되면 범용 '완료 초록'이 아니라 그 일정 자신의 카테고리 색으로 채워진다 —
+   '시스템이 검사했다'가 아니라 '이 일정이 제 색으로 조용히 닫혔다'는 인상을 위해서다. */
+.check {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-on-primary);
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.check:hover {
+  border-color: var(--event-color);
+  transform: scale(1.12);
+}
+
+.checkDone {
+  background: var(--event-color);
+  border-color: var(--event-color);
+  /* 타임캡슐 컨페티 같은 큰 연출 대신, 이미 있는 popIn을 짧게 한 번만 */
+  animation: popIn var(--transition-fast);
+}
+
+/* 완료된 항목: 순서를 바꾸거나 숨기지 않고 그 자리에서 조용히 흐려지기만 한다 */
+.itemDone {
+  opacity: 0.55;
+}
+
+/* 굵고 진한 취소선 대신 가늘고 옅은 선만 */
+.itemDone .itemTitle {
+  text-decoration: line-through;
+  text-decoration-color: var(--color-text-secondary);
+  text-decoration-thickness: 1px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
 }

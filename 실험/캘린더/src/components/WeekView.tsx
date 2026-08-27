@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useTodayKey } from '../hooks/useTodayKey';
+import { useEffect, useMemo, useRef } from 'react';
+import { useNow, useTodayKey } from '../store/clock';
 import { useCalendarStore } from '../store/calendarStore';
 import { getEventColor, type CalendarEvent } from '../types/event';
 import { getWeekDays, groupEventsByDate, toDateKey } from '../utils/dateUtils';
+import { getHoliday } from '../utils/holidays';
 import styles from './WeekView.module.css';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -55,11 +56,8 @@ export function WeekView() {
   const days = useMemo(() => getWeekDays(viewDate), [viewDate]);
   const eventsByDate = useMemo(() => groupEventsByDate(events), [events]);
 
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(new Date()), 30_000);
-    return () => window.clearInterval(id);
-  }, []);
+  // 현재 시각선은 분 단위로만 움직이면 충분하다(중앙 시계 공유).
+  const now = useNow('minute');
 
   const scrollRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -75,26 +73,41 @@ export function WeekView() {
     <div className={styles.weekView}>
       <div className={styles.headerRow}>
         <div className={styles.gutterSpacer} />
-        {days.map((day, index) => {
+        {days.map((day) => {
           const key = toDateKey(day);
           const isToday = key === todayKey;
+          const holiday = getHoliday(key);
           return (
             <button
               type="button"
               key={key}
-              className={`${styles.dayHeader} ${isToday ? styles.dayHeaderToday : ''}`}
+              className={`${styles.dayHeader} ${isToday ? styles.dayHeaderToday : ''} ${
+                holiday ? styles.dayHeaderHoliday : ''
+              }`}
               onClick={() => selectDate(key)}
             >
+              {/* 요일 이름은 배열 순서가 아니라 날짜 자체에서 뽑는다 —
+                  배열이 어떤 이유로든 일요일에서 시작하지 않더라도 라벨은 항상 진짜 요일을 가리킨다 */}
               <span
                 className={`${styles.dayName} ${
-                  index === 0 ? styles.sunday : index === 6 ? styles.saturday : ''
+                  day.getDay() === 0 ? styles.sunday : day.getDay() === 6 ? styles.saturday : ''
                 }`}
               >
-                {WEEKDAYS[index]}
+                {WEEKDAYS[day.getDay()]}
               </span>
-              <span className={`${styles.dayDate} ${isToday ? styles.dayDateToday : ''}`}>
+              <span
+                className={`${styles.dayDate} ${isToday ? styles.dayDateToday : ''} ${
+                  holiday && !isToday ? styles.dayDateHoliday : ''
+                }`}
+              >
                 {day.getDate()}
               </span>
+              {holiday && (
+                <span className={styles.dayHoliday} title={holiday.name}>
+                  {holiday.name}
+                  {holiday.isProjected ? ' (예상)' : ''}
+                </span>
+              )}
             </button>
           );
         })}
@@ -111,9 +124,9 @@ export function WeekView() {
                 <button
                   type="button"
                   key={event.id}
-                  className={styles.allDayChip}
+                  className={`${styles.allDayChip} ${event.completed ? styles.chipDone : ''}`}
                   style={{
-                    background: `color-mix(in srgb, ${getEventColor(event)} 24%, white)`,
+                    background: `color-mix(in srgb, ${getEventColor(event)} 24%, var(--color-chip-base))`,
                   }}
                   onClick={() => selectDate(key)}
                   title={event.title}
@@ -155,13 +168,13 @@ export function WeekView() {
                     <button
                       type="button"
                       key={event.id}
-                      className={styles.eventChip}
+                      className={`${styles.eventChip} ${event.completed ? styles.chipDone : ''}`}
                       style={{
                         top: Math.min(top, (END_HOUR - START_HOUR - 1) * HOUR_HEIGHT) + 2,
                         height: HOUR_HEIGHT - 5,
                         left: `calc(${column * width}% + 2px)`,
                         width: `calc(${width}% - 5px)`,
-                        background: `color-mix(in srgb, ${getEventColor(event)} 26%, white)`,
+                        background: `color-mix(in srgb, ${getEventColor(event)} 26%, var(--color-chip-base))`,
                         borderLeftColor: getEventColor(event),
                       }}
                       onClick={(e) => {

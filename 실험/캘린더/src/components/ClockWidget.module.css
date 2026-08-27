@@ -4,7 +4,7 @@
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  background: linear-gradient(120deg, #e8eeff 0%, #f0ebff 55%, #edeffe 100%);
+  background: var(--gradient-clock);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
   padding: 22px 28px;

@@ -1,0 +1,168 @@
+.root {
+  position: relative;
+}
+
+/* App.module.css의 .viewTitle과 같은 크기·굵기를 유지해 툴바에서 위치가 흔들리지 않게 */
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  min-width: 150px;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  padding: 2px 8px 2px 6px;
+  margin-left: -6px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.trigger:hover {
+  background: var(--color-today-bg);
+  color: var(--color-primary-hover);
+}
+
+.chevron {
+  color: var(--color-text-secondary);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.trigger:hover .chevron {
+  color: var(--color-primary-hover);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: var(--color-primary-hover);
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 60;
+  width: 244px;
+  padding: 10px;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lifted);
+  animation: fadeSlideUp var(--transition-fast);
+}
+
+.panel:focus {
+  outline: none;
+}
+
+.yearRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.yearNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.yearNav:hover {
+  background: var(--color-today-bg);
+  color: var(--color-primary-hover);
+}
+
+.yearValue,
+.yearInput {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  font-family: var(--font-numeric);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+  border-radius: var(--radius-sm);
+}
+
+.yearValue {
+  transition: background var(--transition-fast);
+}
+
+.yearValue:hover {
+  background: var(--color-cell-hover);
+}
+
+.yearInput {
+  background: var(--color-cell);
+  border: 1px solid var(--color-primary);
+  outline: none;
+}
+
+/* SettingsMenu의 테마 세그먼트와 같은 문법 — 트랙 위에 12칸 */
+.months {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  background: var(--color-toggle-track);
+  border-radius: var(--radius-md);
+  padding: 4px;
+}
+
+.monthButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  border-radius: 999px;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.monthButton:hover {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+/* 지금 보고 있는 달 — App.module.css의 .toggleActive와 같은 인상 */
+.monthActive {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  box-shadow: var(--shadow-soft);
+}
+
+.monthActive:hover {
+  background: var(--color-primary-hover);
+  color: var(--color-on-primary);
+}
+
+/* 오늘이 든 달 — 강조가 아니라 표식이라 점 하나로만 */
+.todayDot {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-primary-hover);
+}
+
+.monthActive .todayDot {
+  background: var(--color-on-primary);
+}

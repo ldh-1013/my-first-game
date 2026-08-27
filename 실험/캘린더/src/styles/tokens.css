@@ -16,6 +16,20 @@
   --color-danger: #e75a7e;
   --color-cell: #fbfbff;
   --color-cell-hover: #f1f3fe;
+  /*
+    미세먼지 4단계 배지.
+    에어코리아의 색 관습(좋음 파랑 · 보통 초록 · 나쁨 노랑 · 매우나쁨 빨강)을 따르되,
+    채도를 낮춰 기존 파스텔 팔레트(--color-idea 민트, --color-important 핑크) 톤에 맞췄다.
+    -bg는 배지 배경, 짝이 되는 값은 그 위에 얹는 글자색이다.
+  */
+  --color-aqi-good: #5b8fd6;
+  --color-aqi-good-bg: #e6f0ff;
+  --color-aqi-moderate: #3f8f6d;
+  --color-aqi-moderate-bg: #e6f8f0;
+  --color-aqi-bad: #c9862a;
+  --color-aqi-bad-bg: #fff3e0;
+  --color-aqi-verybad: #d9536f;
+  --color-aqi-verybad-bg: #ffedf2;
   --shadow-soft: 0 4px 20px rgba(124, 158, 255, 0.12);
   --shadow-lifted: 0 10px 32px rgba(124, 158, 255, 0.24);
   --radius-sm: 10px;
@@ -25,4 +39,193 @@
   --font-numeric: 'Inter', 'Pretendard Variable', Pretendard, sans-serif;
   --transition-fast: 160ms ease-out;
   --transition-base: 240ms ease-out;
+
+  /* ---------------------------------------------------------------------
+     아래는 원래 각 컴포넌트에 hex로 박혀 있던 색을 변수로 끌어올린 것이다.
+     값은 전부 기존 하드코딩 값 그대로라 라이트 모드 렌더링은 바뀌지 않는다.
+     다크 모드에서 이 색들을 갈아끼우려면 변수로 올라와 있어야 한다.
+     -------------------------------------------------------------------- */
+
+  /* 버튼·상태 */
+  --color-on-primary: #ffffff;        /* 파란 버튼 위 글자색 */
+  --color-on-secondary: #2e2a4a;      /* 연보라 버튼(일시정지) 위 글자색 */
+  --color-primary-active: #5a7ce8;    /* 파란 버튼 hover */
+  --color-secondary-hover: #b9a8ff;
+  --color-danger-hover: #d84a6e;
+  --color-danger-soft: #ffedf2;       /* 삭제 액션 hover 배경 */
+  --color-success: #3f8f6d;           /* 랩 '최고' 배지 */
+  --color-success-soft: #e6f8f0;
+
+  /* 달력 */
+  --color-weekend-sun: #e786a3;       /* 요일 헤더의 일요일 */
+  --color-weekend-sun-strong: #d96f92;/* 날짜 숫자의 일요일 */
+  --color-category-custom: #b8b5d1;   /* 통계 도넛의 '직접 지정' */
+  --color-toggle-track: #edeffd;      /* 보기 전환 세그먼트 트랙 */
+  --color-locked-stripe: #f3f1fb;     /* 봉인된 타임캡슐 빗금 */
+  --color-week-now: #f0f4ff;          /* 주간 뷰 현재 시간대 */
+  --color-chip-base: #ffffff;         /* 이벤트 칩 배경을 섞을 바탕색 */
+
+  /* 오버레이·스크롤바 */
+  --color-backdrop: rgba(46, 42, 74, 0.18);
+  --color-backdrop-strong: rgba(46, 42, 74, 0.28);
+  --color-scrollbar: #d8d4f2;
+  --color-scrollbar-hover: #c4bfea;
+  --shadow-panel: -8px 0 40px rgba(124, 158, 255, 0.25);
+  --glow-timer: rgba(124, 158, 255, 0.4);
+
+  /* 그라디언트 */
+  --gradient-clock: linear-gradient(120deg, #e8eeff 0%, #f0ebff 55%, #edeffe 100%);
+  --gradient-constellation: linear-gradient(180deg, #fbfbff 0%, #f4f6ff 100%);
+  --gradient-dawn: linear-gradient(180deg, #eceaf6 0%, #e6e8fa 100%);
+  --gradient-morning: linear-gradient(180deg, #e8f1ff 0%, #f1f0ff 100%);
+  --gradient-day: linear-gradient(180deg, #dfeaff 0%, #eceffe 100%);
+  --gradient-dusk: linear-gradient(180deg, #ede7f8 0%, #fbeef1 100%);
+  --gradient-night: linear-gradient(180deg, #d7d8ec 0%, #cecde4 100%);
+  --gradient-default: linear-gradient(180deg, #f5f6fe 0%, #eff0fd 100%);
+
+  /* 기분 5단계 — 좋음(초록) → 흐림(그레이) 순서가 색으로 읽혀야 한다 */
+  --color-mood-1: #a7e0c0;
+  --color-mood-2: #eadfa0;
+  --color-mood-3: #f3cda4;
+  --color-mood-4: #d5c6ef;
+  --color-mood-5: #c4c2d2;
+  --color-mood-empty: #ecebf4;
+
+  /* 성좌 뷰 태그 팔레트 — 서로 구분되어야 한다 */
+  --color-tag-1: #7c9eff;
+  --color-tag-2: #c7b9ff;
+  --color-tag-3: #a5c4ff;
+  --color-tag-4: #9ee7c7;
+  --color-tag-5: #ff9eb5;
+  --color-tag-6: #b8a7f0;
+  --color-tag-7: #8fd8e6;
+  --color-tag-8: #f5b8d0;
+
+  /* 공휴일 — 파스텔 팔레트(민트·핑크·라벤더)와 겹치지 않도록 따뜻한 살구/코랄 계열로 잡았다.
+     '오늘'(--color-today-bg, 푸른 톤)과 한눈에 구분되어야 한다. */
+  --color-holiday-bg: #fff3ea;      /* 셀 전체를 물들이는 옅은 워시 */
+  --color-holiday-stripe: #ffe6d5;  /* 대체공휴일 빗금의 두 번째 색 */
+  --color-holiday-text: #a05532;    /* 공휴일 이름 라벨 글자 (셀·빗금 위 모두 4.5:1 이상) */
+  --color-holiday-accent: #bc7e5c;  /* 라벨 앞 세로 바, 점선 테두리 (3:1 이상) */
+
+  /* 날짜 상세 패널 빈 상태 일러스트 */
+  --color-illust-paper: #edeffe;
+  --color-illust-band: #c7b9ff;
+  --color-illust-accent: #a5c4ff;
+  --color-illust-mint: #9ee7c7;
+  --color-illust-pink: #ff9eb5;
+  --color-illust-line: #8a87a6;
+}
+
+/* =======================================================================
+   다크 모드
+   위 :root(라이트) 값을 덮어쓰기만 한다. 라이트 모드는 그대로 유지된다.
+
+   설계 원칙
+   - 라이트 배경(#f5f6fe)이 가진 보라 기운을 유지한 채 명도만 낮춘 남보라 계열.
+   - 본문 글자는 순백 대신 톤 다운된 회보라(#e4e1f2). 다크 위 순백은 눈이 부시다.
+   - 그림자는 어두운 배경에서 안 보이므로, 1px 링(spread)을 겹쳐 카드 경계를 세운다.
+   - 정보를 담은 색(카테고리·기분·미세먼지·태그)은 어둡게 낮추지 않고
+     어두운 바탕에서 읽히도록 명도를 올리되 색상(hue)과 순서는 그대로 둔다.
+   ======================================================================= */
+:root[data-theme='dark'] {
+  --color-bg: #14131f;
+  --color-surface: #1e1c2e;
+  --color-primary: #8caeff;
+  --color-primary-hover: #a3c0ff;
+  --color-secondary: #b9a8ff;
+  --color-accent: #a5c4ff;
+  --color-today-bg: #2a2f52;
+  --color-text-primary: #e4e1f2;
+  --color-text-secondary: #a5a1c2;
+  --color-border: #343150;
+  --color-work: #8caeff;
+  --color-personal: #c0b0ff;
+  --color-important: #ff9db4;
+  --color-idea: #7fd8b4;
+  --color-danger: #ff7d99;
+  --color-cell: #242236;
+  --color-cell-hover: #2c2a42;
+
+  /* 미세먼지 4등급 — 파랑/초록/주황/빨강 관례 유지, 어두운 배지 위에서 읽히도록 명도만 올림 */
+  --color-aqi-good: #8ab6f0;
+  --color-aqi-good-bg: #1e2a44;
+  --color-aqi-moderate: #7fd8b4;
+  --color-aqi-moderate-bg: #1a3330;
+  --color-aqi-bad: #f0b96b;
+  --color-aqi-bad-bg: #3a2c1a;
+  --color-aqi-verybad: #ff8fa6;
+  --color-aqi-verybad-bg: #3a1f2b;
+
+  --shadow-soft: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 4px 18px rgba(0, 0, 0, 0.45);
+  --shadow-lifted: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 12px 34px rgba(0, 0, 0, 0.6);
+
+  /* 버튼·상태 — 밝은 파랑 버튼 위에는 흰 글자가 대비를 못 내므로 어두운 글자를 얹는다 */
+  --color-on-primary: #141328;
+  --color-on-secondary: #1a1730;
+  --color-primary-active: #bcd2ff;
+  --color-secondary-hover: #cabbff;
+  --color-danger-hover: #ff97ae;
+  --color-danger-soft: #3a1f2b;
+  --color-success: #7fd8b4;
+  --color-success-soft: #1a3330;
+
+  /* 달력 */
+  --color-weekend-sun: #f09bb4;
+  --color-weekend-sun-strong: #f4a9bf;
+  --color-category-custom: #9d99b8;
+  --color-toggle-track: #171626;
+  --color-locked-stripe: #2b2941;
+  --color-week-now: #232945;
+  --color-chip-base: #2f2d47;
+
+  /* 오버레이·스크롤바 */
+  --color-backdrop: rgba(6, 5, 14, 0.55);
+  --color-backdrop-strong: rgba(6, 5, 14, 0.68);
+  --color-scrollbar: #3b3757;
+  --color-scrollbar-hover: #4a4569;
+  --shadow-panel: -8px 0 40px rgba(0, 0, 0, 0.6);
+  --glow-timer: rgba(140, 174, 255, 0.45);
+
+  /* 그라디언트 — 라이트의 시간대 흐름을 그대로 어두운 명도대로 옮겼다 */
+  --gradient-clock: linear-gradient(120deg, #232a48 0%, #282546 55%, #232541 100%);
+  --gradient-constellation: linear-gradient(180deg, #1a1828 0%, #1e1d33 100%);
+  --gradient-dawn: linear-gradient(180deg, #171526 0%, #1b1930 100%);
+  --gradient-morning: linear-gradient(180deg, #141b2e 0%, #191932 100%);
+  --gradient-day: linear-gradient(180deg, #152034 0%, #1a1d33 100%);
+  --gradient-dusk: linear-gradient(180deg, #1d1730 0%, #2a1a28 100%);
+  --gradient-night: linear-gradient(180deg, #100f1c 0%, #16152a 100%);
+  --gradient-default: linear-gradient(180deg, #14131f 0%, #191828 100%);
+
+  /* 기분 5단계 — 초록→노랑→주황→퍼플→그레이 순서 유지, 어두운 칸 위에서 보이도록 채도 유지 */
+  --color-mood-1: #6fc79b;
+  --color-mood-2: #c9b96b;
+  --color-mood-3: #d8a172;
+  --color-mood-4: #a795d6;
+  --color-mood-5: #6f6c8a;
+  --color-mood-empty: #262438;
+
+  /* 성좌 뷰 태그 팔레트 — 어두운 바탕에서 8색이 서로 구분되도록 */
+  --color-tag-1: #8caeff;
+  --color-tag-2: #c0b0ff;
+  --color-tag-3: #9dc3ff;
+  --color-tag-4: #7fd8b4;
+  --color-tag-5: #ff9db4;
+  --color-tag-6: #b79bf5;
+  --color-tag-7: #7fd0e0;
+  --color-tag-8: #f0a8c6;
+
+  /* 공휴일 — 라이트의 살구 톤을 어두운 명도로 옮겼다 */
+  --color-holiday-bg: #33241b;
+  --color-holiday-stripe: #3f2c20;
+  --color-holiday-text: #f0a87e;
+  --color-holiday-accent: #b3714c;
+
+  /* 빈 상태 일러스트 */
+  --color-illust-paper: #2a2840;
+  --color-illust-band: #6b5fa8;
+  --color-illust-accent: #6f8fd6;
+  --color-illust-mint: #5aab8a;
+  --color-illust-pink: #c9707f;
+  --color-illust-line: #8a86a8;
 }

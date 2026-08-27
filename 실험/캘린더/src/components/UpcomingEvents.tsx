@@ -53,7 +53,7 @@ export function UpcomingEvents() {
               <button
                 type="button"
                 key={event.id}
-                className={styles.item}
+                className={`${styles.item} ${event.completed ? styles.itemDone : ''}`}
                 onClick={() => openDate(event.date)}
               >
                 <span className={styles.dot} style={{ background: getEventColor(event) }} />

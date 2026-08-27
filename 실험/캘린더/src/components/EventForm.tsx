@@ -1,6 +1,7 @@
 import { addDays } from 'date-fns';
 import { Lock } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { getNow } from '../store/clock';
 import { useCalendarStore } from '../store/calendarStore';
 import {
   CATEGORIES,
@@ -30,7 +31,7 @@ export function EventForm({ dateKey, initial, onDone }: EventFormProps) {
   const [customColor, setCustomColor] = useState(initial?.color ?? '#b8a7f0');
   const [projectTag, setProjectTag] = useState(initial?.projectTag ?? '');
   const [sealed, setSealed] = useState(Boolean(initial?.isSealed));
-  const defaultSealUntil = toDateKey(addDays(new Date(), 7));
+  const defaultSealUntil = toDateKey(addDays(getNow(), 7));
   const [sealedUntil, setSealedUntil] = useState(initial?.sealedUntil ?? defaultSealUntil);
   const [error, setError] = useState(false);
 
@@ -153,7 +154,7 @@ export function EventForm({ dateKey, initial, onDone }: EventFormProps) {
             <input
               type="date"
               value={sealedUntil}
-              min={toDateKey(addDays(new Date(), 1))}
+              min={toDateKey(addDays(getNow(), 1))}
               onChange={(e) => setSealedUntil(e.target.value)}
             />
           </label>

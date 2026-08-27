@@ -1,0 +1,406 @@
+/* StatsWidget/UpcomingEvents와 같은 카드 톤 */
+.widget {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 20px;
+}
+
+.widgetTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--color-text-primary);
+}
+
+.widgetTitle > svg {
+  color: var(--color-primary-hover);
+  flex-shrink: 0;
+}
+
+.locationName {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.iconButton:hover:not(:disabled) {
+  background: var(--color-today-bg);
+  color: var(--color-primary-hover);
+}
+
+.iconButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.iconButtonActive {
+  background: var(--color-today-bg);
+  color: var(--color-primary-hover);
+}
+
+.spinning {
+  animation: weatherSpin 900ms linear infinite;
+}
+
+@keyframes weatherSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- 지역 검색 ---------- */
+
+.search {
+  margin-bottom: 14px;
+  animation: fadeIn var(--transition-fast);
+}
+
+.searchInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-cell);
+  padding: 7px 10px;
+  transition: border-color var(--transition-fast);
+}
+
+.searchInputWrap:focus-within {
+  border-color: var(--color-primary);
+}
+
+.searchIcon {
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.searchHint {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  padding: 8px 4px 0;
+}
+
+.searchResults {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6px;
+  max-height: 168px;
+  overflow-y: auto;
+}
+
+.searchResult {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.searchResult:hover {
+  background: var(--color-cell-hover);
+}
+
+/* ---------- 현재 날씨 ---------- */
+
+.body {
+  animation: fadeIn var(--transition-base);
+  transition: opacity var(--transition-base);
+}
+
+/* 캐시된 옛 값을 보여주는 중이라는 신호 */
+.bodyStale {
+  opacity: 0.55;
+}
+
+.current {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.weatherIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.readings {
+  min-width: 0;
+}
+
+/* ClockWidget의 .time과 같은 감각 */
+.temp {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--color-text-primary);
+}
+
+.sub {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- 바람 · 오늘 비 소식 ----------
+   등급을 매기는 정보가 아니라 상태 서술이라 배지 없이 흐린 글씨 한 줄씩 */
+
+.outlook {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+  display: grid;
+  gap: 6px;
+}
+
+.outlookRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.outlookRow svg {
+  flex: none;
+}
+
+/* 실제 풍속은 등급을 뒷받침하는 참고값이라 한 단계 더 물러나 있게 */
+.outlookValue {
+  font-family: var(--font-numeric);
+  font-style: normal;
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* ---------- 미세먼지 ---------- */
+
+.dust {
+  margin-top: 14px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+}
+
+.dustTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.dustTitle svg {
+  color: var(--color-primary-hover);
+}
+
+.dustTitle .badge,
+.dustTitle .badgeEmpty {
+  margin-left: auto;
+}
+
+.dustRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.dustLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  width: 42px;
+  flex-shrink: 0;
+}
+
+.dustValue {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.dustUnit {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-left: 3px;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.badgeEmpty {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  padding: 2px 9px;
+  flex-shrink: 0;
+}
+
+.gradeGood {
+  color: var(--color-aqi-good);
+  background: var(--color-aqi-good-bg);
+}
+
+.gradeModerate {
+  color: var(--color-aqi-moderate);
+  background: var(--color-aqi-moderate-bg);
+}
+
+.gradeBad {
+  color: var(--color-aqi-bad);
+  background: var(--color-aqi-bad-bg);
+}
+
+.gradeVerybad {
+  color: var(--color-aqi-verybad);
+  background: var(--color-aqi-verybad-bg);
+}
+
+/* ---------- 실패 / 스켈레톤 ---------- */
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0 8px;
+  text-align: center;
+}
+
+.errorText {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.retryButton {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-primary-hover);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 6px 16px;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.retryButton:hover {
+  background: var(--color-today-bg);
+  border-color: var(--color-primary);
+}
+
+.staleNote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-top: 12px;
+}
+
+.staleRetry {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skelMain {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 6px;
+}
+
+.skelCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-cell-hover);
+  flex-shrink: 0;
+}
+
+.skelLines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skelBar {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--color-cell-hover);
+}
+
+.skelBarWide {
+  height: 22px;
+  width: 70%;
+}
+
+.skeleton > .skelBar:last-child {
+  width: 80%;
+}

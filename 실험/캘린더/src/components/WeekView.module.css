@@ -9,6 +9,10 @@
   display: grid;
   grid-template-columns: 56px repeat(7, 1fr);
   gap: 4px;
+  /* 시간 그리드(.scrollArea)에 생기는 세로 스크롤바만큼 폭을 맞춰
+     헤더와 요일 열이 어긋나지 않게 한다 */
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 .gutterSpacer,
@@ -50,7 +54,7 @@
 }
 
 .sunday {
-  color: #e786a3;
+  color: var(--color-weekend-sun);
 }
 
 .saturday {
@@ -72,7 +76,7 @@
 
 .dayDateToday {
   background: var(--color-primary-hover);
-  color: #ffffff;
+  color: var(--color-on-primary);
 }
 
 .allDayRow {
@@ -110,6 +114,7 @@
   gap: 4px;
   max-height: 560px;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   border-top: 1px solid var(--color-border);
   padding-top: 2px;
 }
@@ -149,7 +154,7 @@
 }
 
 .dayColumnToday {
-  background-color: #f0f4ff;
+  background-color: var(--color-week-now);
 }
 
 .eventChip {
@@ -213,4 +218,30 @@
   height: 8px;
   border-radius: 50%;
   background: var(--color-important);
+}
+
+/* ---------- 공휴일 (주간 뷰 요일 헤더) ---------- */
+.dayHeaderHoliday {
+  background: var(--color-holiday-bg);
+}
+
+.dayDateHoliday {
+  color: var(--color-holiday-text);
+}
+
+.dayHoliday {
+  display: block;
+  max-width: 100%;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-holiday-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+/* 완료된 일정 칩 — 자리는 그대로 두고 흐려지기만 한다 */
+.chipDone {
+  opacity: 0.5;
 }
