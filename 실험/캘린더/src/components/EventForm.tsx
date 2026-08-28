@@ -25,6 +25,9 @@ export function EventForm({ dateKey, initial, onDone }: EventFormProps) {
   const updateEvent = useCalendarStore((s) => s.updateEvent);
 
   const [title, setTitle] = useState(initial?.title ?? '');
+  // 수정 모드에서도 날짜를 옮길 수 있다. 예전에는 원래 날짜로 고정돼 있어
+  // 다른 날로 보내려면 지웠다가 다시 만들어야 했다.
+  const [date, setDate] = useState(initial?.date ?? dateKey);
   const [time, setTime] = useState(initial?.time ?? '');
   const [memo, setMemo] = useState(initial?.memo ?? '');
   const [category, setCategory] = useState<EventCategory>(initial?.category ?? 'personal');
@@ -48,9 +51,12 @@ export function EventForm({ dateKey, initial, onDone }: EventFormProps) {
       titleRef.current?.focus();
       return;
     }
-    const useSeal = sealed && sealedUntil > dateKey;
+    // 날짜 입력은 비울 수 있다. 빈 값이면 일정이 갈 곳을 잃으므로 원래 날짜로 되돌린다.
+    const nextDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : (initial?.date ?? dateKey);
+    // 개봉일이 일정 날짜보다 뒤일 때만 봉인이 의미가 있다. 날짜를 옮겼으면 옮긴 날 기준으로 본다.
+    const useSeal = sealed && sealedUntil > nextDate;
     const input: EventInput = {
-      date: initial?.date ?? dateKey,
+      date: nextDate,
       title: trimmed,
       time: time || undefined,
       memo: memo.trim() || undefined,
@@ -81,6 +87,15 @@ export function EventForm({ dateKey, initial, onDone }: EventFormProps) {
       {error && <p className={styles.errorText}>제목을 입력해 주세요</p>}
 
       <div className={styles.timeRow}>
+        <label className={styles.timeLabel}>
+          날짜
+          <input
+            type="date"
+            className={styles.timeInput}
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+        </label>
         <label className={styles.timeLabel}>
           시간
           <input
