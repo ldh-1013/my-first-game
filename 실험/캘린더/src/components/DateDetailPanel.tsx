@@ -1,6 +1,6 @@
 import { differenceInCalendarDays } from 'date-fns';
 import { Check, Lock, Pencil, Plus, Trash2, X } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTodayKey } from '../hooks/useTodayKey';
 import { useCalendarStore } from '../store/calendarStore';
 import { CATEGORY_LABELS, getEventColor, isLocked, type CalendarEvent } from '../types/event';
@@ -15,12 +15,15 @@ interface EventItemProps {
   event: CalendarEvent;
   locked: boolean;
   todayKey: string;
-  onToggleComplete: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
+  /* 콜백은 항목별로 만들지 않고 id/이벤트를 인자로 받는다.
+     렌더마다 새 화살표 함수를 넘기면 memo가 매번 깨져 아무 소용이 없다. */
+  onToggleComplete: (id: string) => void;
+  onEdit: (id: string) => void;
+  onDelete: (event: CalendarEvent) => void;
 }
 
-function EventItem({
+/** 목록의 한 줄. 부모(패널)가 다시 그려져도 자기 값이 그대로면 다시 그리지 않는다. */
+const EventItem = memo(function EventItem({
   event,
   locked,
   todayKey,
@@ -28,6 +31,7 @@ function EventItem({
   onEdit,
   onDelete,
 }: EventItemProps) {
+
   const dDay = locked
     ? differenceInCalendarDays(fromDateKey(event.sealedUntil!), fromDateKey(todayKey))
     : 0;
@@ -46,7 +50,7 @@ function EventItem({
         <button
           type="button"
           className={`${styles.check} ${done ? styles.checkDone : ''}`}
-          onClick={onToggleComplete}
+          onClick={() => onToggleComplete(event.id)}
           aria-pressed={done}
           aria-label={done ? `${event.title} 완료 해제` : `${event.title} 완료로 표시`}
         >
@@ -78,17 +82,22 @@ function EventItem({
       </div>
       <div className={styles.itemActions}>
         {!locked && (
-          <button type="button" aria-label="수정" onClick={onEdit}>
+          <button type="button" aria-label="수정" onClick={() => onEdit(event.id)}>
             <Pencil size={15} />
           </button>
         )}
-        <button type="button" aria-label="삭제" className={styles.deleteAction} onClick={onDelete}>
+        <button
+          type="button"
+          aria-label="삭제"
+          className={styles.deleteAction}
+          onClick={() => onDelete(event)}
+        >
           <Trash2 size={15} />
         </button>
       </div>
     </article>
   );
-}
+});
 
 function EmptyState() {
   return (
@@ -158,6 +167,14 @@ export function DateDetailPanel() {
   const allDay = dayEvents.filter((event) => !event.time);
   const timed = dayEvents.filter((event) => event.time);
 
+  // memo가 의미를 가지려면 이 참조들이 렌더마다 바뀌지 않아야 한다.
+  // toggleComplete는 zustand 액션이라 이미 고정, 나머지는 setState만 쓰므로 의존성이 없다.
+  const handleEdit = useCallback((id: string) => {
+    setEditingId(id);
+    setCreating(false);
+  }, []);
+  const handleDelete = useCallback((event: CalendarEvent) => setDeleteTarget(event), []);
+
   const renderItem = (event: CalendarEvent) => {
     const locked = isLocked(event, todayKey);
     return editingId === event.id && !locked ? (
@@ -173,12 +190,9 @@ export function DateDetailPanel() {
         event={event}
         locked={locked}
         todayKey={todayKey}
-        onToggleComplete={() => toggleComplete(event.id)}
-        onEdit={() => {
-          setEditingId(event.id);
-          setCreating(false);
-        }}
-        onDelete={() => setDeleteTarget(event)}
+        onToggleComplete={toggleComplete}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
       />
     );
   };

@@ -100,5 +100,12 @@ export function groupEventsByDate(events: CalendarEvent[]): EventsByDate {
  * 호출부에서 다시 sort할 필요가 없다.
  */
 export function eventsOnDate(map: EventsByDate, key: string): CalendarEvent[] {
-  return map.get(key) ?? [];
+  return map.get(key) ?? NO_EVENTS;
 }
+
+/**
+ * 일정 없는 날이 돌려받는 빈 배열. 호출마다 새로 만들면 참조가 매번 달라져
+ * React.memo를 쓴 셀이 전부 다시 그려진다(대부분의 날이 비어 있으니 사실상 전부다).
+ * 하나를 얼려서 돌려준다 — 어차피 쓰는 쪽은 읽기만 한다.
+ */
+const NO_EVENTS = Object.freeze([]) as unknown as CalendarEvent[];
