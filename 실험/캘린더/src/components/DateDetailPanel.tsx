@@ -1,10 +1,10 @@
 import { differenceInCalendarDays } from 'date-fns';
 import { Check, Lock, Pencil, Plus, Trash2, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTodayKey } from '../hooks/useTodayKey';
 import { useCalendarStore } from '../store/calendarStore';
 import { CATEGORY_LABELS, getEventColor, isLocked, type CalendarEvent } from '../types/event';
-import { compareEvents, formatDayTitle, fromDateKey } from '../utils/dateUtils';
+import { eventsOnDate, formatDayTitle, fromDateKey, groupEventsByDate } from '../utils/dateUtils';
 import { getHoliday } from '../utils/holidays';
 import { ConfirmDialog } from './ConfirmDialog';
 import { EventForm } from './EventForm';
@@ -152,9 +152,9 @@ export function DateDetailPanel() {
 
   const open = selectedDate !== null;
   const holiday = displayDate ? getHoliday(displayDate) : null;
-  const dayEvents = displayDate
-    ? events.filter((event) => event.date === displayDate).sort(compareEvents)
-    : [];
+  // 다른 화면들과 같은 그룹을 쓴다. 정렬은 groupEventsByDate가 이미 해 뒀다.
+  const eventsByDate = useMemo(() => groupEventsByDate(events), [events]);
+  const dayEvents = displayDate ? eventsOnDate(eventsByDate, displayDate) : [];
   const allDay = dayEvents.filter((event) => !event.time);
   const timed = dayEvents.filter((event) => event.time);
 

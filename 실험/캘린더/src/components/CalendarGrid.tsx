@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useTodayKey } from '../hooks/useTodayKey';
 import { useCalendarStore } from '../store/calendarStore';
 import { getEventColor, isLocked } from '../types/event';
-import { getMonthGridDays, groupEventsByDate, toDateKey } from '../utils/dateUtils';
+import { eventsOnDate, getMonthGridDays, groupEventsByDate, toDateKey } from '../utils/dateUtils';
 import { getHoliday } from '../utils/holidays';
 import { MoonPhase } from './MoonPhase';
 import styles from './CalendarGrid.module.css';
@@ -57,7 +57,7 @@ export function CalendarGrid() {
           };
           const joinPrev = index % 7 !== 0 && sameRun(-1);
           const joinNext = index % 7 !== 6 && sameRun(1);
-          const dayEvents = eventsByDate.get(key) ?? [];
+          const dayEvents = eventsOnDate(eventsByDate, key);
           const preview = dayEvents[0];
           const previewLocked = preview ? isLocked(preview, todayKey) : false;
           const weekday = day.getDay();

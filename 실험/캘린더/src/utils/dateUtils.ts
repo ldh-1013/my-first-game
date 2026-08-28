@@ -74,7 +74,10 @@ export function compareEvents(a: CalendarEvent, b: CalendarEvent): number {
   return a.time.localeCompare(b.time) || a.createdAt.localeCompare(b.createdAt);
 }
 
-export function groupEventsByDate(events: CalendarEvent[]): Map<string, CalendarEvent[]> {
+/** 날짜 키('YYYY-MM-DD') → 그날의 일정들. 각 배열은 compareEvents 순으로 정렬돼 있다. */
+export type EventsByDate = Map<string, CalendarEvent[]>;
+
+export function groupEventsByDate(events: CalendarEvent[]): EventsByDate {
   const map = new Map<string, CalendarEvent[]>();
   for (const event of events) {
     const list = map.get(event.date);
@@ -83,4 +86,13 @@ export function groupEventsByDate(events: CalendarEvent[]): Map<string, Calendar
   }
   for (const list of map.values()) list.sort(compareEvents);
   return map;
+}
+
+/**
+ * 그룹에서 하루치를 꺼낸다. 일정이 없는 날이 대부분이라 호출부마다 `?? []`를 달게 되는데,
+ * 그 기본값을 여기 한 곳에 둔다. 반환 배열은 groupEventsByDate가 이미 정렬해 둔 것이라
+ * 호출부에서 다시 sort할 필요가 없다.
+ */
+export function eventsOnDate(map: EventsByDate, key: string): CalendarEvent[] {
+  return map.get(key) ?? [];
 }

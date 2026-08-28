@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useNow, useTodayKey } from '../store/clock';
 import { useCalendarStore } from '../store/calendarStore';
 import { getEventColor, type CalendarEvent } from '../types/event';
-import { getWeekDays, groupEventsByDate, toDateKey } from '../utils/dateUtils';
+import { eventsOnDate, getWeekDays, groupEventsByDate, toDateKey } from '../utils/dateUtils';
 import { getHoliday } from '../utils/holidays';
 import styles from './WeekView.module.css';
 
@@ -117,7 +117,7 @@ export function WeekView() {
         <div className={styles.gutterLabel}>종일</div>
         {days.map((day) => {
           const key = toDateKey(day);
-          const allDay = (eventsByDate.get(key) ?? []).filter((event) => !event.time);
+          const allDay = eventsOnDate(eventsByDate, key).filter((event) => !event.time);
           return (
             <div key={key} className={styles.allDayCell}>
               {allDay.map((event) => (
@@ -151,7 +151,7 @@ export function WeekView() {
           {days.map((day) => {
             const key = toDateKey(day);
             const isToday = key === todayKey;
-            const timed = (eventsByDate.get(key) ?? []).filter((event) => event.time);
+            const timed = eventsOnDate(eventsByDate, key).filter((event) => event.time);
             const positioned = layoutDayEvents(timed);
 
             return (

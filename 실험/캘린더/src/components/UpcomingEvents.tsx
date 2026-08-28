@@ -4,7 +4,13 @@ import { useMemo } from 'react';
 import { useTodayKey } from '../hooks/useTodayKey';
 import { useCalendarStore } from '../store/calendarStore';
 import { getEventColor, type CalendarEvent } from '../types/event';
-import { compareEvents, formatUpcomingLabel, fromDateKey, toDateKey } from '../utils/dateUtils';
+import {
+  eventsOnDate,
+  formatUpcomingLabel,
+  fromDateKey,
+  groupEventsByDate,
+  toDateKey,
+} from '../utils/dateUtils';
 import styles from './UpcomingEvents.module.css';
 
 interface DayGroup {
@@ -18,12 +24,11 @@ export function UpcomingEvents() {
   const todayKey = useTodayKey();
 
   const groups = useMemo<DayGroup[]>(() => {
+    // 하루씩 전체 목록을 훑으면 7번 순회하게 된다. 한 번 묶어 두고 7번 꺼내 쓴다.
+    const eventsByDate = groupEventsByDate(events);
     const start = fromDateKey(todayKey);
     return Array.from({ length: 7 }, (_, i) => toDateKey(addDays(start, i)))
-      .map((key) => ({
-        key,
-        events: events.filter((event) => event.date === key).sort(compareEvents),
-      }))
+      .map((key) => ({ key, events: eventsOnDate(eventsByDate, key) }))
       .filter((group) => group.events.length > 0);
   }, [events, todayKey]);
 
