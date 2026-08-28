@@ -1,0 +1,303 @@
+/*
+ * 리캡 화면. 카드 표면·간격은 사이드바 위젯과 같은 값을 쓰고,
+ * 막대는 RainForecastScreen의 문법(높이 + 진하기, 한 색조)을 그대로 따른다.
+ */
+
+.wrap {
+  width: min(720px, 100%);
+  margin: 0 auto;
+}
+
+/* ---------- 상단 전환/이동 ---------- */
+
+.modes {
+  --segment-pad: 4px;
+  width: 200px;
+  margin: 0 auto;
+  background: var(--color-toggle-track);
+  border-radius: 999px;
+  padding: var(--segment-pad);
+}
+
+.modeButton {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: 6px 18px;
+  border-radius: 999px;
+  transition: color var(--transition-fast);
+}
+
+.modeActive {
+  color: var(--color-text-primary);
+}
+
+.periodRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 18px 0 20px;
+}
+
+.period {
+  font-size: 20px;
+  font-weight: 700;
+  min-width: 150px;
+  text-align: center;
+  color: var(--color-text-primary);
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.navButton:hover {
+  background: var(--color-today-bg);
+  color: var(--color-primary-hover);
+}
+
+/* ---------- 본문 ---------- */
+
+.empty {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: 40px 0;
+}
+
+.cards {
+  display: grid;
+  gap: 12px;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+}
+
+.cardTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  margin-bottom: 10px;
+}
+
+.headline {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.headline strong {
+  font-family: var(--font-numeric);
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.headlineSub {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-left: auto;
+}
+
+.meter {
+  margin-top: 10px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-toggle-track);
+  overflow: hidden;
+}
+
+.meterFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-primary);
+  transition: width var(--transition-base);
+}
+
+.note {
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* ---------- 연간 월별 막대 ---------- */
+
+.monthChart {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
+}
+
+.monthColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.track {
+  width: 100%;
+  height: 110px;
+  display: flex;
+  align-items: flex-end;
+  background: var(--color-toggle-track);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bar {
+  width: 100%;
+  background: var(--color-primary);
+  border-radius: 6px 6px 0 0;
+  transition: height var(--transition-base), opacity var(--transition-base);
+}
+
+.monthLabel {
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  line-height: 1;
+}
+
+/* ---------- 카테고리 가로 막대 ---------- */
+
+.rows {
+  display: grid;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rowLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  width: 66px;
+  flex-shrink: 0;
+}
+
+.rowTrack {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-toggle-track);
+  overflow: hidden;
+}
+
+.rowFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width var(--transition-base);
+}
+
+.rowValue {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  width: 28px;
+  text-align: right;
+}
+
+/* ---------- 가장 바빴던 날 ---------- */
+
+.dayButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: var(--color-cell);
+  transition: background var(--transition-fast);
+}
+
+.dayButton:hover {
+  background: var(--color-cell-hover);
+}
+
+.dayCount {
+  font-family: var(--font-numeric);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* ---------- 기분 ---------- */
+
+.moodBar {
+  display: flex;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--color-mood-empty);
+}
+
+.moodPart {
+  height: 100%;
+}
+
+.moodLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 10px;
+}
+
+.moodItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.moodDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .meterFill,
+  .rowFill {
+    transition: none;
+  }
+}

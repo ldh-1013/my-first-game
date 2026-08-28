@@ -1,4 +1,6 @@
-import { AlarmClock, Hourglass, Timer } from 'lucide-react';
+import { format } from 'date-fns';
+import { AlarmClock, ChartColumn, Hourglass, Timer } from 'lucide-react';
+import { useCalendarStore } from '../store/calendarStore';
 import { stopwatchElapsed, useToolStore } from '../store/toolStore';
 import { formatCountdown, formatStopwatch } from '../utils/duration';
 import styles from './ToolsWidget.module.css';
@@ -15,6 +17,11 @@ export function ToolsWidget() {
   const openTool = useToolStore((s) => s.openTool);
   const stopwatch = useToolStore((s) => s.stopwatch);
   const timer = useToolStore((s) => s.timer);
+  // 리캡은 흐르는 상태가 없으므로, 상태 자리에는 이번 달 요약을 대신 둔다
+  const monthPrefix = format(new Date(), 'yyyy-MM');
+  const monthCount = useCalendarStore(
+    (s) => s.events.filter((event) => event.date.startsWith(monthPrefix)).length,
+  );
 
   const swElapsed = stopwatchElapsed(stopwatch);
   const swLabel = stopwatch.running
@@ -62,6 +69,16 @@ export function ToolsWidget() {
             {timer.running && <span className={styles.pulse} aria-hidden />}
             {timerLabel}
           </span>
+        </button>
+
+        <button
+          type="button"
+          className={`${styles.toolButton} ${styles.toolWide}`}
+          onClick={() => openTool('recap')}
+        >
+          <ChartColumn size={18} aria-hidden />
+          <span className={styles.toolName}>리캡</span>
+          <span className={styles.toolState}>이번 달 {monthCount}개</span>
         </button>
       </div>
     </section>

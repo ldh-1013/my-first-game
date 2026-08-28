@@ -26,6 +26,11 @@
   gap: 10px;
 }
 
+/* 스톱워치·타이머는 한 쌍으로 읽히므로, 성격이 다른 리캡은 아랫줄을 통째로 쓴다 */
+.toolWide {
+  grid-column: 1 / -1;
+}
+
 /* App.module.css의 .todayButton과 같은 필(pill) 감각 — 세로로 조금 더 키운 형태 */
 .toolButton {
   display: flex;

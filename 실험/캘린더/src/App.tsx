@@ -9,6 +9,7 @@ import { MonthJumpPopover } from './components/MonthJumpPopover';
 import { MoodHeatmap } from './components/MoodHeatmap';
 import { OnThisDay } from './components/OnThisDay';
 import { RainForecastScreen } from './components/RainForecastScreen';
+import { RecapScreen } from './components/RecapScreen';
 import { RhythmInsight } from './components/RhythmInsight';
 import { SearchBar } from './components/SearchBar';
 import { SegmentedControl } from './components/SegmentedControl';
@@ -232,6 +233,13 @@ export default function App() {
           aria-hidden={screen !== 'rain'}
         >
           <RainForecastScreen />
+        </div>
+
+        <div
+          className={`${styles.screen} ${screen === 'recap' ? styles.screenActive : ''}`}
+          aria-hidden={screen !== 'recap'}
+        >
+          <RecapScreen />
         </div>
       </div>
 
