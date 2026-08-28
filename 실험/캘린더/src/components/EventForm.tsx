@@ -117,6 +117,7 @@ export function EventForm({ dateKey, initial, onDone }: EventFormProps) {
         className={styles.memoInput}
         placeholder="자세한 메모 (선택)"
         rows={3}
+        maxLength={500}
         value={memo}
         onChange={(e) => setMemo(e.target.value)}
       />
