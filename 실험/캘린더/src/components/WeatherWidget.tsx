@@ -6,6 +6,7 @@ import {
   CloudRain,
   CloudSnow,
   CloudSun,
+  ChevronRight,
   Factory,
   MapPin,
   Moon,
@@ -17,8 +18,10 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useWeather } from '../hooks/useWeather';
+import { useToolStore } from '../store/toolStore';
 import {
   AQI_LABELS,
+  RAIN_CHANCE_THRESHOLD,
   WIND_GRADE_LABELS,
   describeRainChance,
   describeWeather,
@@ -188,6 +191,7 @@ function LocationSearch({ onPick, onClose }: LocationSearchProps) {
 
 export function WeatherWidget() {
   const { snapshot, location, loading, failed, refresh, changeLocation } = useWeather();
+  const openTool = useToolStore((s) => s.openTool);
   const [searchOpen, setSearchOpen] = useState(false);
 
   const look = snapshot ? describeWeather(snapshot.weatherCode) : null;
@@ -203,6 +207,9 @@ export function WeatherWidget() {
   const windSpeed = snapshot?.windSpeed != null ? roundWindSpeed(snapshot.windSpeed) : null;
   const wind = windGrade(windSpeed);
   const rainNote = describeRainChance(snapshot?.rainChancePercent ?? null);
+  // 비 소식이 있을 때만 시간대별 화면으로 들어갈 수 있다. 없는 날엔 누를 게 없으니 그냥 글이다.
+  const rainDetailAvailable =
+    snapshot?.rainChancePercent != null && snapshot.rainChancePercent >= RAIN_CHANCE_THRESHOLD;
 
   // 갱신에 실패했는데 보여줄 캐시가 있으면, 옛날 값이라는 걸 흐릿하게 티 낸다
   const showStale = failed && snapshot !== null;
@@ -277,12 +284,23 @@ export function WeatherWidget() {
                   <em className={styles.outlookValue}>{formatWindSpeed(windSpeed)}</em>
                 </p>
               )}
-              {rainNote && (
-                <p className={styles.outlookRow}>
-                  <CloudRain size={13} aria-hidden />
-                  {rainNote}
-                </p>
-              )}
+              {rainNote &&
+                (rainDetailAvailable ? (
+                  <button
+                    type="button"
+                    className={`${styles.outlookRow} ${styles.outlookLink}`}
+                    onClick={() => openTool('rain')}
+                  >
+                    <CloudRain size={13} aria-hidden />
+                    {rainNote}
+                    <ChevronRight size={13} aria-hidden className={styles.outlookChevron} />
+                  </button>
+                ) : (
+                  <p className={styles.outlookRow}>
+                    <CloudRain size={13} aria-hidden />
+                    {rainNote}
+                  </p>
+                ))}
             </div>
           )}
 

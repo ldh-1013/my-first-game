@@ -195,6 +195,21 @@ export function loadWeatherCache(): WeatherSnapshot | null {
     // 아예 없는 옛 캐시는 아래에서 null로 채워 살린다 (업데이트 직후 캐시가 통째로 날아가지 않게).
     const addedLater = (value: unknown, check: (v: unknown) => boolean) =>
       value === undefined || check(value);
+    // 시간대별 비 예보 — null이거나, hour/probability/amount 모양을 갖춘 배열이어야 한다
+    const nullableHourly = (value: unknown) =>
+      value === null ||
+      (Array.isArray(value) &&
+        value.every((row) => {
+          if (typeof row !== 'object' || row === null) return false;
+          const r = row as Record<string, unknown>;
+          return (
+            typeof r.hour === 'number' &&
+            r.hour >= 0 &&
+            r.hour <= 23 &&
+            nullableNumber(r.probability) &&
+            nullableNumber(r.amount)
+          );
+        }));
     if (
       typeof snap.fetchedAt !== 'number' ||
       !isValidLocation(snap.location) ||
@@ -204,6 +219,7 @@ export function loadWeatherCache(): WeatherSnapshot | null {
       typeof snap.isDay !== 'boolean' ||
       !addedLater(snap.windSpeed, nullableNumber) ||
       !addedLater(snap.rainChancePercent, nullablePercent) ||
+      !addedLater(snap.hourlyRain, nullableHourly) ||
       !nullableNumber(snap.pm10) ||
       !nullableNumber(snap.pm25)
     ) {
@@ -213,6 +229,7 @@ export function loadWeatherCache(): WeatherSnapshot | null {
       ...snap,
       windSpeed: (snap.windSpeed as number | null | undefined) ?? null,
       rainChancePercent: (snap.rainChancePercent as number | null | undefined) ?? null,
+      hourlyRain: (snap.hourlyRain as WeatherSnapshot['hourlyRain'] | undefined) ?? null,
     } as WeatherSnapshot;
   } catch {
     return null;

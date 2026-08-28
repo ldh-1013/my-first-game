@@ -15,6 +15,15 @@ export interface WeatherLocation {
   lon: number;
 }
 
+export interface HourlyRain {
+  /** 그 시각의 0~23 hour (로컬 기준) */
+  hour: number;
+  /** 강수확률 % */
+  probability: number | null;
+  /** 강수량 mm */
+  amount: number | null;
+}
+
 export interface WeatherSnapshot {
   /** 응답을 받은 시각(Date.now). 캐시가 얼마나 오래됐는지 표시하는 데 쓴다 */
   fetchedAt: number;
@@ -28,6 +37,8 @@ export interface WeatherSnapshot {
   windSpeed: number | null;
   /** 오늘 하루 최대 강수확률 (%). 응답에서 못 받으면 null */
   rainChancePercent: number | null;
+  /** 오늘 시간대별 강수확률·강수량. 응답에서 못 받으면 null */
+  hourlyRain: HourlyRain[] | null;
   /** 미세먼지 ㎍/㎥ — 대기질 응답만 따로 실패할 수 있어 null을 허용한다 */
   pm10: number | null;
   pm25: number | null;
@@ -198,6 +209,88 @@ export function describeRainChance(percent: number | null): string | null {
   if (percent === null || !Number.isFinite(percent)) return null;
   if (percent >= RAIN_CHANCE_THRESHOLD) return `오늘 비 소식이 있어요 (강수확률 ${Math.round(percent)}%)`;
   return '오늘은 비 걱정 없어요';
+}
+
+/* ---------------------------------------------------------------------------
+ * 시간대별 비 구간
+ * ------------------------------------------------------------------------- */
+
+export interface RainWindow {
+  /** 비가 시작되는 시(0~23) */
+  startHour: number;
+  /** 비가 그치는 시(1~24). 마지막 시간대의 다음 시각이라 24가 될 수 있다 */
+  endHour: number;
+  /** 구간 안 최고 강수확률 % */
+  peak: number;
+  /** 이미 시작된 구간이라 시작 시각을 '지금'으로 당겨 잡았는지 */
+  ongoing: boolean;
+}
+
+/**
+ * 확률이 기준치 이상으로 이어지는 구간들을 찾는다.
+ *
+ * 이미 지나간 구간은 안내할 값어치가 없으니 버리고, 지금 내리는 중인 구간은
+ * 시작을 현재 시각으로 당겨 잡는다("오전 3시부터"가 아니라 "지금부터").
+ * hourly의 한 칸은 그 시각부터 한 시간을 뜻하므로 끝 시각은 마지막 칸 + 1이다.
+ */
+export function findRainWindows(
+  hourly: HourlyRain[] | null,
+  fromHour: number,
+): RainWindow[] {
+  if (!hourly || hourly.length === 0) return [];
+
+  const windows: RainWindow[] = [];
+  let start: number | null = null;
+  let peak = 0;
+
+  const close = (endHour: number) => {
+    if (start === null) return;
+    // 이미 끝난 구간은 버린다
+    if (endHour > fromHour) {
+      windows.push({
+        startHour: Math.max(start, fromHour),
+        endHour,
+        peak,
+        ongoing: start < fromHour,
+      });
+    }
+    start = null;
+    peak = 0;
+  };
+
+  for (const row of [...hourly].sort((a, b) => a.hour - b.hour)) {
+    const wet = row.probability !== null && row.probability >= RAIN_CHANCE_THRESHOLD;
+    if (wet) {
+      if (start === null) start = row.hour;
+      peak = Math.max(peak, row.probability ?? 0);
+    } else {
+      close(row.hour);
+    }
+  }
+  close(24);
+
+  return windows;
+}
+
+/** 14 → '오후 2시'. 0시와 12시는 숫자보다 말이 자연스럽다. */
+export function formatHourLabel(hour: number): string {
+  const h = ((hour % 24) + 24) % 24;
+  if (h === 0) return '자정';
+  if (h === 12) return '정오';
+  return h < 12 ? `오전 ${h}시` : `오후 ${h - 12}시`;
+}
+
+/**
+ * 구간들을 한 문장으로. insight.ts처럼 재촉하거나 겁주지 않는 톤을 따른다.
+ * 구간이 없으면 null — 화면이 그 자리를 다른 문구로 채운다.
+ */
+export function describeRainWindows(windows: RainWindow[]): string | null {
+  if (windows.length === 0) return null;
+  const parts = windows.map((w) => {
+    const from = w.ongoing ? '지금' : formatHourLabel(w.startHour);
+    return `${from}부터 ${formatHourLabel(w.endHour)}까지`;
+  });
+  return `${parts.join(', ')} 비가 올 것으로 보여요`;
 }
 
 /** 소수점 한 자리 없이 보여줄 기온 문자열 (-0 방지) */

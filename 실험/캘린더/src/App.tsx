@@ -7,6 +7,7 @@ import { ConstellationView } from './components/ConstellationView';
 import { DateDetailPanel } from './components/DateDetailPanel';
 import { MonthJumpPopover } from './components/MonthJumpPopover';
 import { MoodHeatmap } from './components/MoodHeatmap';
+import { RainForecastScreen } from './components/RainForecastScreen';
 import { RhythmInsight } from './components/RhythmInsight';
 import { SearchBar } from './components/SearchBar';
 import { SegmentedControl } from './components/SegmentedControl';
@@ -221,6 +222,13 @@ export default function App() {
           aria-hidden={screen !== 'timer'}
         >
           <TimerScreen />
+        </div>
+
+        <div
+          className={`${styles.screen} ${screen === 'rain' ? styles.screenActive : ''}`}
+          aria-hidden={screen !== 'rain'}
+        >
+          <RainForecastScreen />
         </div>
       </div>
 

@@ -209,6 +209,26 @@
   flex: none;
 }
 
+/* 눌러서 시간대별 화면으로 들어가는 줄. 링크라는 티만 나고 버튼처럼 튀지는 않게 */
+.outlookLink {
+  width: 100%;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  margin: -3px -6px;
+  padding: 3px 6px;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.outlookLink:hover {
+  background: var(--color-cell-hover);
+  color: var(--color-text-primary);
+}
+
+.outlookChevron {
+  margin-left: auto;
+  opacity: 0.7;
+}
+
 /* 실제 풍속은 등급을 뒷받침하는 참고값이라 한 단계 더 물러나 있게 */
 .outlookValue {
   font-family: var(--font-numeric);

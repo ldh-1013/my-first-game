@@ -1,5 +1,5 @@
 import { toEnglishPlace, toKoreanPlace } from './koreanPlaces';
-import type { WeatherLocation, WeatherSnapshot } from './weather';
+import type { HourlyRain, WeatherLocation, WeatherSnapshot } from './weather';
 
 /**
  * 날씨 관련 외부 호출 모음. 전부 키 없이 HTTPS로 열려 있는 엔드포인트다.
@@ -130,6 +130,8 @@ interface CurrentWeather {
   windSpeed: number | null;
   /** 오늘 하루 최대 강수확률 (%) */
   rainChancePercent: number | null;
+  /** 오늘 시간대별 강수확률·강수량. 못 받으면 null */
+  hourlyRain: HourlyRain[] | null;
 }
 
 async function fetchCurrentWeather(location: WeatherLocation): Promise<CurrentWeather> {
@@ -138,6 +140,7 @@ async function fetchCurrentWeather(location: WeatherLocation): Promise<CurrentWe
     `?latitude=${location.lat}&longitude=${location.lon}` +
     '&current=temperature_2m,apparent_temperature,weather_code,is_day,wind_speed_10m' +
     '&daily=precipitation_probability_max' +
+    '&hourly=precipitation_probability,precipitation' +
     // 기본 단위는 km/h지만 풍속 등급 기준(기상청)이 m/s라, 변환을 거치지 않도록 여기서 맞춰 받는다
     '&wind_speed_unit=ms' +
     '&forecast_days=1' +
@@ -158,7 +161,39 @@ async function fetchCurrentWeather(location: WeatherLocation): Promise<CurrentWe
     isDay: asFiniteNumber(current.is_day) !== 0,
     windSpeed: asFiniteNumber(current.wind_speed_10m),
     rainChancePercent: readTodayRainChance(data?.daily),
+    hourlyRain: readHourlyRain(data?.hourly),
   };
+}
+
+/**
+ * hourly 블록은 time / precipitation_probability / precipitation 세 배열이 같은 순서로 온다.
+ * timezone=auto라 time은 이미 그 지역의 로컬 시각('2026-08-27T14:00')이므로
+ * 시(hour)만 잘라 쓰면 된다. 형태가 조금이라도 어긋나면 통째로 null로 떨어뜨린다 —
+ * 시간대별 화면이 없어도 날씨 자체는 보여줘야 하기 때문이다.
+ */
+function readHourlyRain(hourly: unknown): HourlyRain[] | null {
+  const block = asRecord(hourly);
+  const times = block?.time;
+  if (!Array.isArray(times) || times.length === 0) return null;
+
+  const probabilities = Array.isArray(block?.precipitation_probability)
+    ? block.precipitation_probability
+    : [];
+  const amounts = Array.isArray(block?.precipitation) ? block.precipitation : [];
+
+  const rows: HourlyRain[] = [];
+  for (const [index, value] of times.entries()) {
+    if (typeof value !== 'string') continue;
+    const hour = Number(value.slice(11, 13));
+    if (!Number.isInteger(hour) || hour < 0 || hour > 23) continue;
+    const probability = asFiniteNumber(probabilities[index]);
+    rows.push({
+      hour,
+      probability: probability === null || probability < 0 || probability > 100 ? null : probability,
+      amount: asFiniteNumber(amounts[index]),
+    });
+  }
+  return rows.length > 0 ? rows : null;
 }
 
 /**
@@ -207,6 +242,7 @@ export async function fetchWeatherSnapshot(location: WeatherLocation): Promise<W
     isDay: weather.isDay,
     windSpeed: weather.windSpeed,
     rainChancePercent: weather.rainChancePercent,
+    hourlyRain: weather.hourlyRain,
     pm10: air.pm10,
     pm25: air.pm25,
   };

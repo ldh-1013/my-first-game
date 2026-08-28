@@ -15,7 +15,7 @@ import { playChime } from '../utils/sound';
  * 창이 가려져 있었든 상관없이 Date.now()와의 차이로 언제나 정확한 값이 나온다.
  */
 
-export type ToolScreenName = 'calendar' | 'stopwatch' | 'timer';
+export type ToolScreenName = 'calendar' | 'stopwatch' | 'timer' | 'rain';
 
 export interface StopwatchState {
   running: boolean;
