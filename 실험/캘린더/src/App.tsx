@@ -7,6 +7,7 @@ import { ConstellationView } from './components/ConstellationView';
 import { DateDetailPanel } from './components/DateDetailPanel';
 import { MonthJumpPopover } from './components/MonthJumpPopover';
 import { MoodHeatmap } from './components/MoodHeatmap';
+import { OnThisDay } from './components/OnThisDay';
 import { RainForecastScreen } from './components/RainForecastScreen';
 import { RhythmInsight } from './components/RhythmInsight';
 import { SearchBar } from './components/SearchBar';
@@ -204,6 +205,8 @@ export default function App() {
               {/* 날씨는 사이드바에서 가장 자주 바뀌고 매일 첫눈에 확인하는 정보라 맨 위 */}
               <WeatherWidget />
               <UpcomingEvents />
+              {/* 가까운 미래(다가오는 일정) 다음에 지난 기록을 둔다 */}
+              <OnThisDay />
               <StatsWidget />
               <ToolsWidget />
             </aside>

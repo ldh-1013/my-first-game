@@ -1,9 +1,9 @@
 import { addDays } from 'date-fns';
 import { CalendarClock } from 'lucide-react';
-import { memo, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTodayKey } from '../hooks/useTodayKey';
 import { useCalendarStore } from '../store/calendarStore';
-import { getEventColor, type CalendarEvent } from '../types/event';
+import type { CalendarEvent } from '../types/event';
 import {
   eventsOnDate,
   formatUpcomingLabel,
@@ -11,6 +11,7 @@ import {
   groupEventsByDate,
   toDateKey,
 } from '../utils/dateUtils';
+import { EventRow } from './EventRow';
 import styles from './UpcomingEvents.module.css';
 
 interface DayGroup {
@@ -55,7 +56,7 @@ export function UpcomingEvents() {
               {formatUpcomingLabel(group.key, todayKey)}
             </h3>
             {group.events.map((event) => (
-              <UpcomingItem key={event.id} event={event} onOpen={openDate} />
+              <EventRow key={event.id} event={event} onOpen={openDate} />
             ))}
           </div>
         ))
@@ -63,29 +64,3 @@ export function UpcomingEvents() {
     </section>
   );
 }
-
-/**
- * 목록의 한 줄. 부모는 오늘 날짜나 일정 배열이 바뀔 때마다 다시 그려지는데,
- * 그때 실제로 바뀐 항목만 다시 그리도록 memo로 감싼다.
- * onOpen은 zustand 액션이라 참조가 고정이다.
- */
-const UpcomingItem = memo(function UpcomingItem({
-  event,
-  onOpen,
-}: {
-  event: CalendarEvent;
-  onOpen: (date: string) => void;
-}) {
-
-  return (
-    <button
-      type="button"
-      className={`${styles.item} ${event.completed ? styles.itemDone : ''}`}
-      onClick={() => onOpen(event.date)}
-    >
-      <span className={styles.dot} style={{ background: getEventColor(event) }} />
-      <span className={styles.time}>{event.time ?? '종일'}</span>
-      <span className={styles.title}>{event.title}</span>
-    </button>
-  );
-});

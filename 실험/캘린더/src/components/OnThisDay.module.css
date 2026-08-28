@@ -1,3 +1,5 @@
+/* 다른 사이드바 위젯과 같은 카드. 제목 옆 날짜 배지만 이 위젯의 몫이다 */
+
 .widget {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
@@ -11,7 +13,7 @@
   gap: 7px;
   font-size: 15px;
   font-weight: 700;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   color: var(--color-text-primary);
 }
 
@@ -19,6 +21,7 @@
   color: var(--color-primary-hover);
 }
 
+/* 어느 날이었는지 — 제목을 읽고 나서 확인하는 정보라 작고 흐리게 */
 .widgetSub {
   font-size: 11px;
   font-weight: 600;
@@ -27,31 +30,5 @@
   padding: 2px 8px;
   border-radius: 999px;
   margin-left: auto;
-}
-
-.empty {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  line-height: 1.7;
-  text-align: center;
-  padding: 16px 0;
-}
-
-.group {
-  margin-bottom: 12px;
-}
-
-.group:last-child {
-  margin-bottom: 0;
-}
-
-.groupLabel {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--color-text-secondary);
-  margin-bottom: 6px;
-}
-
-.groupLabelToday {
-  color: var(--color-primary-hover);
+  white-space: nowrap;
 }
