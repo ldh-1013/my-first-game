@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 import { AlarmClock, ChartColumn, Hourglass, Timer } from 'lucide-react';
 import { useCalendarStore } from '../store/calendarStore';
+import { getNow } from '../store/clock';
 import { stopwatchElapsed, useToolStore } from '../store/toolStore';
 import { formatCountdown, formatStopwatch } from '../utils/duration';
 import styles from './ToolsWidget.module.css';
@@ -18,7 +19,7 @@ export function ToolsWidget() {
   const stopwatch = useToolStore((s) => s.stopwatch);
   const timer = useToolStore((s) => s.timer);
   // 리캡은 흐르는 상태가 없으므로, 상태 자리에는 이번 달 요약을 대신 둔다
-  const monthPrefix = format(new Date(), 'yyyy-MM');
+  const monthPrefix = format(getNow(), 'yyyy-MM');
   const monthCount = useCalendarStore(
     (s) => s.events.filter((event) => event.date.startsWith(monthPrefix)).length,
   );
