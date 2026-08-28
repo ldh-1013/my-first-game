@@ -1,8 +1,6 @@
 import { addDays, startOfWeek } from 'date-fns';
 import type { CalendarEvent } from '../types/event';
-import { fromDateKey, toDateKey } from './dateUtils';
-
-const WEEKDAY = ['일', '월', '화', '수', '목', '금', '토'];
+import { WEEKDAY_LABELS, fromDateKey, toDateKey } from './dateUtils';
 
 // 조건별 문구 후보 — 차분하고 관찰적인 톤, 재촉/평가하지 않음
 const LIGHTER = ['이번 주는 평소보다 한결 여유로워요.', '이번 주는 조금 느긋한 흐름이에요.'];
@@ -50,7 +48,7 @@ export function computeInsight(events: CalendarEvent[], todayKey: string): strin
     }
   }
   if (thisWeekCount >= 3 && peakCount >= 2 && peakCount >= thisWeekCount * 0.5) {
-    matches.push(`이번 주는 ${WEEKDAY[peakDay]}요일에 일정이 몰려 있어요.`);
+    matches.push(`이번 주는 ${WEEKDAY_LABELS[peakDay]}요일에 일정이 몰려 있어요.`);
   }
 
   // 최근 7일 중 빈 날이 3일 이상

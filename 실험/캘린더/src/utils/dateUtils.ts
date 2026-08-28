@@ -13,6 +13,12 @@ import type { CalendarEvent } from '../types/event';
 
 export const DATE_KEY_FORMAT = 'yyyy-MM-dd';
 
+/**
+ * 요일 라벨. 인덱스가 Date.getDay()와 같아(0=일요일) 그대로 색인해 쓸 수 있고,
+ * 아래 WEEK_OPTIONS(일요일 시작)와 짝을 이룬다 — 한쪽만 바꾸면 헤더와 날짜가 어긋난다.
+ */
+export const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'] as const;
+
 export function toDateKey(date: Date): string {
   return format(date, DATE_KEY_FORMAT);
 }

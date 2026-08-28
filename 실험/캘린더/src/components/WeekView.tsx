@@ -2,11 +2,16 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useNow, useTodayKey } from '../store/clock';
 import { useCalendarStore } from '../store/calendarStore';
 import { getEventColor, type CalendarEvent } from '../types/event';
-import { eventsOnDate, getWeekDays, groupEventsByDate, toDateKey } from '../utils/dateUtils';
+import {
+  WEEKDAY_LABELS,
+  eventsOnDate,
+  getWeekDays,
+  groupEventsByDate,
+  toDateKey,
+} from '../utils/dateUtils';
 import { getHoliday } from '../utils/holidays';
 import styles from './WeekView.module.css';
 
-const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 const START_HOUR = 6;
 const END_HOUR = 24;
 const HOUR_HEIGHT = 52;
@@ -93,7 +98,7 @@ export function WeekView() {
                   day.getDay() === 0 ? styles.sunday : day.getDay() === 6 ? styles.saturday : ''
                 }`}
               >
-                {WEEKDAYS[day.getDay()]}
+                {WEEKDAY_LABELS[day.getDay()]}
               </span>
               <span
                 className={`${styles.dayDate} ${isToday ? styles.dayDateToday : ''} ${

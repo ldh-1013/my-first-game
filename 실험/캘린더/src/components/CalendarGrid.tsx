@@ -4,12 +4,17 @@ import { useMemo } from 'react';
 import { useTodayKey } from '../hooks/useTodayKey';
 import { useCalendarStore } from '../store/calendarStore';
 import { getEventColor, isLocked } from '../types/event';
-import { eventsOnDate, getMonthGridDays, groupEventsByDate, toDateKey } from '../utils/dateUtils';
+import {
+  WEEKDAY_LABELS,
+  eventsOnDate,
+  getMonthGridDays,
+  groupEventsByDate,
+  toDateKey,
+} from '../utils/dateUtils';
 import { getHoliday } from '../utils/holidays';
 import { MoonPhase } from './MoonPhase';
 import styles from './CalendarGrid.module.css';
 
-const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 const MAX_DOTS = 4;
 
 /** '설날 대체' -> '설날'. 연휴가 이어지는지 판단할 때 대체공휴일도 같은 묶음으로 본다 */
@@ -31,7 +36,7 @@ export function CalendarGrid() {
   return (
     <div className={styles.grid}>
       <div className={styles.weekdayRow}>
-        {WEEKDAYS.map((label, index) => (
+        {WEEKDAY_LABELS.map((label, index) => (
           <span
             key={label}
             className={`${styles.weekday} ${

@@ -3,12 +3,11 @@ import { ko } from 'date-fns/locale';
 import { useMemo } from 'react';
 import { useTodayKey } from '../hooks/useTodayKey';
 import { useCalendarStore } from '../store/calendarStore';
-import { fromDateKey, toDateKey } from '../utils/dateUtils';
+import { WEEKDAY_LABELS, fromDateKey, toDateKey } from '../utils/dateUtils';
 import { MOOD_LEVELS, MOOD_META, moodColor, moodLabel } from '../utils/mood';
 import styles from './MoodHeatmap.module.css';
 
 const WEEKS = 53;
-const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
 
 interface Cell {
   key: string;
