@@ -1,5 +1,5 @@
 import { CalendarHeart, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CalendarGrid } from './components/CalendarGrid';
 import { Celebration } from './components/Celebration';
 import { ClockWidget } from './components/ClockWidget';
@@ -66,6 +66,10 @@ export default function App() {
 
   const handleJumpOpenChange = useCallback((open: boolean) => setJumpOpen(open), []);
 
+  // 도구 화면에 들어가기 직전 캘린더에서 보던 스크롤 위치
+  const calendarScrollY = useRef(0);
+  const prevScreen = useRef(screen);
+
   useTimeGrain(bgEffect);
   useAutoBackup();
   useTodoNotice();
@@ -94,6 +98,33 @@ export default function App() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [jumpOpen]);
+
+  /*
+    화면을 바꿀 때 문서 스크롤을 맞춘다.
+
+    .screens는 모든 화면을 같은 grid 칸에 겹쳐 두고 opacity만 바꾸므로 스크롤 위치가
+    하나로 공유된다. 사이드바 아래쪽의 도구 버튼을 누르려면 페이지를 내려야 하는데,
+    그대로 두면 도구 화면이 이미 아래로 밀린 채 나타나 상단 바(뒤로가기·Esc 안내)가
+    잘려 보인다. 그래서 도구로 들어갈 때는 맨 위로 올리고, 캘린더로 돌아올 때는
+    들어가기 직전에 보던 자리로 되돌린다.
+
+    각 화면 컴포넌트가 아니라 여기서 처리하는 이유: App이 도구 화면들을 항상
+    마운트해 두므로 마운트 시점 효과는 한 번밖에 돌지 않는다. 여기 두면 앞으로 늘어날
+    화면도 같은 동작을 그냥 얻는다. 화면이 바뀔 때만 반응하므로, 도구 화면 안에서의
+    조작(리캡의 월↔연 전환 등)에는 스크롤을 건드리지 않는다.
+  */
+  useEffect(() => {
+    const previous = prevScreen.current;
+    prevScreen.current = screen;
+    if (previous === screen) return; // 첫 렌더 포함 — 스크롤을 건드릴 이유가 없다
+    if (screen === 'calendar') {
+      // 창 크기가 바뀌어 문서가 짧아졌으면 브라우저가 알아서 끝까지만 내려간다
+      window.scrollTo({ top: calendarScrollY.current, behavior: 'auto' });
+    } else {
+      if (previous === 'calendar') calendarScrollY.current = window.scrollY;
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [screen]);
 
   // Esc로 도구 화면에서 캘린더로 복귀 — 도구 화면일 때만 등록해 다른 Esc 처리와 겹치지 않게 한다
   useEffect(() => {
