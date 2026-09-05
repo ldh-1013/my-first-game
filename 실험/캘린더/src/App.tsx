@@ -24,6 +24,7 @@ import { UpcomingEvents } from './components/UpcomingEvents';
 import { WeatherWidget } from './components/WeatherWidget';
 import { WeekView } from './components/WeekView';
 import { useAutoBackup } from './hooks/useAutoBackup';
+import { useTodoNotice } from './hooks/useTodoNotice';
 import { useTimeGrain } from './hooks/useTimeGrain';
 import { useCalendarStore, type ViewMode } from './store/calendarStore';
 import { useToolStore } from './store/toolStore';
@@ -67,6 +68,7 @@ export default function App() {
 
   useTimeGrain(bgEffect);
   useAutoBackup();
+  useTodoNotice();
 
   const showNav = viewMode === 'month' || viewMode === 'week';
 

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, shell, nativeTheme, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, Notification, shell, nativeTheme, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -228,6 +228,74 @@ function backupStatus() {
     todayDone: files.includes(`my-calendar-backup-${todayStamp()}.json`),
   };
 }
+
+/* ===========================================================================
+   할 일 알림
+
+   앱을 켤 때 남아 있는 할 일이 있으면 한 번 알려 준다. 하루에 여러 번 켜도
+   그날 이미 띄웠으면 건너뛴다 — 자동 백업이 '하루에 파일 하나'로 관리하는 것과 같은 결로,
+   마지막으로 띄운 날짜를 userData에 적어 두고 비교한다.
+
+   문구는 여기서 만든다. 하루 한 번 판정이 이쪽에 있어 렌더러가 만든 문장은 대부분
+   버려지고, 알림 제목/본문 형식은 OS에 보여줄 표현이라 메인이 갖는 편이 자연스럽다.
+   =========================================================================== */
+
+const NOTICE_STAMP_FILE = 'last-todo-notice';
+
+function noticeStampPath() {
+  return path.join(app.getPath('userData'), NOTICE_STAMP_FILE);
+}
+
+function noticeAlreadyShownToday() {
+  try {
+    return fs.readFileSync(noticeStampPath(), 'utf8').trim() === todayStamp();
+  } catch {
+    return false; // 파일이 없으면 아직 안 띄운 것
+  }
+}
+
+function markNoticeShown() {
+  try {
+    fs.mkdirSync(app.getPath('userData'), { recursive: true });
+    fs.writeFileSync(noticeStampPath(), todayStamp(), 'utf8');
+  } catch {
+    /* 기록에 실패하면 다음 실행에 한 번 더 뜰 뿐이다 */
+  }
+}
+
+/** '할 일이 3개 있어요' / 밀린 게 섞여 있으면 그 사실만 덧붙인다 (재촉하지 않는다) */
+function noticeBody(today, overdue) {
+  const total = today + overdue;
+  if (overdue > 0) return `할 일이 ${total}개 있어요 (밀린 것 ${overdue}개 포함)`;
+  return `오늘 할 일이 ${total}개 있어요`;
+}
+
+ipcMain.handle('notify:todos', (_event, counts) => {
+  const today = Number(counts && counts.today) || 0;
+  const overdue = Number(counts && counts.overdue) || 0;
+  if (today + overdue <= 0) return { shown: false, reason: 'empty' };
+  if (!Notification.isSupported()) return { shown: false, reason: 'unsupported' };
+  if (noticeAlreadyShownToday()) return { shown: false, reason: 'already-today' };
+  try {
+    const notification = new Notification({
+      title: '나의 캘린더',
+      body: noticeBody(today, overdue),
+      silent: false,
+    });
+    // 알림을 누르면 이미 떠 있는 창을 앞으로 (second-instance와 같은 동작)
+    notification.on('click', () => {
+      if (!win) return;
+      if (win.isMinimized()) win.restore();
+      win.focus();
+    });
+    notification.show();
+    markNoticeShown();
+    return { shown: true, body: noticeBody(today, overdue) };
+  } catch (err) {
+    logLine(`notify failed: ${err.message}`);
+    return { shown: false, reason: 'error' };
+  }
+});
 
 ipcMain.on('diag:report', (_event, message) => {
   if (typeof message === 'string') logLine(message.slice(0, 4000));

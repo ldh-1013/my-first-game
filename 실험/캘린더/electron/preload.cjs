@@ -20,6 +20,13 @@ contextBridge.exposeInMainWorld('calendarDiagnostics', {
   openLogFolder: () => ipcRenderer.invoke('diag:open-folder'),
 });
 
+/**
+ * 할 일 알림 창구. 렌더러는 남은 개수만 넘기고, 문구와 '하루 한 번' 판정은 메인이 한다.
+ */
+contextBridge.exposeInMainWorld('calendarNotify', {
+  todos: (counts) => ipcRenderer.invoke('notify:todos', counts),
+});
+
 contextBridge.exposeInMainWorld('calendarBackup', {
   /** 지금 즉시 백업 파일을 쓴다 */
   run: (json) => ipcRenderer.invoke('backup:run', json),
