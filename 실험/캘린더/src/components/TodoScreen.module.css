@@ -1,0 +1,247 @@
+/* 할 일 전체 화면. 카드·행 감각은 사이드바 위젯과 RecapScreen에서 그대로 가져온다 */
+
+.wrap {
+  width: min(620px, 100%);
+  margin: 0 auto;
+}
+
+.filters {
+  --segment-pad: 4px;
+  width: 260px;
+  margin: 0 auto;
+  background: var(--color-toggle-track);
+  border-radius: 999px;
+  padding: var(--segment-pad);
+}
+
+.filterButton {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: 6px 14px;
+  border-radius: 999px;
+  transition: color var(--transition-fast);
+}
+
+.filterActive {
+  color: var(--color-text-primary);
+}
+
+/* ---------- 새 할 일 ---------- */
+
+.addRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0 16px;
+}
+
+.addInput {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  background: var(--color-surface);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.addInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.addDate {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  background: var(--color-surface);
+  font-family: var(--font-numeric);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  transition: background var(--transition-fast);
+}
+
+.addButton:hover {
+  background: var(--color-primary-hover);
+}
+
+/* ---------- 목록 ---------- */
+
+.empty {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: 40px 0;
+}
+
+.list {
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+/* 완료된 항목 — UpcomingEvents의 완료 표시와 같은 결 */
+.itemDone {
+  opacity: 0.55;
+}
+
+.itemDone .title {
+  text-decoration: line-through;
+  text-decoration-color: var(--color-text-secondary);
+  text-decoration-thickness: 1px;
+  color: var(--color-text-secondary);
+}
+
+.check {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.check:hover {
+  border-color: var(--color-primary);
+  background: var(--color-today-bg);
+}
+
+.checkDone {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.title,
+.titleInput {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: left;
+}
+
+.title {
+  padding: 4px 6px;
+  margin: -4px -6px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background var(--transition-fast);
+}
+
+.title:hover {
+  background: var(--color-cell-hover);
+}
+
+.titleInput {
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+  background: var(--color-cell);
+  outline: none;
+}
+
+.due {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.dueOverdue {
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-holiday-text);
+  background: var(--color-holiday-bg);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+/*
+ * 마감일 배지가 이미 날짜를 말해 주므로, 편집용 입력은 그 줄을 볼 때만 드러낸다.
+ * (삭제 버튼과 같은 방식 — 평소에는 목록이 조용하고, 손이 갈 때만 조작 도구가 보인다.)
+ */
+.dateInput {
+  flex-shrink: 0;
+  opacity: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+  background: transparent;
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  transition: opacity var(--transition-fast), border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.item:hover .dateInput,
+.dateInput:focus {
+  opacity: 1;
+}
+
+.dateInput:hover,
+.dateInput:focus {
+  border-color: var(--color-border);
+  background: var(--color-cell);
+  outline: none;
+}
+
+/* 실수로 지우지 않도록, 그 줄에 마우스를 올렸을 때만 드러난다 */
+.delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: opacity var(--transition-fast), color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.item:hover .delete,
+.delete:focus-visible {
+  opacity: 1;
+}
+
+.delete:hover {
+  color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .delete,
+  .dateInput {
+    transition: none;
+  }
+}

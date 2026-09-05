@@ -17,6 +17,7 @@ import { SettingsMenu } from './components/SettingsMenu';
 import { StatsWidget } from './components/StatsWidget';
 import { StopwatchScreen } from './components/StopwatchScreen';
 import { TimerScreen } from './components/TimerScreen';
+import { TodoScreen } from './components/TodoScreen';
 import { TodoWidget } from './components/TodoWidget';
 import { ToolsWidget } from './components/ToolsWidget';
 import { UpcomingEvents } from './components/UpcomingEvents';
@@ -208,7 +209,7 @@ export default function App() {
               <WeatherWidget />
               <UpcomingEvents />
               {/* 오늘 처리해야 하는 행동 항목이라 정보성 위젯들보다 위 */}
-              <TodoWidget />
+              <TodoWidget onOpenAll={() => useToolStore.getState().openTool('todo')} />
               {/* 가까운 미래(다가오는 일정) 다음에 지난 기록을 둔다 */}
               <OnThisDay />
               <StatsWidget />
@@ -243,6 +244,13 @@ export default function App() {
           aria-hidden={screen !== 'recap'}
         >
           <RecapScreen />
+        </div>
+
+        <div
+          className={`${styles.screen} ${screen === 'todo' ? styles.screenActive : ''}`}
+          aria-hidden={screen !== 'todo'}
+        >
+          <TodoScreen />
         </div>
       </div>
 
