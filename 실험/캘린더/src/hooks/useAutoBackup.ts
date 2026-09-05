@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useCalendarStore } from '../store/calendarStore';
+import { useTodoStore } from '../store/todoStore';
 import { cacheBackup, getBackupStatus, isBackupAvailable, runBackup } from '../utils/backup';
 
 /**
@@ -23,7 +24,7 @@ export function useAutoBackup(): void {
       const status = await getBackupStatus();
       if (cancelled || !status || status.todayDone) return;
       const { events, moods } = useCalendarStore.getState();
-      await runBackup(events, moods);
+      await runBackup(events, moods, useTodoStore.getState().todos);
     })();
     return () => {
       cancelled = true;
@@ -35,11 +36,18 @@ export function useAutoBackup(): void {
     if (!isBackupAvailable()) return;
     const push = () => {
       const { events, moods } = useCalendarStore.getState();
-      cacheBackup(events, moods);
+      cacheBackup(events, moods, useTodoStore.getState().todos);
     };
     push(); // 아무것도 안 바뀐 채로 종료되는 경우까지 대비해 한 번 먼저
-    return useCalendarStore.subscribe((state, prev) => {
+    const stopCalendar = useCalendarStore.subscribe((state, prev) => {
       if (state.events !== prev.events || state.moods !== prev.moods) push();
     });
+    const stopTodos = useTodoStore.subscribe((state, prev) => {
+      if (state.todos !== prev.todos) push();
+    });
+    return () => {
+      stopCalendar();
+      stopTodos();
+    };
   }, []);
 }

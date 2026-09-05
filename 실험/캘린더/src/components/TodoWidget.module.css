@@ -1,0 +1,178 @@
+/* 다른 사이드바 위젯과 같은 카드. 줄 모양은 DateDetailPanel의 완료 체크 감각을 따른다 */
+
+.widget {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 20px;
+}
+
+.widgetTitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--color-text-primary);
+}
+
+.widgetTitle svg {
+  color: var(--color-primary-hover);
+}
+
+.allButton {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  padding: 3px 10px;
+  border-radius: 999px;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.allButton:hover {
+  color: var(--color-primary-hover);
+  background: var(--color-today-bg);
+}
+
+.empty {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  text-align: center;
+  padding: 10px 0 14px;
+}
+
+.list {
+  list-style: none;
+  display: grid;
+  gap: 2px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 4px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.item:hover {
+  background: var(--color-cell-hover);
+}
+
+/* 빈 동그라미 → 누르면 목록에서 사라진다. 체크 표시를 그릴 필요가 없다 */
+.check {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.check:hover {
+  border-color: var(--color-primary);
+  background: var(--color-today-bg);
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 지난 마감 — 경고색 대신 CalendarGrid의 대체공휴일 배지처럼 작은 표식 */
+.overdue {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-holiday-text);
+  background: var(--color-holiday-bg);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.more {
+  width: 100%;
+  margin-top: 4px;
+  padding: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.more:hover:not(:disabled) {
+  background: var(--color-cell-hover);
+  color: var(--color-primary-hover);
+}
+
+.more:disabled {
+  cursor: default;
+}
+
+/* ---------- 새 할 일 입력 ---------- */
+
+.addRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.addInput {
+  flex: 1 1 100%;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  background: var(--color-cell);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.addInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.addDate {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  background: var(--color-surface);
+  font-family: var(--font-numeric);
+  font-size: 12px;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  transition: background var(--transition-fast);
+}
+
+.addButton:hover {
+  background: var(--color-primary-hover);
+}

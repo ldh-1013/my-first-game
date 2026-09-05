@@ -1,4 +1,5 @@
 import type { CalendarEvent, EventCategory } from '../types/event';
+import type { TodoItem } from '../types/todo';
 import { isThemePreference, type ThemePreference } from '../types/theme';
 import type { WeatherLocation, WeatherSnapshot } from './weather';
 
@@ -7,6 +8,7 @@ const MOODS_KEY = 'my-calendar-moods';
 const SETTINGS_KEY = 'my-calendar-settings';
 const CELEBRATED_KEY = 'my-calendar-revealed';
 const WEATHER_KEY = 'my-calendar-weather';
+const TODOS_KEY = 'my-calendar-todos';
 
 const VALID_CATEGORIES: EventCategory[] = ['work', 'personal', 'important', 'idea', 'custom'];
 
@@ -40,6 +42,49 @@ export function isValidEvent(value: unknown): value is CalendarEvent {
     typeof e.createdAt === 'string' &&
     typeof e.updatedAt === 'string'
   );
+}
+
+export function isValidTodo(value: unknown): value is TodoItem {
+  if (typeof value !== 'object' || value === null) return false;
+  const t = value as Record<string, unknown>;
+  return (
+    typeof t.id === 'string' &&
+    typeof t.title === 'string' &&
+    typeof t.dueDate === 'string' &&
+    /^\d{4}-\d{2}-\d{2}$/.test(t.dueDate) &&
+    typeof t.done === 'boolean' &&
+    typeof t.createdAt === 'string' &&
+    typeof t.updatedAt === 'string'
+  );
+}
+
+/**
+ * 백업/저장 문자열에서 할 일만 뽑아낸다. 이벤트와 같은 두 형태를 받는다:
+ * 배열 그대로, 또는 { todos: [...] }를 담은 자동 백업 파일.
+ * 할 일이 없던 시절의 백업에는 todos가 없으므로 그때는 null이다.
+ */
+export function parseTodos(raw: string): TodoItem[] | null {
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed.filter(isValidTodo);
+    if (typeof parsed === 'object' && parsed !== null) {
+      const todos = (parsed as { todos?: unknown }).todos;
+      if (Array.isArray(todos)) return todos.filter(isValidTodo);
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function loadTodos(): TodoItem[] {
+  try {
+    const raw = localStorage.getItem(TODOS_KEY);
+    if (!raw) return [];
+    return parseTodos(raw) ?? [];
+  } catch {
+    return [];
+  }
 }
 
 /**
@@ -160,6 +205,7 @@ function makeDebouncedSaver(key: string): (value: unknown) => void {
 
 export const saveEventsDebounced = makeDebouncedSaver(EVENTS_KEY);
 export const saveMoodsDebounced = makeDebouncedSaver(MOODS_KEY);
+export const saveTodosDebounced = makeDebouncedSaver(TODOS_KEY);
 
 /**
  * 설정은 즉시 저장 (토글은 드물게 발생).

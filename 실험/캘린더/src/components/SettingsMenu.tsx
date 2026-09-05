@@ -2,7 +2,9 @@ import { Download, FolderOpen, Monitor, Moon, ScrollText, Settings, Sun, Upload 
 import { useEffect, useRef, useState } from 'react';
 import { getTodayKey } from '../store/clock';
 import { useCalendarStore } from '../store/calendarStore';
+import { useTodoStore } from '../store/todoStore';
 import type { CalendarEvent } from '../types/event';
+import type { TodoItem } from '../types/todo';
 import { useThemeStore } from '../store/themeStore';
 import { THEME_PREFERENCES, type ThemePreference } from '../types/theme';
 import {
@@ -12,7 +14,7 @@ import {
   type BackupStatus,
 } from '../utils/backup';
 import { isDiagnosticsAvailable, openLogFolder } from '../utils/diagnostics';
-import { parseEvents } from '../utils/storage';
+import { parseEvents, parseTodos } from '../utils/storage';
 import { ConfirmDialog } from './ConfirmDialog';
 import { SegmentedControl } from './SegmentedControl';
 import styles from './SettingsMenu.module.css';
@@ -36,12 +38,17 @@ const THEME_OPTIONS: Record<ThemePreference, { label: string; Icon: typeof Sun }
 export function SettingsMenu() {
   const events = useCalendarStore((s) => s.events);
   const replaceAllEvents = useCalendarStore((s) => s.replaceAllEvents);
+  const replaceAllTodos = useTodoStore((s) => s.replaceAllTodos);
   const bgEffect = useCalendarStore((s) => s.bgEffect);
   const toggleBgEffect = useCalendarStore((s) => s.toggleBgEffect);
   const themePreference = useThemeStore((s) => s.preference);
   const setThemePreference = useThemeStore((s) => s.setPreference);
   const [open, setOpen] = useState(false);
-  const [pendingImport, setPendingImport] = useState<CalendarEvent[] | null>(null);
+  // 자동 백업 파일에는 할 일도 함께 담긴다. 옛 파일에는 없으므로 그때는 건드리지 않는다.
+  const [pendingImport, setPendingImport] = useState<{
+    events: CalendarEvent[];
+    todos: TodoItem[] | null;
+  } | null>(null);
   const [backup, setBackup] = useState<BackupStatus | null>(null);
   const [importError, setImportError] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -86,7 +93,7 @@ export function SettingsMenu() {
       setImportError(true);
       return;
     }
-    setPendingImport(parsed);
+    setPendingImport({ events: parsed, todos: parseTodos(text) });
   };
 
   return (
@@ -211,11 +218,18 @@ export function SettingsMenu() {
       <ConfirmDialog
         open={pendingImport !== null}
         title="백업 불러오기"
-        message={`백업 파일의 일정 ${pendingImport?.length ?? 0}개로 현재 일정 ${events.length}개를 교체할까요? 기존 일정은 사라져요.`}
+        message={
+          `백업 파일의 일정 ${pendingImport?.events.length ?? 0}개로 현재 일정 ${events.length}개를 교체할까요?` +
+          (pendingImport?.todos ? ` 할 일 ${pendingImport.todos.length}개도 함께 바뀝니다.` : '') +
+          ' 기존 일정은 사라져요.'
+        }
         confirmLabel="불러오기"
         onCancel={() => setPendingImport(null)}
         onConfirm={() => {
-          if (pendingImport) replaceAllEvents(pendingImport);
+          if (pendingImport) {
+            replaceAllEvents(pendingImport.events);
+            if (pendingImport.todos) replaceAllTodos(pendingImport.todos);
+          }
           setPendingImport(null);
           setOpen(false);
         }}

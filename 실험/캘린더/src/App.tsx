@@ -17,6 +17,7 @@ import { SettingsMenu } from './components/SettingsMenu';
 import { StatsWidget } from './components/StatsWidget';
 import { StopwatchScreen } from './components/StopwatchScreen';
 import { TimerScreen } from './components/TimerScreen';
+import { TodoWidget } from './components/TodoWidget';
 import { ToolsWidget } from './components/ToolsWidget';
 import { UpcomingEvents } from './components/UpcomingEvents';
 import { WeatherWidget } from './components/WeatherWidget';
@@ -206,6 +207,8 @@ export default function App() {
               {/* 날씨는 사이드바에서 가장 자주 바뀌고 매일 첫눈에 확인하는 정보라 맨 위 */}
               <WeatherWidget />
               <UpcomingEvents />
+              {/* 오늘 처리해야 하는 행동 항목이라 정보성 위젯들보다 위 */}
+              <TodoWidget />
               {/* 가까운 미래(다가오는 일정) 다음에 지난 기록을 둔다 */}
               <OnThisDay />
               <StatsWidget />

@@ -1,4 +1,5 @@
 import type { CalendarEvent } from '../types/event';
+import type { TodoItem } from '../types/todo';
 
 /**
  * 자동 백업 — 렌더러 쪽 창구.
@@ -51,14 +52,21 @@ export interface BackupPayload {
   exportedAt: string;
   events: CalendarEvent[];
   moods: Record<string, number>;
+  /** 할 일. 이 기능이 생기기 전 백업 파일에는 없다 — 불러올 때 없으면 건드리지 않는다 */
+  todos?: TodoItem[];
 }
 
-function serialize(events: CalendarEvent[], moods: Record<string, number>): string {
+function serialize(
+  events: CalendarEvent[],
+  moods: Record<string, number>,
+  todos: TodoItem[],
+): string {
   const payload: BackupPayload = {
     version: 1,
     exportedAt: new Date().toISOString(),
     events,
     moods,
+    todos,
   };
   return JSON.stringify(payload, null, 2);
 }
@@ -67,11 +75,12 @@ function serialize(events: CalendarEvent[], moods: Record<string, number>): stri
 export async function runBackup(
   events: CalendarEvent[],
   moods: Record<string, number>,
+  todos: TodoItem[],
 ): Promise<void> {
   const api = window.calendarBackup;
   if (!api) return;
   try {
-    await api.run(serialize(events, moods));
+    await api.run(serialize(events, moods, todos));
   } catch {
     /* 백업 실패로 앱이 멈추면 안 된다 */
   }
@@ -81,11 +90,15 @@ export async function runBackup(
  * 최신 데이터를 메인 프로세스에 맡겨 둔다. 이 호출만으로는 디스크에 쓰지 않는다.
  * 앱을 종료할 때 메인이 이 값으로 그날 백업을 덮어쓴다.
  */
-export function cacheBackup(events: CalendarEvent[], moods: Record<string, number>): void {
+export function cacheBackup(
+  events: CalendarEvent[],
+  moods: Record<string, number>,
+  todos: TodoItem[],
+): void {
   const api = window.calendarBackup;
   if (!api) return;
   try {
-    api.cache(serialize(events, moods));
+    api.cache(serialize(events, moods, todos));
   } catch {
     /* 무시 */
   }
