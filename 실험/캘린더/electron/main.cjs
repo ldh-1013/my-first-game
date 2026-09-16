@@ -1,4 +1,13 @@
-const { app, BrowserWindow, Menu, Notification, shell, nativeTheme, ipcMain } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  Notification,
+  Tray,
+  shell,
+  nativeTheme,
+  ipcMain,
+} = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -67,10 +76,109 @@ if (gpuDisabled) app.disableHardwareAcceleration();
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) app.quit();
 
-let win = null;
+/* ===========================================================================
+   상주 모드 (로그인 시 백그라운드 실행 + 트레이)
 
-function createWindow() {
+   '컴퓨터 켤 때 할 일 확인'을 켠 사용자만 이 모드로 산다. 켜는 순간 앱이
+   Windows 로그인 항목에 --background 인자와 함께 등록되고, 그 뒤로는
+     - 로그인 때 창 없이 떠서 할 일을 확인하고
+     - 트레이에 머무르며
+     - 창을 닫아도 종료되지 않고 트레이로 숨는다.
+   켜지 않은 사용자(기본값)는 이 코드 경로를 하나도 타지 않는다 — 트레이 없음,
+   닫으면 종료, 일반 실행. 예전 설치본과 완전히 같다.
+
+   설정값을 따로 저장하지 않고 OS 로그인 항목 등록 여부 자체를 원천으로 삼는다.
+   두 곳에 두면 작업 관리자에서 시작프로그램을 끈 경우처럼 서로 어긋날 수 있다.
+   =========================================================================== */
+
+const LOGIN_ARGS = ['--background'];
+const LOGIN_NAME = 'My Calendar';
+
+/** 이번 실행이 로그인 항목으로 조용히 뜬 것인지 (사용자가 아이콘을 눌러 켠 게 아닌지) */
+const launchedInBackground = process.argv.includes('--background');
+
+let win = null;
+let tray = null;
+/** 트레이 '종료'로 진짜 끝내는 중인지 — 이때는 창 닫기를 숨김으로 가로채지 않는다 */
+let quitting = false;
+
+function loginItemQuery() {
+  // Windows에서는 등록할 때와 같은 경로·인자로 물어야 같은 항목을 찾는다
+  return { path: process.execPath, args: LOGIN_ARGS, name: LOGIN_NAME };
+}
+
+/**
+ * 로그인 항목으로 켜져 있는지. 개발 실행(npm run app)에서는 항상 아니다 —
+ * electron.exe와 프로젝트 경로가 Run 키에 박히면 프로젝트를 옮기는 순간 깨진 항목이 남는다.
+ */
+function isResidentMode() {
+  if (!app.isPackaged) return false;
+  try {
+    const settings = app.getLoginItemSettings(loginItemQuery());
+    // 작업 관리자 → 시작프로그램에서 '사용 안 함'으로 바꾼 경우까지 반영한다
+    return Boolean(settings.executableWillLaunchAtLogin ?? settings.openAtLogin);
+  } catch {
+    return false;
+  }
+}
+
+function trayIconPath() {
+  // 설치본은 extraResources로 복사된 아이콘, 개발 실행은 프로젝트의 원본
+  return app.isPackaged
+    ? path.join(process.resourcesPath, 'icon.ico')
+    : path.join(__dirname, '..', 'build', 'icon.ico');
+}
+
+function ensureTray() {
+  if (tray) return;
+  try {
+    tray = new Tray(trayIconPath());
+    tray.setToolTip('나의 캘린더');
+    tray.setContextMenu(
+      Menu.buildFromTemplate([
+        { label: '열기', click: () => showMainWindow() },
+        { type: 'separator' },
+        {
+          label: '종료',
+          click: () => {
+            quitting = true;
+            app.quit();
+          },
+        },
+      ]),
+    );
+    // Windows 관례: 트레이 아이콘을 누르면 창이 열린다
+    tray.on('click', () => showMainWindow());
+  } catch (err) {
+    logLine(`tray failed: ${err.message}`);
+    tray = null;
+  }
+}
+
+function destroyTray() {
+  if (!tray) return;
+  tray.destroy();
+  tray = null;
+}
+
+/**
+ * 창을 사용자 앞으로. 숨어 있으면 보이고, 최소화돼 있으면 복원하고,
+ * 백그라운드 확인 뒤 내려서 없으면 새로 만든다.
+ * 트레이 '열기', 알림 클릭, 아이콘을 다시 눌러 온 second-instance가 모두 이걸 쓴다.
+ */
+function showMainWindow() {
+  if (!win || win.isDestroyed()) {
+    createWindow({ show: true });
+    return;
+  }
+  if (!win.isVisible()) win.show();
+  if (win.isMinimized()) win.restore();
+  win.focus();
+}
+
+function createWindow({ show = true } = {}) {
   win = new BrowserWindow({
+    show,
     width: 1320,
     height: 940,
     minWidth: 800,
@@ -106,6 +214,21 @@ function createWindow() {
     logLine(`preload-error path=${preloadPath} message=${error && error.message}`);
   });
   win.on('unresponsive', () => logLine('window unresponsive'));
+
+  // 상주 모드에서는 창을 닫아도 끝내지 않고 트레이로 숨긴다. 스톱워치·타이머 상태가
+  // 렌더러에 있어서, 파괴하면 돌던 타이머가 사라지고 완료음도 못 울린다.
+  win.on('close', (event) => {
+    if (quitting || !isResidentMode()) return;
+    event.preventDefault();
+    win.hide();
+  });
+  // Windows 로그오프/종료 때 창 닫기를 가로채면 '앱이 종료를 막고 있다'는 화면이 뜬다
+  win.on('session-end', () => {
+    quitting = true;
+  });
+  win.on('closed', () => {
+    win = null;
+  });
 
   // 외부 링크는 기본 브라우저로 열기
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -283,11 +406,7 @@ ipcMain.handle('notify:todos', (_event, counts) => {
       silent: false,
     });
     // 알림을 누르면 이미 떠 있는 창을 앞으로 (second-instance와 같은 동작)
-    notification.on('click', () => {
-      if (!win) return;
-      if (win.isMinimized()) win.restore();
-      win.focus();
-    });
+    notification.on('click', () => showMainWindow());
     notification.show();
     markNoticeShown();
     return { shown: true, body: noticeBody(today, overdue) };
@@ -334,17 +453,25 @@ ipcMain.on('backup:cache', (_event, json) => {
 
 // 종료 직전에 그날 파일을 최신 내용으로 덮어쓴다. 동기 쓰기라 종료를 붙잡지 않아도 된다.
 app.on('before-quit', () => {
+  // 어떤 경로로 끝나든(트레이 종료·스모크 테스트 등) 창 닫기를 숨김으로 가로채지 않게 한다
+  quitting = true;
   if (cachedSnapshot) writeBackup(cachedSnapshot);
 });
 
 Menu.setApplicationMenu(null);
 
 app.whenReady().then(() => {
+  const resident = isResidentMode();
   logLine(
     `app start version=${app.getVersion()} electron=${process.versions.electron} ` +
-      `os=${process.platform}/${process.getSystemVersion?.() ?? '?'} gpuDisabled=${gpuDisabled}`,
+      `os=${process.platform}/${process.getSystemVersion?.() ?? '?'} gpuDisabled=${gpuDisabled} ` +
+      `resident=${resident} background=${launchedInBackground}`,
   );
-  createWindow();
+  if (resident) ensureTray();
+  // 로그인 항목으로 뜬 실행만 창을 숨긴다. 사용자가 켠 실행은 지금처럼 바로 보인다.
+  // (상주 모드가 꺼졌는데 옛 로그인 항목이 남아 --background로 뜬 경우엔 숨길 이유가 없다.)
+  createWindow({ show: !(launchedInBackground && resident) });
+  if (launchedInBackground && resident) logLine('background start (window hidden)');
 });
 
 // GPU 프로세스가 죽는 것도 빈 화면의 흔한 원인이다 (이때 disable-gpu 스위치가 답이 된다)
@@ -352,11 +479,14 @@ app.on('child-process-gone', (_event, details) => {
   logLine(`child-process-gone type=${details.type} reason=${details.reason}`);
 });
 
-app.on('second-instance', () => {
-  if (win) {
-    if (win.isMinimized()) win.restore();
-    win.focus();
-  }
+app.on('second-instance', (_event, argv) => {
+  // 이미 떠 있는데 로그인 항목이 또 발동한 경우 — 사용자가 부른 게 아니니 조용히 둔다
+  if (argv.includes('--background')) return;
+  showMainWindow();
 });
 
-app.on('window-all-closed', () => app.quit());
+// 상주 모드(트레이가 있을 때)에서는 창이 다 닫혀도 프로세스를 남긴다
+app.on('window-all-closed', () => {
+  if (tray) return;
+  app.quit();
+});

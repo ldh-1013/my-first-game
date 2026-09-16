@@ -36,7 +36,13 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "artifactName": "MyCalendar-Setup-${version}.exe"
-    }
+    },
+    "extraResources": [
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      }
+    ]
   },
   "dependencies": {
     "date-fns": "^4.1.0",
