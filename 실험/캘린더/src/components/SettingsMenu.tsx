@@ -1,4 +1,14 @@
-import { Download, FolderOpen, Monitor, Moon, ScrollText, Settings, Sun, Upload } from 'lucide-react';
+import {
+  BellRing,
+  Download,
+  FolderOpen,
+  Monitor,
+  Moon,
+  ScrollText,
+  Settings,
+  Sun,
+  Upload,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { getTodayKey } from '../store/clock';
 import { useCalendarStore } from '../store/calendarStore';
@@ -14,6 +24,12 @@ import {
   type BackupStatus,
 } from '../utils/backup';
 import { isDiagnosticsAvailable, openLogFolder } from '../utils/diagnostics';
+import {
+  getStartupStatus,
+  isStartupAvailable,
+  setStartupEnabled,
+  type StartupStatus,
+} from '../utils/startup';
 import { parseEvents, parseTodos } from '../utils/storage';
 import { ConfirmDialog } from './ConfirmDialog';
 import { SegmentedControl } from './SegmentedControl';
@@ -53,6 +69,8 @@ export function SettingsMenu() {
   const [importError, setImportError] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const [startup, setStartup] = useState<StartupStatus | null>(null);
+  const [startupBusy, setStartupBusy] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -62,6 +80,25 @@ export function SettingsMenu() {
     document.addEventListener('mousedown', onDown);
     return () => document.removeEventListener('mousedown', onDown);
   }, [open]);
+
+  // 로그인 항목 등록 여부도 메뉴를 열 때마다 OS에 묻는다 — 작업 관리자에서 바뀌었을 수 있다
+  useEffect(() => {
+    if (!open || !isStartupAvailable()) return;
+    let cancelled = false;
+    void getStartupStatus().then((status) => {
+      if (!cancelled) setStartup(status);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open]);
+
+  const handleStartupToggle = async (enabled: boolean) => {
+    setStartupBusy(true);
+    const next = await setStartupEnabled(enabled);
+    if (next) setStartup(next);
+    setStartupBusy(false);
+  };
 
   // 메뉴를 열 때만 백업 상태를 물어본다 (자주 여는 화면이 아니라 이 정도면 충분하다)
   useEffect(() => {
@@ -150,6 +187,31 @@ export function SettingsMenu() {
               onChange={toggleBgEffect}
             />
           </label>
+
+          {/* 기본은 꺼짐. 사용자가 직접 켜야만 시작프로그램에 등록된다 */}
+          {isStartupAvailable() && startup && (
+            <>
+              <label
+                className={`${styles.toggleRow} ${startup.available ? '' : styles.toggleDisabled}`}
+              >
+                <span className={styles.toggleText}>
+                  <BellRing size={15} aria-hidden /> 컴퓨터 켤 때 할 일 확인
+                </span>
+                <input
+                  type="checkbox"
+                  className={styles.switch}
+                  checked={startup.enabled}
+                  disabled={!startup.available || startupBusy}
+                  onChange={(e) => void handleStartupToggle(e.target.checked)}
+                />
+              </label>
+              <p className={styles.backupNote}>
+                {startup.available
+                  ? '켜 두면 창을 닫아도 트레이에 머물러요'
+                  : '설치한 앱에서만 쓸 수 있어요'}
+              </p>
+            </>
+          )}
           <div className={styles.divider} />
           <button type="button" role="menuitem" className={styles.menuItem} onClick={handleExport}>
             <Download size={15} aria-hidden /> JSON으로 내보내기

@@ -78,6 +78,11 @@
   font-weight: 600;
 }
 
+.toggleDisabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
 .toggleText svg {
   color: var(--color-primary-hover);
 }

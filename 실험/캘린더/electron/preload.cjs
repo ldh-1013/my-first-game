@@ -27,6 +27,15 @@ contextBridge.exposeInMainWorld('calendarNotify', {
   todos: (counts) => ipcRenderer.invoke('notify:todos', counts),
 });
 
+/**
+ * '컴퓨터 켤 때 할 일 확인' 창구. 등록 여부의 원천은 OS 로그인 항목이라,
+ * 렌더러는 상태를 저장하지 않고 매번 물어본다.
+ */
+contextBridge.exposeInMainWorld('calendarStartup', {
+  status: () => ipcRenderer.invoke('startup:status'),
+  set: (enabled) => ipcRenderer.invoke('startup:set', enabled),
+});
+
 contextBridge.exposeInMainWorld('calendarBackup', {
   /** 지금 즉시 백업 파일을 쓴다 */
   run: (json) => ipcRenderer.invoke('backup:run', json),

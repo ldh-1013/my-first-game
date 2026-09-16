@@ -35,7 +35,8 @@
       "perMachine": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "artifactName": "MyCalendar-Setup-${version}.exe"
+      "artifactName": "MyCalendar-Setup-${version}.exe",
+      "include": "build/installer.nsh"
     },
     "extraResources": [
       {

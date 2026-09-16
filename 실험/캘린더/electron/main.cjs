@@ -10,6 +10,7 @@ const {
 } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const { execFileSync } = require('child_process');
 
 /* ===========================================================================
    오류 로그
@@ -92,7 +93,13 @@ if (!gotLock) app.quit();
    =========================================================================== */
 
 const LOGIN_ARGS = ['--background'];
-const LOGIN_NAME = 'My Calendar';
+/**
+ * 앱 ID. 로그인 항목의 레지스트리 값 이름과 알림(토스트)의 발신자가 이걸 따른다.
+ * 명시하지 않으면 설치본과 압축 해제본에서 값이 달라질 수 있어, 제거 프로그램이
+ * 지울 값 이름을 하나로 못 박기 위해 package.json의 appId와 같게 고정한다.
+ */
+const APP_ID = 'com.zrcsh.mycalendar';
+app.setAppUserModelId(APP_ID);
 
 /** 이번 실행이 로그인 항목으로 조용히 뜬 것인지 (사용자가 아이콘을 눌러 켠 게 아닌지) */
 const launchedInBackground = process.argv.includes('--background');
@@ -104,22 +111,71 @@ let quitting = false;
 
 function loginItemQuery() {
   // Windows에서는 등록할 때와 같은 경로·인자로 물어야 같은 항목을 찾는다
-  return { path: process.execPath, args: LOGIN_ARGS, name: LOGIN_NAME };
+  // 값 이름은 넘기지 않는다 — 넘기면 Electron이 쓸 때와 읽을 때 서로 다른 이름을 찾아
+  // 등록해 놓고도 '꺼짐'으로 읽었다(실측). 기본값인 앱 ID(APP_ID)를 쓰게 둔다.
+  return { path: process.execPath, args: LOGIN_ARGS };
 }
 
+const STARTUP_APPROVED_KEY =
+  'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StartupApproved\\Run';
+
 /**
- * 로그인 항목으로 켜져 있는지. 개발 실행(npm run app)에서는 항상 아니다 —
+ * 작업 관리자 → 시작프로그램에서 사용자가 '사용 안 함'으로 꺼 뒀는지.
+ * Windows는 그 상태를 StartupApproved 키의 이진 값 첫 바이트로 적는다(02 사용 / 03 안 함).
+ * 값이 없으면 막힌 적이 없는 것이다.
+ *
+ * Electron의 executableWillLaunchAtLogin이 이걸 대신 알려 줘야 하지만, 실제로 확인해 보니
+ * 등록이 멀쩡히 된 상태에서도 false를 돌려줘 믿을 수 없었다. 그래서 이 부분만 직접 읽는다.
+ * (값 이름과 16진수만 파싱하므로 콘솔 코드페이지와 무관하다.)
+ */
+function disabledInTaskManager() {
+  try {
+    const out = execFileSync('reg', ['query', STARTUP_APPROVED_KEY, '/v', APP_ID], {
+      encoding: 'utf8',
+      windowsHide: true,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    const hex = /REG_BINARY\s+([0-9A-F]{2})/i.exec(out);
+    return Boolean(hex && hex[1] === '03');
+  } catch {
+    return false; // 값이 없으면 reg가 실패 코드로 끝난다 — 막힌 적 없음
+  }
+}
+
+function clearTaskManagerDecision() {
+  try {
+    execFileSync('reg', ['delete', STARTUP_APPROVED_KEY, '/v', APP_ID, '/f'], {
+      windowsHide: true,
+      stdio: 'ignore',
+    });
+  } catch {
+    /* 원래 없었으면 지울 것도 없다 */
+  }
+}
+
+/** 창 닫기 때마다 레지스트리를 읽지 않도록, 시작·토글·상태 조회 때만 새로 읽어 둔다 */
+let residentCache = false;
+
+/**
+ * 로그인 항목으로 켜져 있는지 새로 읽는다. 개발 실행(npm run app)에서는 항상 아니다 —
  * electron.exe와 프로젝트 경로가 Run 키에 박히면 프로젝트를 옮기는 순간 깨진 항목이 남는다.
  */
-function isResidentMode() {
-  if (!app.isPackaged) return false;
-  try {
-    const settings = app.getLoginItemSettings(loginItemQuery());
-    // 작업 관리자 → 시작프로그램에서 '사용 안 함'으로 바꾼 경우까지 반영한다
-    return Boolean(settings.executableWillLaunchAtLogin ?? settings.openAtLogin);
-  } catch {
-    return false;
+function refreshResidentMode() {
+  if (!app.isPackaged) {
+    residentCache = false;
+    return residentCache;
   }
+  try {
+    const { openAtLogin } = app.getLoginItemSettings(loginItemQuery());
+    residentCache = Boolean(openAtLogin) && !disabledInTaskManager();
+  } catch {
+    residentCache = false;
+  }
+  return residentCache;
+}
+
+function isResidentMode() {
+  return residentCache;
 }
 
 function trayIconPath() {
@@ -221,6 +277,7 @@ function createWindow({ show = true } = {}) {
     if (quitting || !isResidentMode()) return;
     event.preventDefault();
     win.hide();
+    logLine('window close → hidden to tray');
   });
   // Windows 로그오프/종료 때 창 닫기를 가로채면 '앱이 종료를 막고 있다'는 화면이 뜬다
   win.on('session-end', () => {
@@ -416,6 +473,36 @@ ipcMain.handle('notify:todos', (_event, counts) => {
   }
 });
 
+/* ---------------------------------------------------------------------------
+   '컴퓨터 켤 때 할 일 확인' 토글 — 로그인 항목 등록/해제
+   --------------------------------------------------------------------------- */
+
+function startupStatus() {
+  // 메뉴를 열 때마다 새로 읽는다 — 작업 관리자에서 바뀌었을 수 있다
+  return { available: app.isPackaged, enabled: refreshResidentMode() };
+}
+
+ipcMain.handle('startup:status', () => startupStatus());
+
+ipcMain.handle('startup:set', (_event, enabled) => {
+  if (!app.isPackaged) return startupStatus();
+  const on = enabled === true;
+  try {
+    app.setLoginItemSettings({ ...loginItemQuery(), openAtLogin: on });
+  } catch (err) {
+    logLine(`login item set failed: ${err.message}`);
+  }
+  // 작업 관리자에서 '사용 안 함'으로 꺼 둔 적이 있어도 토글로 켜면 다시 살아나야 하고,
+  // 끌 때는 흔적을 남기지 않는다. 어느 쪽이든 그 기록을 지운다(없음 = 막힌 적 없음).
+  clearTaskManagerDecision();
+  const resident = refreshResidentMode();
+  // 설정과 상주 동작이 늘 같이 움직이도록 트레이도 바로 맞춘다
+  if (resident) ensureTray();
+  else destroyTray();
+  logLine(`login item ${on ? 'on' : 'off'} → resident=${resident}`);
+  return { available: app.isPackaged, enabled: resident };
+});
+
 ipcMain.on('diag:report', (_event, message) => {
   if (typeof message === 'string') logLine(message.slice(0, 4000));
 });
@@ -461,7 +548,11 @@ app.on('before-quit', () => {
 Menu.setApplicationMenu(null);
 
 app.whenReady().then(() => {
-  const resident = isResidentMode();
+  // 잠금을 못 얻은 두 번째 실행은 app.quit()이 비동기라 여기까지 올 수 있다.
+  // 그대로 두면 곧 끝날 프로세스가 창을 한 번 만들어 번쩍인다 — 로그인 항목이 이미 떠 있는
+  // 앱에 또 발동할 때 특히 눈에 띈다. 기존 창 처리는 첫 프로세스의 second-instance가 맡는다.
+  if (!gotLock) return;
+  const resident = refreshResidentMode();
   logLine(
     `app start version=${app.getVersion()} electron=${process.versions.electron} ` +
       `os=${process.platform}/${process.getSystemVersion?.() ?? '?'} gpuDisabled=${gpuDisabled} ` +
@@ -481,8 +572,12 @@ app.on('child-process-gone', (_event, details) => {
 
 app.on('second-instance', (_event, argv) => {
   // 이미 떠 있는데 로그인 항목이 또 발동한 경우 — 사용자가 부른 게 아니니 조용히 둔다
-  if (argv.includes('--background')) return;
+  if (argv.includes('--background')) {
+    logLine('second-instance (background) ignored');
+    return;
+  }
   showMainWindow();
+  logLine(`second-instance → window shown visible=${Boolean(win && !win.isDestroyed() && win.isVisible())}`);
 });
 
 // 상주 모드(트레이가 있을 때)에서는 창이 다 닫혀도 프로세스를 남긴다
