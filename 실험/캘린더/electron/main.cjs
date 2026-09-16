@@ -547,6 +547,34 @@ app.on('before-quit', () => {
 
 Menu.setApplicationMenu(null);
 
+/* ---------------------------------------------------------------------------
+   로그인 항목으로 조용히 뜬 실행 — 확인이 끝나면 숨은 창을 내린다
+
+   렌더러는 사용자가 본 적도 없는 창이라 지킬 상태가 없다. 할 일 판정과 시작 백업이
+   끝났다는 신호를 받으면 창을 파괴해 메모리를 돌려주고, 트레이만 남긴다.
+   신호가 안 오는 경우(렌더러가 죽었거나 멈춤)를 대비해 안전 타임아웃도 둔다.
+   사용자가 그 사이 트레이에서 창을 열었다면 건드리지 않는다.
+   --------------------------------------------------------------------------- */
+
+const BACKGROUND_CHECK_TIMEOUT_MS = 20_000;
+let backgroundCheckTimer = null;
+
+function closeHiddenBackgroundWindow(reason) {
+  if (backgroundCheckTimer) {
+    clearTimeout(backgroundCheckTimer);
+    backgroundCheckTimer = null;
+  }
+  if (!win || win.isDestroyed() || win.isVisible()) return;
+  // close()가 아니라 destroy() — close는 상주 모드에서 '숨김'으로 가로채진다
+  win.destroy();
+  logLine(`background check done (${reason}) → hidden window closed`);
+}
+
+ipcMain.on('bg:checked', () => {
+  if (!(launchedInBackground && isResidentMode())) return;
+  closeHiddenBackgroundWindow('signal');
+});
+
 app.whenReady().then(() => {
   // 잠금을 못 얻은 두 번째 실행은 app.quit()이 비동기라 여기까지 올 수 있다.
   // 그대로 두면 곧 끝날 프로세스가 창을 한 번 만들어 번쩍인다 — 로그인 항목이 이미 떠 있는
@@ -562,7 +590,13 @@ app.whenReady().then(() => {
   // 로그인 항목으로 뜬 실행만 창을 숨긴다. 사용자가 켠 실행은 지금처럼 바로 보인다.
   // (상주 모드가 꺼졌는데 옛 로그인 항목이 남아 --background로 뜬 경우엔 숨길 이유가 없다.)
   createWindow({ show: !(launchedInBackground && resident) });
-  if (launchedInBackground && resident) logLine('background start (window hidden)');
+  if (launchedInBackground && resident) {
+    logLine('background start (window hidden)');
+    backgroundCheckTimer = setTimeout(
+      () => closeHiddenBackgroundWindow('timeout'),
+      BACKGROUND_CHECK_TIMEOUT_MS,
+    );
+  }
 });
 
 // GPU 프로세스가 죽는 것도 빈 화면의 흔한 원인이다 (이때 disable-gpu 스위치가 답이 된다)

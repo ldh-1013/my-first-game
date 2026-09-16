@@ -25,6 +25,8 @@ import { WeatherWidget } from './components/WeatherWidget';
 import { WeekView } from './components/WeekView';
 import { useAutoBackup } from './hooks/useAutoBackup';
 import { useTodoNotice } from './hooks/useTodoNotice';
+import { signalStartupChecked } from './utils/notify';
+import { startupTasksSettled } from './utils/startupTasks';
 import { useTimeGrain } from './hooks/useTimeGrain';
 import { useCalendarStore, type ViewMode } from './store/calendarStore';
 import { useToolStore } from './store/toolStore';
@@ -73,6 +75,12 @@ export default function App() {
   useTimeGrain(bgEffect);
   useAutoBackup();
   useTodoNotice();
+
+  // 켤 때 도는 일이 다 끝나면 메인에 알린다. 로그인 항목으로 조용히 뜬 실행이면
+  // 메인이 이걸 보고 숨은 창을 내려 메모리를 돌려준다(그 외 실행에선 무시된다).
+  useEffect(() => {
+    void startupTasksSettled().then(signalStartupChecked);
+  }, []);
 
   const showNav = viewMode === 'month' || viewMode === 'week';
 

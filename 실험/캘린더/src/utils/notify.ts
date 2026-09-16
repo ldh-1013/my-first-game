@@ -23,6 +23,8 @@ export interface TodoNoticeResult {
 
 interface NotifyApi {
   todos: (counts: TodoNoticeCounts) => Promise<TodoNoticeResult>;
+  /** 켤 때 도는 일이 끝났음을 알린다. 로그인 항목으로 조용히 뜬 실행만 이걸 보고 창을 내린다 */
+  checked: () => void;
 }
 
 declare global {
@@ -43,5 +45,14 @@ export async function notifyTodos(counts: TodoNoticeCounts): Promise<TodoNoticeR
     return (await window.calendarNotify?.todos(counts)) ?? { shown: false, reason: 'no-bridge' };
   } catch {
     return { shown: false, reason: 'error' };
+  }
+}
+
+/** 켤 때 도는 일(할 일 판정·시작 백업)이 모두 끝났다고 메인에 알린다 */
+export function signalStartupChecked(): void {
+  try {
+    window.calendarNotify?.checked();
+  } catch {
+    /* 무시 — 못 보내면 메인의 안전 타임아웃이 창을 내린다 */
   }
 }

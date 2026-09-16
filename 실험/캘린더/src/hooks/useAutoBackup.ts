@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useCalendarStore } from '../store/calendarStore';
 import { useTodoStore } from '../store/todoStore';
 import { cacheBackup, getBackupStatus, isBackupAvailable, runBackup } from '../utils/backup';
+import { markStartupBackupSettled } from '../utils/startupTasks';
 
 /**
  * 자동 백업을 앱 수명에 붙인다. App에서 한 번만 부른다.
@@ -18,14 +19,17 @@ import { cacheBackup, getBackupStatus, isBackupAvailable, runBackup } from '../u
 export function useAutoBackup(): void {
   // 1) 켤 때: 오늘 백업이 없으면 만든다
   useEffect(() => {
-    if (!isBackupAvailable()) return;
+    if (!isBackupAvailable()) {
+      markStartupBackupSettled();
+      return;
+    }
     let cancelled = false;
     void (async () => {
       const status = await getBackupStatus();
       if (cancelled || !status || status.todayDone) return;
       const { events, moods } = useCalendarStore.getState();
       await runBackup(events, moods, useTodoStore.getState().todos);
-    })();
+    })().finally(markStartupBackupSettled);
     return () => {
       cancelled = true;
     };

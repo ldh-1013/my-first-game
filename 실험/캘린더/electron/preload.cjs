@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld('calendarDiagnostics', {
  */
 contextBridge.exposeInMainWorld('calendarNotify', {
   todos: (counts) => ipcRenderer.invoke('notify:todos', counts),
+  checked: () => ipcRenderer.send('bg:checked'),
 });
 
 /**

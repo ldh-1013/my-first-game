@@ -3,6 +3,7 @@ import { getTodayKey } from '../store/clock';
 import { useTodoStore } from '../store/todoStore';
 import { isOverdue, isPending } from '../types/todo';
 import { isNotifyAvailable, notifyTodos } from '../utils/notify';
+import { markTodoNoticeSettled } from '../utils/startupTasks';
 
 /**
  * 앱을 켤 때 남아 있는 할 일을 한 번 알린다. App에서 한 번만 부른다.
@@ -15,11 +16,15 @@ import { isNotifyAvailable, notifyTodos } from '../utils/notify';
  */
 export function useTodoNotice(): void {
   useEffect(() => {
-    if (!isNotifyAvailable()) return;
+    if (!isNotifyAvailable()) {
+      markTodoNoticeSettled();
+      return;
+    }
     const todayKey = getTodayKey();
     const todos = useTodoStore.getState().todos;
     const pending = todos.filter((todo) => isPending(todo, todayKey));
     const overdue = pending.filter((todo) => isOverdue(todo, todayKey)).length;
-    void notifyTodos({ today: pending.length - overdue, overdue });
+    // 알림을 띄웠든 할 일이 없어 건너뛰었든, 판정이 끝났다는 것만은 알린다
+    void notifyTodos({ today: pending.length - overdue, overdue }).finally(markTodoNoticeSettled);
   }, []);
 }
